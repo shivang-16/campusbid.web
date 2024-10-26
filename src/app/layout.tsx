@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Mada as FontSans } from "next/font/google";
 import "./globals.css";
+import StoreProvider from "@/app/StoreProvider";
+import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { getUser } from "@/actions/user_actions";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+
+const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "CampusBid",
@@ -19,17 +16,37 @@ export const metadata: Metadata = {
     "Get Work Done, One Bid at a Time – Connect, Collaborate, and Achieve with CampusBid!",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userData = getUser();
+
+  const [user] = await Promise.all([
+    userData,
+  ]);
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={cn(
+          "font-sans antialiased custom__scrollbar",
+          fontSans.variable
+        )}
       >
-        {children}
+        <StoreProvider
+          user={user?.user}
+        >
+          <GoogleOAuthProvider
+            clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+          >
+            <div className="py-3">
+              <main className="h-main-height">{children}</main>
+            </div>
+            <Toaster richColors position="top-center" />
+          </GoogleOAuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );

@@ -7,10 +7,12 @@ export const metadata: Metadata = {
     "Get Work Done, One Bid at a Time – Connect, Collaborate, and Achieve with CampusBid!",
 };
 
-export default function AuthLayout({
+export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <section className="h-main-height">{children}</section>;
+  <div className="md:ml-20 xl:ml-[261px] h-main-height pl-4 pr-4 md:pr-2">
+  {children}
+  </div>
 }

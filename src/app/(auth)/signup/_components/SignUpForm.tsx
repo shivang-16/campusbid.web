@@ -47,20 +47,19 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen font-poppins flex flex-col items-center bg-white px-5">
-      <div className="w-full lg:w-[65%]">
-        <Image
-          src="/assets/images/campusbid_logo.ico"
-          alt="Campus Bid Logo"
-          width={100}
-          height={100}
-        />
-      </div>
+    <div className="min-h-screen font-poppins flex flex-col items-center justify-center bg-white px-5">
       <div className="flex justify-around">
         <div className="flex-1 flex justify-center items-center">
           <div className="w-full max-w-md space-y-8 bg-white rounded-3xl shadow-lg py-10 px-5 md:py-10 md:px-10 bg-opacity-90">
             <div className="text-center mb-6">
-              <h3 className="text-3xl font-bold text-gray-800">Create an Account</h3>
+            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text flex justify-center items-center bg-gradient-to-r from-teal-600 to-teal-500 tracking-wide mb-2 ">
+                <Image
+                  src="/assets/images/campusbid_logo.ico"
+                  alt="Campus Bid Logo"
+                  width={70}
+                  height={70}
+                />CampusBid
+              </h1>
               <p className="text-gray-600 text-sm pt-4">
                 Connect, Collaborate, and Achieve with CampusBid!
               </p>

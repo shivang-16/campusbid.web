@@ -62,15 +62,7 @@ const Login = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#d4d0c4" }} className="min-h-screen flex flex-col items-center font-poppins px-5">
-      <div className="w-full lg:w-[65%]">
-        <Image
-          src="/assets/images/campusbid_logo.ico"
-          alt="Campus Bid Logo"
-          width={100}
-          height={100}
-        />
-      </div>
+    <div style={{ backgroundColor: "#d4d0c4" }} className="min-h-screen flex flex-col items-center justify-center font-poppins px-5">
       <div className="flex">
         <div className="flex-1 hidden lg:flex justify-center items-center">
           <Image
@@ -83,10 +75,15 @@ const Login = () => {
         </div>
 
         <div className="flex-1 flex justify-center items-center">
-          <div style={{ backgroundColor: "#e6e2d4" }} className="w-full max-w-md space-y-8 rounded-3xl shadow-lg py-10 px-5 md:py-10 md:px-10 bg-opacity-90">
+          <div style={{ backgroundColor: "#dedacd" }} className="w-full max-w-md space-y-8 rounded-3xl shadow-lg py-10 px-5 md:py-10 md:px-10 bg-opacity-90">
             <div className="text-center mb-6">
-              <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-500 tracking-wide mb-2 animate-pulse">
-                CampusBid
+              <h1 className="text-4xl font-extrabold text-transparent bg-clip-text flex justify-center items-center bg-gradient-to-r from-teal-600 to-teal-500 tracking-wide mb-2 ">
+                <Image
+                  src="/assets/images/campusbid_logo.ico"
+                  alt="Campus Bid Logo"
+                  width={70}
+                  height={70}
+                />CampusBid
               </h1>
               <p className="text-gray-600 text-sm pt-4">
                 Connect, Collaborate, and Achieve with CampusBid!
@@ -99,7 +96,7 @@ const Login = () => {
                   <label className="block relative">
                     <User className="absolute left-3 top-3.5 w-5 h-5 opacity-70" />
                     <input
-                    style={{backgroundColor : "#fffbee"}}
+                      style={{ backgroundColor: "#fffbee" }}
                       type="text"
                       placeholder="Enter your email address"
                       {...form.register("email")}
@@ -117,7 +114,7 @@ const Login = () => {
                   <label className="block relative">
                     <Lock className="absolute left-3 top-3.5 w-5 h-5 opacity-70" />
                     <input
-                    style={{backgroundColor : "#fffbee"}}
+                      style={{ backgroundColor: "#fffbee" }}
                       type={togglePassword ? "text" : "password"}
                       placeholder="Enter password"
                       {...form.register("password")}
@@ -166,11 +163,11 @@ const Login = () => {
             </form>
 
             <div className="flex items-center justify-between mt-4">
-              <span className="border-b w-1/5 lg:w-1/4"></span>
-              <span className="text-xs text-center text-gray-500 uppercase">
+              <span className="border-b w-1/5 lg:w-1/4 border-gray-300"></span>
+              <span className="text-xs text-center text-gray-600 uppercase">
                 Or Login with
               </span>
-              <span className="border-b w-1/5 lg:w-1/4"></span>
+              <span className="border-b w-1/5 lg:w-1/4 border-gray-300"></span>
             </div>
 
             <GoogleLoginButton className="flex items-center justify-center w-full py-3 mt-4 border rounded-lg shadow-lg hover:shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105" />

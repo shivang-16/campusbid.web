@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Leadlly | Initial Info",
+  title: "CampusBid | Initial Info",
   description:
-    "Say goodbye to one-size-fits-all! We tailor study plans and resources to your individual learning style and goals.",
+    "Get Work Done, One Bid at a Time – Connect, Collaborate, and Achieve with CampusBid!",
 };
+
 
 export default function InitialInfoLayout({
   children,

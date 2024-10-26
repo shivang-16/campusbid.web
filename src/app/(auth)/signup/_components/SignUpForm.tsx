@@ -6,24 +6,14 @@ import Image from "next/image";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
-import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Key, Loader2, Mail, User } from "lucide-react";
 import { signUpSchema } from "@/schemas/signUpSchema";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import logo from "../../../../../public/assets/images/campusbid_logo.jpeg"
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import GoogleLoginButton from "@/app/(auth)/_components/GoogleLoginButton";
 import { signUpUser } from "@/actions/user_actions";
-
+import signupimage from "../../../../../public/assets/images/signupimage.jpg";
 const SignUp = () => {
   const [togglePassword, setTogglePassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,126 +47,110 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-gray-50">
-      <div className="flex flex-col items-center space-y-6">
-        {/* Logo with "Campus Bid" Text */}
-        <div className="flex items-center space-x-3">
-          <Image
-            src="/assets/images/campusbid_logo.ico"
-            alt="Campus Bid Logo"
-            width={50}
-            height={50}
-          />
-          <h2 className="text-3xl font-bold text-gray-800">Campus Bid</h2>
-        </div>
+    <div className="min-h-screen font-poppins flex flex-col items-center bg-white px-5">
+      <div className="w-full lg:w-[65%]">
+        <Image
+          src="/assets/images/campusbid_logo.ico"
+          alt="Campus Bid Logo"
+          width={100}
+          height={100}
+        />
+      </div>
+      <div className="flex justify-around">
+        <div className="flex-1 flex justify-center items-center">
+          <div className="w-full max-w-md space-y-8 bg-white rounded-3xl shadow-lg py-10 px-5 md:py-10 md:px-10 bg-opacity-90">
+            <div className="text-center mb-6">
+              <h3 className="text-3xl font-bold text-gray-800">Create an Account</h3>
+              <p className="text-gray-600 text-sm pt-4">
+                Connect, Collaborate, and Achieve with CampusBid!
+              </p>
+            </div>
 
-        {/* Form Container */}
-        <div className="bg-white rounded-lg max-w-md w-full p-8 space-y-6 shadow-lg">
-          <div className="text-center space-y-2">
-            <h3 className="text-2xl font-bold text-gray-900">Create an account</h3>
-            <p className="text-sm text-gray-600">
-              Unlock your potential with expert guidance—sign up for mentorship today!
-            </p>
-          </div>
+            <form onSubmit={form.handleSubmit(onFormSubmit)} className="mt-6 space-y-6">
+              <div className="space-y-4">
+                <div className="relative">
+                  <User className="absolute left-3 top-3.5 w-5 h-5 opacity-70" />
+                  <input
+                    type="text"
+                    placeholder="Enter full name"
+                    className="w-full p-3 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+                    {...form.register("name")}
+                  />
+                  <p className="text-red-500 text-xs mt-1">{form.formState.errors.name?.message}</p>
+                </div>
 
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onFormSubmit)}
-              className="space-y-4"
-            >
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter full name"
-                        icon1={<User className="w-5 h-5 opacity-70" />}
-                        className="text-lg border border-gray-300 focus:ring-0 focus:border-primary"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3.5 w-5 h-5 opacity-70" />
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="w-full p-3 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+                    {...form.register("email")}
+                  />
+                  <p className="text-red-500 text-xs mt-1">{form.formState.errors.email?.message}</p>
+                </div>
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter your email"
-                        icon1={<Mail className="w-5 h-5 opacity-70" />}
-                        className="text-lg border border-gray-300 focus:ring-0 focus:border-primary"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <div className="relative">
+                  <Key className="absolute left-3 top-3.5 w-5 h-5 opacity-70" />
+                  <input
+                    type={togglePassword ? "text" : "password"}
+                    placeholder="Create password"
+                    className="w-full p-3 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+                    {...form.register("password")}
+                  />
+                  <div
+                    className="cursor-pointer absolute right-3 top-3.5 text-gray-400"
+                    onClick={() => setTogglePassword(!togglePassword)}
+                  >
+                    {togglePassword ? <EyeOff /> : <Eye />}
+                  </div>
+                  <p className="text-red-500 text-xs mt-1">{form.formState.errors.password?.message}</p>
+                </div>
+              </div>
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type={togglePassword ? "text" : "password"}
-                        placeholder="Create password"
-                        icon1={<Key className="w-5 h-5 opacity-70" />}
-                        icon2={
-                          <div
-                            className="cursor-pointer"
-                            onClick={() => setTogglePassword(!togglePassword)}
-                          >
-                            {togglePassword ? (
-                              <EyeOff className="w-5 h-5 opacity-70" />
-                            ) : (
-                              <Eye className="w-5 h-5 opacity-70" />
-                            )}
-                          </div>
-                        }
-                        className="text-lg border border-gray-300 focus:ring-0 focus:border-primary"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button
+              <button
                 type="submit"
-                className="w-full text-lg h-12 bg-primary text-white rounded-lg"
+                className="w-full py-3 bg-gradient-to-r from-teal-600 to-teal-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   <span className="flex items-center">
-                    <Loader2 className="mr-2 w-5 h-5 animate-spin" /> Signing Up
+                    <Loader2 className="w-6 h-6 animate-spin mr-2" /> Signing Up
                   </span>
                 ) : (
                   "Sign Up"
                 )}
-              </Button>
+              </button>
             </form>
-          </Form>
 
-          <GoogleLoginButton />
+            <div className="flex items-center justify-between mt-4">
+              <span className="border-b w-1/5 lg:w-1/4"></span>
+              <span className="text-xs text-center text-gray-500 uppercase">
+                Or Sign Up with
+              </span>
+              <span className="border-b w-1/5 lg:w-1/4"></span>
+            </div>
 
-          <div className="text-center text-sm">
-            <p>
-              Already have an account?{" "}
-              <Link href="/login" className="text-primary font-semibold">
-                Login
-              </Link>
-            </p>
+            <GoogleLoginButton className="flex items-center justify-center w-full py-3 mt-4 bg-white border rounded-lg shadow-lg hover:shadow-xl hover:bg-gray-100 transition-all transform hover:scale-105" />
+
+            <div className="text-center text-sm mt-4">
+              <p>
+                Already have an account?{" "}
+                <Link href="/login" className="text-teal-600 hover:text-teal-700">
+                  Login
+                </Link>
+              </p>
+            </div>
           </div>
+        </div>
+        <div className="flex-1 hidden lg:flex justify-center items-center">
+          <Image
+            src={signupimage}
+            alt="Login background"
+            width={600} // Adjust based on container size and aspect ratio
+            height={600} // Adjust based on container size and aspect ratio
+            className="object-cover opacity-90"
+          />
         </div>
       </div>
     </div>

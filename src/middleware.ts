@@ -25,17 +25,15 @@ export async function middleware(request: NextRequest) {
 
   // initial personal info middleware
   if (token && !isPublicPath) {
-    NextResponse.redirect(new URL("/", request.nextUrl));
-  //   const hasSubmittedInitialInfo = !!userData.user?.academic.standard;
+    const hasSubmittedInitialInfo = !!userData.user?.academic.schoolOrCollegeName;
 
-  //   if (!hasSubmittedInitialInfo && path !== "/initial-info") {
-  //     return NextResponse.redirect(new URL("/initial-info", request.nextUrl));
-  //   }
+    if (!hasSubmittedInitialInfo && path !== "/initial-info") {
+      return NextResponse.redirect(new URL("/initial-info", request.nextUrl));
+    }
 
-  //   if (hasSubmittedInitialInfo && path === "/initial-info") {
-  //     return NextResponse.redirect(new URL("/", request.nextUrl));
-  //   }
-  // }
+    if (hasSubmittedInitialInfo && path === "/initial-info") {
+      return NextResponse.redirect(new URL("/", request.nextUrl));
+    }
 
   // // free trial activation middleware
   // if (token && !isPublicPath && path !== "/initial-info") {

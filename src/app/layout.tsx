@@ -41,7 +41,7 @@ export default async function RootLayout({
           <GoogleOAuthProvider
             clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
           >
-            <div className="py-3">
+            <div>
               <main className="h-main-height">{children}</main>
             </div>
             <Toaster richColors position="top-center" />

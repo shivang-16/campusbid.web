@@ -11,9 +11,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const GoogleLoginButton = () => {
-  const [isLoading, setIsLoading] = useState(false);
+// Define props interface to accept className and any other props
+interface GoogleLoginButtonProps {
+  className?: string; // Optional className prop
+}
 
+const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ className = "" }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -67,7 +71,7 @@ const GoogleLoginButton = () => {
       type="button"
       variant={"outline"}
       onClick={() => login()}
-      className="w-full text-lg lg:text-xl h-12 gap-2"
+      className={`w-full text-lg lg:text-lg text-gray-800 h-12 gap-2 ${className}`} // Include the passed className
       disabled={isLoading}
     >
       {isLoading ? (

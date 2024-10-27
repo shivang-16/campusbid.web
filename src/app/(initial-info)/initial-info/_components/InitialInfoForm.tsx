@@ -4,15 +4,10 @@ import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import EnterPhoneno from "../../../../../public/assets/images/EnterPhoneno.png";
 // import Lock from "../../../../../public/assets/images/lock.png"
-import gender from "../../../../../public/assets/images/gender.png"
+import institute from "../../../../../public/assets/images/institute.jpg"
 import classselection from "../../../../../public/assets/images/class.png"
 import Examselection from "../../../../../public/assets/images/exam selection.png"
 import Scheduleselection from "../../../../../public/assets/images/scheduleSelecton.png"
-import Female from "../../../../../public/assets/images/femalegender.png"
-import Male from "../../../../../public/assets/images/malegender.png"
-import Othergender from "../../../../../public/assets/images/othergender (1).png"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 // import { ArrowLeft } from 'lucide-react'
 // import OtpInput from '@/components/shared/OtpInput';
@@ -30,6 +25,34 @@ import { StaticImageData } from 'next/image';
 import { studentPersonalInfo } from '@/actions/user_actions';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { getCollegeNames, getCityNames, getStateNames } from '@/actions/data_actions';
+
+
+interface Institution {
+  _id: string; // Use string to represent ObjectId
+  College_Name: string;
+  State: string;
+  Stream: string;
+  stateCode: string;
+
+}
+
+interface State {
+  _id: string;
+  name: string;
+  isoCode: string;
+  countryCode: string;
+  latitude: string;
+  longitude: string
+}
+
+interface City {
+  _id: string;
+  name: string;
+  stateCode: string;
+  latitude: string;
+  longitude: string
+}
 
 type StepImage = {
   src: StaticImageData;
@@ -62,18 +85,10 @@ type ExamImages = {
 
 const stepImages: Record<number, StepImage> = {
   1: { src: EnterPhoneno, width: 400, height: 400 }, // Image for step 1
-  // 2: { src: Lock, width: 350, height: 350 },        // Image for step 2
-  2: { src: gender, width: 435, height: 435 }, // Image for step 3
+  2: { src: institute, width: 435, height: 435 }, // Image for step 3
   3: { src: classselection, width: 435, height: 435 },  // Image for step 4
-  4: { src: Examselection, width: 435, height: 435 },   // Image for step 5
-  5: { src: Scheduleselection, width: 652, height: 535 } // Image for step 6
+  4: { src: Examselection, width: 435, height: 435 }
 }
-
-const genderImages: GenderImages = {
-  Female,
-  Male,
-  Other: Othergender
-};
 
 const classImage: ClassImage = {
   Eleven: Elevenclass,
@@ -100,13 +115,88 @@ export default function InitialInfoForm() {
   const [errors, setErrors] = useState(false);
   const [formData, setFormData] = useState({
     phone: '',
-    gender: '',
-    class: '',
-    competitiveExam: '',
-    studentSchedule: ''
+    schoolOrCollegeName: '',
+    city: '',
+    state: '',
+    role: '',
+    username: ''
   })
+  const [institutions, setInstitutions] = useState<Institution[]>([]);
+  const [states, setStates] = useState<State[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [collegename, setcollegename] = useState('');
+  const [statename, setstatename] = useState('');
+  const [cityname, setcityname] = useState('');
 
+  // Track focus for each input individually
+  const [isInstitutionFocused, setIsInstitutionFocused] = useState(false);
+  const [isStateFocused, setIsStateFocused] = useState(false);
+  const [isCityFocused, setIsCityFocused] = useState(false);
 
+  const fetchColleges = async (query: string) => {
+    try {
+      const response = await getCollegeNames(query);
+      setInstitutions(response.data);
+    } catch (error) {
+      console.error("Error fetching colleges:", error);
+    }
+  };
+
+  const fetchStates = async (query: string) => {
+    try {
+      const response = await getStateNames(query);
+      setStates(response.data);
+    } catch (error) {
+      console.error("Error fetching states:", error);
+    }
+  };
+
+  const fetchCities = async (query: string) => {
+    try {
+      const response = await getCityNames(query);
+      setCities(response.data);
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+    }
+  };
+
+  const handleInstitutionSearch = (value: string) => {
+    setFormData((prev) => ({ ...prev, schoolOrCollegeName: value }));
+    if (value) fetchColleges(value);
+    else setInstitutions([]);
+  };
+
+  const handleStateSearch = (value: string) => {
+    setFormData((prev) => ({ ...prev, state: value }));
+    if (value) fetchStates(value);
+    else setStates([]);
+  };
+
+  const handleCitySearch = (value: string) => {
+    setFormData((prev) => ({ ...prev, city: value }));
+    if (value) fetchCities(value);
+    else setCities([]);
+  };
+
+  const handleSelect = (item: string, type: string) => {
+    setFormData((prev) => ({ ...prev, [type]: item }));
+    if (type === "schoolOrCollegeName") setInstitutions([]);
+    if (type === "state") setStates([]);
+    if (type === "city") setCities([]);
+  };
+
+  // Toggle focus state for each input separately
+  const handleFocus = (inputType: string) => {
+    if (inputType === "schoolOrCollegeName") setIsInstitutionFocused(true);
+    else if (inputType === "state") setIsStateFocused(true);
+    else if (inputType === "city") setIsCityFocused(true);
+  };
+
+  const handleBlur = (inputType: string) => {
+    if (inputType === "schoolOrCollegeName") setIsInstitutionFocused(false);
+    else if (inputType === "state") setIsStateFocused(false);
+    else if (inputType === "city") setIsCityFocused(false);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -120,6 +210,8 @@ export default function InitialInfoForm() {
     }));
   };
 
+
+
   const handleNext = () => {
     setStep(prev => Math.min(prev + 1, 6))
   }
@@ -130,388 +222,312 @@ export default function InitialInfoForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (step < 5) {
-      handleNext();
-      return;
-    }
-
-    const classValue = formData.class === 'Dropper' ? undefined :
-      (formData.class === 'Eleven' ? 11 :
-        (formData.class === 'Twelve' ? 12 : undefined));
-
-    const submissionData = {
-      ...formData,
-      class: classValue,
-      phone: Number(formData.phone),
-    };
-
-    try {
-      const responseData = await studentPersonalInfo(submissionData);
-      toast.success(responseData.message);
-      
-      router.push('/');
-    } catch (error) {
-      toast.error("Unable to save information! " + (error as Error).message);
-    }
+    const userinfo = studentPersonalInfo(formData);
+    console.log(userinfo)
   };
 
-  <Button
-    type="submit"
-    onClick={handleSubmit}
-    className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 mt-6"
-  >
-    Finish
-  </Button>
-
+  const changeUsername = (e:any) => {
+    setFormData({...formData, username : e.target.value})
+  }
 
   const { src, width, height } = stepImages[step] || { src: '', width: 400, height: 400 }
 
   return (
     <>
-      <div className="flex items-center mb-2 mt-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handlePrevious}
-          className="mr-1"
-          disabled={step === 0}
-        >
-          <AiOutlineArrowLeft className="h-6 w-6" />
-        </Button>
+      <div className='h-screen'>
+        <div className="flex items-center mb-2 mt-2">
+          {step != 1 ? <Button
+            variant="ghost"
+            size="icon"
+            onClick={handlePrevious}
+            className="mr-1"
+          >
+            <AiOutlineArrowLeft className="h-6 w-6" />
+          </Button> : <div className='h-10 w-11'></div>}
 
-        <div className="w-full flex justify-center items-center gap-2">
-          <div className="flex items-center rounded-[5px] gap-1 sm:gap-[8px] w-[85%] sm:w-[80%] mx-auto">
-            {[...Array(5)].map((_, index) => (
-              <div key={index} className="flex-1 flex items-center">
-                <div
-                  className={`h-[4px] sm:h-[6px] md:h-[8px] ${index < step ? 'bg-purple-500' : 'bg-gray-200'} rounded-[3px] transition-colors duration-300`}
-                  style={{ width: '100%' }}
-                ></div>
-                {index < 5 - 1 && <div className="w-[2px] sm:w-[3px] md:w-[4px]"></div>}
-              </div>
-            ))}
+          <div className="w-full flex justify-center items-center gap-2">
+            <div className="flex items-center rounded-[5px] gap-1 sm:gap-[8px] w-[85%] sm:w-[80%] mx-auto">
+              {[...Array(4)].map((_, index) => (
+                <div key={index} className="flex-1 flex items-center">
+                  <div
+                    className={`h-[4px] sm:h-[6px] md:h-[8px] ${index < step - 1 ? 'bg-teal-500' : index == step - 1 ? 'bg-blue-300' : 'bg-gray-200'} rounded-[3px] transition-colors duration-300`}
+                    style={{ width: '100%' }}
+                  ></div>
+                  {index < 5 - 1 && <div className="w-[2px] sm:w-[3px] md:w-[4px]"></div>}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex relative top-[2%] md:top-[10%] justify-between px-4 pb-4">
-        <div className="bg-white rounded-lg w-full">
-          <div className="mx-8 my-4 lg:flex justify-around">
-            <div className="lg:w-1/2 mb-8 lg:mb-0">
-              <Image
-                src={src}
-                alt="Step Image"
-                width={width}
-                height={height}
-                className="mx-auto w-full max-w-[90%] sm:max-w-[80%] md:max-w-[70%] lg:max-w-[100%] xl:max-w-[70%]"
-              />
-            </div>
-            <div className="lg:w-1/2 lg:pl-8 justify-center flex items-center">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {step === 1 && (
-                  <div className="mx-8 my-4 flex flex-col justify-center items-center">
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl text-center font-bold mb-4 whitespace-nowrap">
-                      Enter Your Phone Number?
-                    </h2>
+        <div className="flex relative top-[2%] md:top-[10%] justify-between px-4 pb-4">
+          <div className="bg-white rounded-lg w-full">
+            <div className="mx-8 my-4 lg:flex justify-around items-center">
+              <div className="lg:w-1/2 mb-8 lg:mb-0">
+                <Image
+                  src={src}
+                  alt="Step Image"
+                  width={width}
+                  height={height}
+                  className="mx-auto w-full max-w-[90%] sm:max-w-[80%] md:max-w-[70%] lg:max-w-[100%] xl:max-w-[70%]"
+                />
+              </div>
+              <div className="lg:w-1/2 lg:pl-8 justify-center flex items-center">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {step === 1 && (
+                    <div className="mx-8 my-4 flex flex-col justify-center items-center">
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl text-center font-bold mb-4 whitespace-nowrap">
+                        Enter Your Phone Number?
+                      </h2>
 
-                    <p className="text-gray-600 text-center mb-6">
-                      We need to register your phone number before getting started!
-                    </p>
+                      <p className="text-gray-600 text-center mb-6">
+                        We need to register your phone number before getting started!
+                      </p>
 
-                    <div className="flex items-center mb-4 border border-input rounded-md">
-                      <Select
-                        value="+91"
-                        onValueChange={(value: any) => handleSelectChange('countryCode', value)}
-                      >
-                        <SelectTrigger className="w-[70px] px-4 py-2 h-full flex items-center justify-center border-none focus:outline-none focus:ring-0">
-                          <SelectValue placeholder="Code" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="+91">+91</SelectItem>
-                          <SelectItem value="+1">+1</SelectItem>
-                          <SelectItem value="+44">+44</SelectItem>
-                        </SelectContent>
-                      </Select>
-
-                      <input
-                        type="tel"
-                        name="phone"
-                        placeholder="Phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="flex items-center px-4 py-2 h-11 bg-background w-full rounded-r-md border-none focus:outline-none focus:ring-0"
-                        required
-                        maxLength={10}
-                        pattern="[0-9]{10}"
-                      />
-                    </div>
-
-                    {error && (
-                      <p className="text-red-500 text-sm mb-4">{error}</p>
-                    )}
-
-                    <Button
-                      onClick={() => {
-                        if (!formData.phone) {
-                          setError('Phone number is required');
-                        } else if (formData.phone.length !== 10) {
-                          setError('Phone number must be exactly 10 digits');
-                        } else {
-                          setError('');
-                          handleNext();
-                        }
-                      }}
-                      className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3"
-                    >
-                      {step < 5 ? 'Confirm' : 'Finish'}
-                    </Button>
-                  </div>
-                )}
-                {step === 2 && (
-                  <div className="space-y-4 flex flex-col items-center justify-center">
-                    <h2 className="text-3xl lg:text-4xl font-bold mb-2">What is your Gender?</h2>
-                    <p className="text-gray-600 text-center mb-4 text-lg lg:text-xl">
-                      Select your gender from the given below options
-                    </p>
-                    <RadioGroup
-                      onValueChange={(value) => handleSelectChange('gender', value)}
-                      value={formData.gender}
-                      className="flex flex-col items-center space-y-4"
-                    >
-                      <div className="flex gap-[50px] space-x-4">
-                        {['Female', 'Male'].map((gender) => (
-                          <button
-                            onClick={() => handleSelectChange('gender', gender)}
-                            key={gender}
-                            className="flex flex-col items-center"
-                          >
-                            <RadioGroupItem value={gender} id={gender} className="sr-only" />
-                            <Label
-                              htmlFor={gender}
-                              className={`cursor-pointer flex flex-col justify-center items-center p-6 border-2 rounded-lg ${formData.gender === gender ? 'border-purple-500' : 'border-none'} bg-gray-50`}
-                              style={{ width: '120px', height: '120px' }}
-                            >
-
-                              <Image
-                                src={genderImages[gender as keyof GenderImages]}
-                                alt={gender}
-                                width={100}
-                                height={100}
-                                className="mb-1"
-                              />
-                              <span className="capitalize text-center text-lg lg:text-xl">{gender}</span>
-                            </Label>
-                          </button>
-                        ))}
-                      </div>
-                      <div className="flex justify-center">
-                        <button
-                          onClick={() => handleSelectChange('gender', 'Other')}
-                          className="flex flex-col items-center"
+                      <div className="flex items-center mb-4 border border-input rounded-md">
+                        <Select
+                          value="+91"
+                          onValueChange={(value: any) => handleSelectChange('countryCode', value)}
                         >
-                          <RadioGroupItem value="Other" id="Other" className="sr-only" />
-                          <Label
-                            htmlFor="Other"
-                            className={`cursor-pointer flex flex-col justify-center items-center p-6 border-2 rounded-lg ${formData.gender === 'Other' ? 'border-purple-500' : 'border-none'} bg-gray-50`}
-                            style={{ width: '120px', height: '120px' }}
-                          >
-                            <Image
-                              src={genderImages['Other']}
-                              alt="Other"
-                              width={100}
-                              height={100}
-                              className="mb-1"
-                            />
-                            <span className="capitalize text-center text-lg lg:text-xl">Other</span>
-                          </Label>
-                        </button>
+                          <SelectTrigger className="w-[70px] px-4 py-2 h-full flex items-center justify-center border-none focus:outline-none focus:ring-0">
+                            <SelectValue placeholder="Code" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="+91">+91</SelectItem>
+                            <SelectItem value="+1">+1</SelectItem>
+                            <SelectItem value="+44">+44</SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                        <input
+                          type="tel"
+                          name="phone"
+                          placeholder="Phone (Optional)"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          className="flex items-center px-4 py-2 h-11 bg-background w-full rounded-r-md border-none focus:outline-none focus:ring-0"
+                          required
+                          maxLength={10}
+                          pattern="[0-9]{10}"
+                        />
                       </div>
-                    </RadioGroup>
-                  </div>
-                )}
-                {step === 3 && (
-                  <div className="space-y-4 flex flex-col items-center justify-center">
-                    <h2 className="text-2xl sm:text-3xl md:text-4xl text-center font-bold mb-4 whitespace-nowrap">Which class are you studying?</h2>
-                    <p className="text-gray-600 text-center mb-4 text-base lg:text-xl">
-                      Focus on core topics with hands-on practice and real-world examples for deeper understanding.
-                    </p>
-                    <div className="flex flex-col items-center">
-                      <div className="flex gap-[50px] space-x-4 mb-4">
-                        {['Eleven', 'Twelve'].map((classOption) => (
-                          <button
-                            key={classOption}
-                            type="button"
-                            onClick={() => {
-                              handleSelectChange('class', classOption);
+
+                      {error && (
+                        <p className="text-red-500 text-sm mb-4">{error}</p>
+                      )}
+                      <div className='flex gap-3 items-center'>
+                        <Button
+                          onClick={() => {
+                            if (!formData.phone) {
+                              setError('Phone number is required');
+                            } else if (formData.phone.length !== 10) {
+                              setError('Phone number must be exactly 10 digits');
+                            } else {
+                              setError('');
                               handleNext();
-                            }}
-                            className={`flex flex-col justify-center items-center p-4 border-2 rounded-lg 
-        ${formData.class === classOption ? 'border-purple-500' : 'border-none'} bg-gray-50`}
-                            style={{ width: '120px', height: '120px' }}
-                          >
-                            <Image
-                              src={classImage[classOption as keyof ClassImage]}
-                              alt={classOption}
-                              width={113}
-                              height={113}
-                              className="mb-1"
-                            />
-                            <span className="capitalize text-base lg:text-xl">{classOption}</span>
-                          </button>
-                        ))}
-                      </div>
-
-                      <div className="flex justify-center">
-                        <button
-                          key="Dropper"
-                          type="button"
+                            }
+                          }}
+                          className="bg-teal-600 hover:bg-teal-600 text-white px-6 py-3"
+                        >
+                          {step < 5 ? 'Confirm' : 'Finish'}
+                        </Button>
+                        <Button
                           onClick={() => {
-                            handleSelectChange('class', 'Dropper');
                             handleNext();
                           }}
-                          className={`flex flex-col justify-center items-center p-4 border-2 rounded-lg ${formData.class === 'Dropper' ? 'border-purple-500' : 'border-none'} bg-gray-50`}
-                          style={{ width: '120px', height: '120px' }}
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3"
                         >
-                          <Image
-                            src={classImage['Dropper']}
-                            alt="Dropper"
-                            width={64}
-                            height={64}
-                            className="mb-2"
-                          />
-                          <span className="capitalize text-base lg:text-xl">Dropper</span>
-                        </button>
+                          Skip
+                        </Button>
                       </div>
                     </div>
-                  </div>
-                )}
-                {step === 4 && (
-                  <div className="space-y-4 flex flex-col items-center justify-center">
-                    <h2 className="text-2xl font-bold mb-2">Are your Studying for?</h2>
-                    <p className="text-gray-600 text-center mb-4 text-sm sm:text-base md:text-lg">
-                      Focus on core topics with hands-on practice and real-world examples for deeper understanding.
-                    </p>
+                  )}
+                  {step === 2 && (
+                    <div className="space-y-4 flex flex-col items-center justify-center h-full">
+                      <div className='flex flex-col justify-center items-center gap-3'>
+                        <h2 className="text-3xl lg:text-4xl font-bold mb-2">What institution are you with?</h2>
 
-                    <div className="flex justify-center gap-4 sm:gap-8 md:gap-10 lg:gap-24">
-                      {['jee', 'neet'].map((exam) => (
-                        <button
-                          key={exam}
-                          type="button"
-                          onClick={() => {
-                            handleSelectChange('competitiveExam', exam);
-                            handleNext();
-                          }}
-                          className={`relative flex flex-col justify-center items-center p-4 border-2 rounded-lg shadow-md ${formData.competitiveExam === exam ? 'border-purple-500' : 'border-none'} bg-gray-50`}
-                          style={{
-                            width: '140px',
-                            height: '180px',
-                            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.1)',
-                          }}
-                        >
-                          <div
-                            className="flex items-center justify-center"
-                            style={{
-                              width: '100%',
-                              height: '70%',
-                              color: exam === 'jee' ? '#2D61FD' : '#06E480',
-                              fontSize: '24px',
-                              fontWeight: 'bold',
-                            }}
-                          >
-                            {exam.toUpperCase()}
+                        {/* Institution Search Input */}
+                        <div className="relative w-full max-w-md">
+                          <input
+                            type="text"
+                            name="institution"
+                            placeholder="Select your Institution..."
+                            className="w-full p-3 border-gray-200 border rounded-lg shadow-md text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                            value={formData.schoolOrCollegeName}
+                            onChange={(e) => handleInstitutionSearch(e.target.value)}
+                            onFocus={() => handleFocus("schoolOrCollegeName")}
+                            onBlur={() => handleBlur("schoolOrCollegeName")}
+                            required
+                          />
+                          {isInstitutionFocused && institutions.length > 0 && (
+                            <div className="absolute z-10 w-full bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                              {institutions.map((institution) => (
+                                <div
+                                  key={institution._id}
+                                  className="p-3 hover:bg-blue-100 cursor-pointer"
+                                  onMouseDown={() => handleSelect(institution.College_Name, "schoolOrCollegeName")}
+                                >
+                                  {institution.College_Name}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          {isInstitutionFocused && institutions.length === 0 && (
+                            <div className="absolute z-10 w-full bg-white rounded-lg shadow-lg">
+                              <div className="p-3 text-gray-500">No institutions found</div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* State Search Input */}
+                        <div className='flex items-center gap-3'>
+                          <div className="relative w-full max-w-md">
+                            <input
+                              type="text"
+                              name="state"
+                              placeholder="Select your State..."
+                              className="w-full p-3 border-gray-200 border rounded-lg shadow-md text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                              value={formData.state}
+                              onChange={(e) => handleStateSearch(e.target.value)}
+                              onFocus={() => handleFocus("state")}
+                              onBlur={() => handleBlur("state")}
+                              required
+                            />
+                            {isStateFocused && states.length > 0 && (
+                              <div className="absolute z-10 w-full bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                {states.map((state) => (
+                                  <div
+                                    key={state._id}
+                                    className="p-3 hover:bg-blue-100 cursor-pointer"
+                                    onMouseDown={() => handleSelect(state.name, "state")}
+                                  >
+                                    {state.name}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            {isStateFocused && states.length === 0 && (
+                              <div className="absolute z-10 w-full bg-white rounded-lg shadow-lg">
+                                <div className="p-3 text-gray-500">No states found</div>
+                              </div>
+                            )}
                           </div>
 
-                          <Image
-                            src={examImages[exam as keyof ExamImages].topRight}
-                            alt={`${exam}-top-right`}
-                            width={77}
-                            height={77}
-                            className="absolute top-[-0.5rem] right-[-0.5rem] overflow-hidden"
-                          />
+                          {/* City Search Input */}
+                          <div className="relative w-full max-w-md">
+                            <input
+                              type="text"
+                              name="city"
+                              placeholder="Select your City..."
+                              className="w-full p-3 border-gray-200 border rounded-lg shadow-md text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300"
+                              value={formData.city}
+                              onChange={(e) => handleCitySearch(e.target.value)}
+                              onFocus={() => handleFocus("city")}
+                              onBlur={() => handleBlur("city")}
+                            />
+                            {isCityFocused && cities.length > 0 && (
+                              <div className="absolute z-10 w-full bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                {cities.map((city) => (
+                                  <div
+                                    key={city._id}
+                                    className="p-3 hover:bg-blue-100 cursor-pointer"
+                                    onMouseDown={() => handleSelect(city.name, "city")}
+                                  >
+                                    {city.name}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            {isCityFocused && cities.length === 0 && (
+                              <div className="absolute z-10 w-full bg-white rounded-lg shadow-lg">
+                                <div className="p-3 text-gray-500">No cities found</div>
+                              </div>
+                            )}
+                          </div>
 
-                          <Image
-                            src={examImages[exam as keyof ExamImages].bottomLeft}
-                            alt={`${exam}-bottom-left`}
-                            width={70}
-                            height={50}
-                            className="absolute bottom-2 left-[-0.5rem]"
-                          />
-                        </button>
-                      ))}
-                    </div>
-
-                  </div>
-                )}
-                {step === 5 && (
-                  <div className="space-y-4">
-                    <h1 className="text-2xl text-center font-bold mb-4">Schedule you follow?</h1>
-                    <p className="text-gray-600 text-center mb-4 text-sm sm:text-base md:text-lg">
-                      Focus on core topics with hands-on practice and real-world examples for deeper understanding.
-                    </p>
-
-                    <div className="flex flex-col w-full space-y-4">
-                      {['School + Coaching + Self-study', 'Coaching + Self-study', 'School + Self-study', 'Only Self-study'].map((schedule, index) => (
+                        </div>
                         <Button
-                          key={index}
-                          type="button"
                           onClick={() => {
-                            handleSelectChange('studentSchedule', schedule);
-                            setErrors(false);
+                            if (!formData.phone) {
+                              setError('Phone number is required');
+                            } else if (formData.phone.length !== 10) {
+                              setError('Phone number must be exactly 10 digits');
+                            } else {
+                              setError('');
+                              handleNext();
+                            }
                           }}
-                          variant={formData.studentSchedule === schedule ? 'default' : 'outline'}
-                          className={`w-full h-16 shadow-none flex items-center justify-start pl-4 text-[16px] font-semibold
-        ${formData.studentSchedule === schedule ? 'border-purple-500' : 'border-none'}`}
+                          className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3"
                         >
-                          {schedule}
+                          {step < 5 ? 'Confirm' : 'Finish'}
                         </Button>
-                      ))}
+                      </div>
                     </div>
 
-                    {errors && (
-                      <p className="text-red-500 text-center mb-4">Please select a schedule to proceed.</p>
-                    )}
-                    <div className="flex justify-center">
-                      <Button
+                  )}
+                  {step === 3 && (
+                    <div className="space-y-4 flex flex-col items-center justify-center">
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl text-center font-bold mb-4 whitespace-nowrap">"I wish to join CampusBid as a..."</h2>
+                      <div className="flex flex-col items-center">
+                        <div className="flex gap-[50px] space-x-4 mb-4">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleNext();
+                            }}
+                            className={`flex flex-col justify-center text-lg items-center p-4 border-2 rounded-lg hover:border-teal-500 bg-gray-50`}
+                            style={{ width: '140px', height: '140px' }}
+                          >
+                            <span className="capitalize text-base lg:text-xl" onClick={() => { setFormData({ ...formData, role: "provider" }) }}>Project Expert</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleNext();
+                            }}
+                            className={`flex flex-col justify-center text-lg items-center p-4 border-2 rounded-lg hover:border-teal-500 bg-gray-50`}
+                            style={{ width: '140px', height: '140px' }}
+                          >
+                            <span className="capitalize text-base lg:text-xl" onClick={() => { setFormData({ ...formData, role: "client" }) }}>Support Seeker</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  )}
+                  {step === 4 && (
+                    <div className="space-y-4 flex flex-col items-center justify-center">
+                      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center">
+                        Select Your Username
+                      </h2>
+                      <div className="flex flex-col w-full space-y-4">
+                        <input
+                          type="text"
+                          id="username"
+                          name="username"
+                          value={formData.username}
+                          onChange={(e)=>{changeUsername(e)}}
+                          placeholder="Enter your desired username"
+                          className="p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 shadow-lg focus:ring-teal-500"
+                          required
+                        />
+                      </div>
+                      <button
                         type="submit"
-                        className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 mt-6 flex items-center justify-center"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (!formData.studentSchedule) {
-                            setErrors(true);
-                          } else {
-                            handleSubmit(e);
-                          }
-                        }}
+                        className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3 rounded"
                       >
-                        Next
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          className="w-5 h-5 ml-2">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13 7l5 5m0 0l-5 5m5-5H6"
-                          />
-                        </svg>
-                      </Button>
-
+                        Finish
+                      </button>
                     </div>
-                  </div>
-                )}
-
-              </form>
-
+                  )}
+                </form>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </>
-
   )
 }

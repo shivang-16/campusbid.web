@@ -164,11 +164,13 @@ export const getUser = async () => {
   }
 };
 
+
 export const studentPersonalInfo = async (data: any) => {
   const token = await getCookie("token");
+  console.log(data)
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/profile/save`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/save/info`,
       {
         method: "POST",
         body: JSON.stringify(data),
@@ -180,8 +182,13 @@ export const studentPersonalInfo = async (data: any) => {
       }
     );
 
+    if (!res.ok) {
+      throw new Error("Failed to save student information");
+    }
+
     const responseData = await res.json();
 
+    // Revalidate or refresh user data
     revalidateTag("userData");
 
     return responseData;
@@ -193,3 +200,6 @@ export const studentPersonalInfo = async (data: any) => {
     }
   }
 };
+
+
+

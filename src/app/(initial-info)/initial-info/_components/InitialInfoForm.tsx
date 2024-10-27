@@ -113,6 +113,7 @@ export default function InitialInfoForm() {
   const [step, setStep] = useState(1)
   const [error, setError] = useState('');
   const [errors, setErrors] = useState(false);
+  const [load, setload] = useState(false)
   const [formData, setFormData] = useState({
     phone: '',
     schoolOrCollegeName: '',

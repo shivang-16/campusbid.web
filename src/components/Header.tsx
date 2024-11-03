@@ -1,65 +1,105 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaBell, FaEnvelope } from 'react-icons/fa';
+import { MdPerson, MdWork } from 'react-icons/md'; // Improved icons for Client and Freelancer
 import { useSelector } from 'react-redux';
 
 const Header: React.FC = () => {
-  // Accessing the user data from the Redux store
   const username = useSelector((state: any) => state.user.user?.username);
-
-  // Extract the first letter of the username and make it uppercase
   const firstLetter = username ? username.charAt(0).toUpperCase() : '';
-
-  // State for selected role
   const [role, setRole] = useState("Client");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLUListElement | null>(null); // Ref for the dropdown
+  const roleOptions = [
+    { name: "Client", icon: <MdPerson className="text-teal-700" /> }, // Updated icon
+    { name: "Freelancer", icon: <MdWork className="text-teal-700" /> } // Updated icon
+  ];
 
-  // Dropdown options for roles
-  const roleOptions = ["Client", "Freelancer"];
+  
+
+  const handleDropdownToggle = () => {
+    setDropdownOpen(prev => !prev);
+  };
+
+  const handleRoleChange = (option: string) => {
+    if (option === "Freelancer") {
+      localStorage.setItem("isFreelancer", "true");
+    } else {
+      localStorage.setItem("isFreelancer", "false");
+    }
+    setRole(option);
+    setDropdownOpen(false);
+  };
+
+  // Close the dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Find the selected role option
+  const selectedRoleOption = roleOptions.find(option => option.name === role);
 
   return (
-    <header className="flex items-center justify-between px-8 py-3 bg-white/20 shadow-lg lg:px-8 transition duration-300 ease-in-out border-b border-gray-300 fixed w-full z-50 backdrop-blur-xl">
+    <header className="flex items-center justify-between px-6 py-3 shadow-lg fixed w-full z-50 backdrop-blur-xl border-b border-gray-300 transition duration-300 ease-in-out">
       {/* Logo and Title */}
       <div className="flex items-center space-x-4">
         <img
           src="/assets/icons/favicon.ico"
           alt="CampusBid Logo"
-          className="w-10 h-10 rounded-full transition-transform transform hover:scale-110 shadow-md"
+          className="w-12 h-12 rounded-full transition-transform transform hover:scale-110 shadow-md"
         />
-        <div className="text-2xl font-bold text-teal-700 tracking-tight hover:text-teal-900 transition duration-300">
+        <div className="text-2xl font-bold text-teal-600 tracking-tight hover:text-teal-700 transition duration-300">
           CampusBid
         </div>
       </div>
 
-      {/* Dropdown for Role Selection */}
-      <div className="flex items-center space-x-6">
+      {/* Notifications, Messages, and User Avatar */}
+      <div className="flex items-center space-x-4">
         <div className="relative">
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="px-4 py-2 bg-gray-100 border border-gray-300 text-teal-700 font-semibold rounded-full hover:bg-gray-200 focus:ring-2 focus:ring-teal-500 transition duration-300 cursor-pointer shadow-md"
+          <button
+            onClick={handleDropdownToggle}
+            className="flex items-center px-4 py-2 bg-gray-100 border border-gray-300 text-teal-600 font-semibold rounded-full hover:bg-gray-200 focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-md"
           >
-            {roleOptions.map((option) => (
-              <option key={option} value={option} className="text-gray-800">
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Notifications, Messages, and User Avatar */}
-        <div className="flex items-center space-x-4">
-          <button className="p-2 rounded-full bg-gray-100 hover:bg-teal-100 transition duration-300 shadow-lg">
-            <FaBell className="text-xl text-gray-500 hover:text-teal-700 transition duration-300" />
+            {selectedRoleOption?.icon} {/* Display the icon for the selected role */}
+            <span className="ml-2">{role}</span> {/* Role name */}
+            <span className="ml-2">▼</span>
           </button>
-          <button className="p-2 rounded-full bg-gray-100 hover:bg-teal-100 transition duration-300 shadow-lg">
-            <FaEnvelope className="text-xl text-gray-500 hover:text-teal-700 transition duration-300" />
-          </button>
-          {username && (
-            <span className="w-10 h-10 flex items-center justify-center rounded-full bg-teal-700 text-white font-semibold shadow-lg">
-              {firstLetter}
-            </span>
+          {dropdownOpen && (
+            <ul ref={dropdownRef} className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+              {roleOptions.map(({ name, icon }) => (
+                <li
+                  key={name}
+                  onClick={() => handleRoleChange(name)}
+                  className={`flex items-center px-4 py-2 cursor-pointer transition duration-200 
+                              ${role === name ? 'bg-teal-100 font-semibold text-teal-700' : 'text-gray-800 hover:bg-teal-100'}`}
+                >
+                  {icon}
+                  <span className="ml-2">{name}</span>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
+        <button className="p-2 rounded-full bg-gray-100 hover:bg-teal-100 transition duration-300 shadow-lg">
+          <FaBell className="text-xl text-gray-500 hover:text-teal-700 transition duration-300" />
+        </button>
+        <button className="p-2 rounded-full bg-gray-100 hover:bg-teal-100 transition duration-300 shadow-lg">
+          <FaEnvelope className="text-xl text-gray-500 hover:text-teal-700 transition duration-300" />
+        </button>
+        {username && (
+          <span className="w-9 h-9 flex items-center justify-center rounded-full bg-teal-700 text-white font-semibold shadow-lg">
+            {firstLetter}
+          </span>
+        )}
       </div>
     </header>
   );

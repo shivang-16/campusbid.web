@@ -1,5 +1,4 @@
-import { Metadata } from "next";
-import React from "react";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "CampusBid",
@@ -7,12 +6,11 @@ export const metadata: Metadata = {
     "Get Work Done, One Bid at a Time – Connect, Collaborate, and Achieve with CampusBid!",
 };
 
+
 export default function MainLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  <div className="md:ml-20 xl:ml-[261px] h-main-height pl-4 pr-4 md:pr-2">
-  {children}
-  </div>
+}) {
+  return <div className="h-main-height">{children}</div>;
 }

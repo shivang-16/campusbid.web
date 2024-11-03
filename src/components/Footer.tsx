@@ -2,12 +2,12 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-100 text-gray-700 py-10">
-      <div className="container mx-auto px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+    <footer className=" bg-gradient-to-l from-teal-100 to-purple-100 text-gray-700 py-10 lg:px-32 lg:py-16">
+      <div className="container mx-auto px-5  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
         
         {/* Categories Section */}
         <div>
-          <h3 className="font-semibold text-gray-900 mb-4">Categories</h3>
+          <h3 className="font-semibold text-gray-800 mb-4">Categories</h3>
           <ul className="space-y-2">
             {["Graphics & Design", "Digital Marketing", "Writing & Translation", "Video & Animation", "Music & Audio", "Programming & Tech", "Business", "Lifestyle", "Sitemap"].map((category) => (
               <li key={category}>
@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
 
         {/* About Section */}
         <div>
-          <h3 className="font-semibold text-gray-900 mb-4">About</h3>
+          <h3 className="font-semibold text-gray-800 mb-4">About</h3>
           <ul className="space-y-2">
             {["Careers", "Press & News", "Partnerships", "Privacy Policy", "Terms of Service", "Intellectual Property Claims", "Investor Relations"].map((item) => (
               <li key={item}>
@@ -31,7 +31,7 @@ const Footer: React.FC = () => {
 
         {/* Support Section */}
         <div>
-          <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
+          <h3 className="font-semibold text-gray-800 mb-4">Support</h3>
           <ul className="space-y-2">
             {["Help & Support", "Trust & Safety", "Selling on CampusBid", "Buying on CampusBid"].map((supportItem) => (
               <li key={supportItem}>
@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
 
         {/* Community Section */}
         <div>
-          <h3 className="font-semibold text-gray-900 mb-4">Community</h3>
+          <h3 className="font-semibold text-gray-800 mb-4">Community</h3>
           <ul className="space-y-2">
             {["Events", "Blog", "Forum", "Community Standards", "Podcast", "Affiliates", "Invite a Friend", "Become a Seller"].map((communityItem) => (
               <li key={communityItem}>
@@ -55,7 +55,7 @@ const Footer: React.FC = () => {
 
         {/* More From CampusBid Section */}
         <div>
-          <h3 className="font-semibold text-gray-900 mb-4">More From CampusBid</h3>
+          <h3 className="font-semibold text-gray-800 mb-4">More From CampusBid</h3>
           <ul className="space-y-2">
             {["CampusBid Pro", "CampusBid Studios", "CampusBid Logo Maker", "Get Inspired", "Content Marketing", "Invoice Software", "Online Courses"].map((moreItem) => (
               <li key={moreItem}>

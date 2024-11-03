@@ -35,6 +35,7 @@ export default async function RootLayout({
           fontSans.variable
         )}
       >
+        <link rel="icon" href="/assets/icons/favicon.ico" />
         <StoreProvider
           user={user?.user}
         >

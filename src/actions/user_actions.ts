@@ -193,6 +193,7 @@ export const studentPersonalInfo = async (data: any) => {
 
     return responseData;
   } catch (error: unknown) {
+    console.error("Fetch error:", error)
     if (error instanceof Error) {
       throw new Error(`Error in saving student info: ${error.message}`);
     } else {
@@ -202,4 +203,38 @@ export const studentPersonalInfo = async (data: any) => {
 };
 
 
+export const modeChanger = async (data: any) => {
+  const token = await getCookie("token");
+  console.log(data)
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/update/mode`,
+      {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token}`,
+        },
+        credentials: "include",
+      }
+    );
 
+    if (!res.ok) {
+      throw new Error("Failed to save student information");
+    }
+
+    const responseData = await res.json();
+
+    // Revalidate or refresh user data
+    revalidateTag("userData");
+
+    return responseData;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(`Error in saving student info: ${error.message}`);
+    } else {
+      throw new Error("An unknown error occurred while saving student info");
+    }
+  }
+};

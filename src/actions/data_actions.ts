@@ -3,6 +3,7 @@
 import { getCookie } from "./cookie_actions";
 import { revalidateTag } from "next/cache";
 import apiClient from "@/apiClient/apiClient";
+import { string } from "zod";
 
 export const getCollegeNames = async (query: string) => {
   const token = await getCookie("token");
@@ -30,11 +31,11 @@ export const getCollegeNames = async (query: string) => {
 };
 
 
-export const getCityNames = async (query: string) => {
+export const getCityNames = async (query: string, stateCode:string) => {
   const token = await getCookie("token");
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/data/cities/get?q=${query}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/data/cities/get?q=${query}&stateCode=${stateCode}`,
       {
         method: "GET",
         headers: {

@@ -52,7 +52,7 @@ const SignUp = () => {
         <div className="flex-1 flex justify-center items-center">
           <div className="w-full max-w-md space-y-8 bg-white rounded-3xl shadow-lg py-10 px-5 md:py-10 md:px-10 bg-opacity-90">
             <div className="text-center mb-6">
-            <h1 className="text-4xl font-extrabold text-transparent gap-2 bg-clip-text flex justify-center items-center bg-gradient-to-r from-teal-600 to-teal-500 tracking-wide mb-2 ">
+              <h1 className="text-4xl font-extrabold text-transparent gap-2 bg-clip-text flex justify-center items-center bg-gradient-to-r from-teal-600 to-teal-500 tracking-wide mb-2 ">
                 <Image
                   src="/assets/images/campusbid_logo.ico"
                   alt="Campus Bid Logo"

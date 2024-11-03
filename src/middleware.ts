@@ -14,7 +14,9 @@ export async function middleware(request: NextRequest) {
     path.startsWith("/verify") ||
     path.startsWith("/forgot-password") ||
     path.startsWith("/resetpassword");
-
+    
+    
+    // IMPORTANT
   if (token && isPublicPath) {
     return NextResponse.redirect(new URL("/", request.nextUrl));
   }
@@ -34,6 +36,15 @@ export async function middleware(request: NextRequest) {
     if (hasSubmittedInitialInfo && path === "/initial-info") {
       return NextResponse.redirect(new URL("/", request.nextUrl));
     }
+  }
+
+
+
+
+
+
+
+
 
   // // free trial activation middleware
   // if (token && !isPublicPath && path !== "/initial-info") {
@@ -48,7 +59,6 @@ export async function middleware(request: NextRequest) {
   //   if (isSubscribed && path === "/trial-subscription") {
   //     return NextResponse.redirect(new URL("/", request.nextUrl));
   //   }
-  }
 
 
   return NextResponse.next();

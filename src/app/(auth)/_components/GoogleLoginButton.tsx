@@ -43,12 +43,12 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({ className = "" })
         toast.success("Login success", {
           description: res.data.message,
         });
-
-        if (res.status === 201) {
-          router.replace("/initial-info");
-        } else {
-          router.replace("/");
-        }
+        router.replace("/initial-info");
+        // if (res.status === 201) {
+        //   router.replace("/initial-info");
+        // } else {
+        //   router.replace("/");
+        // }
       } catch (error: any) {
         console.error("Axios error:", error);
         toast.error("Google login failed!", {

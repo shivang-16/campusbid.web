@@ -25,6 +25,7 @@
     "next": "15.0.1",
     "npm": "^10.9.0",
     "react": "^18.2.0",
+    "react-datepicker": "^7.5.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.3.3",
     "react-hook-form": "^7.53.1",

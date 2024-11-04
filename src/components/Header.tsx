@@ -1,44 +1,41 @@
 "use client";
 import { savePersonalInfo } from '@/actions/user_actions';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { userData } from '@/redux/slices/userSlice';
 import React, { useState, useRef, useEffect } from 'react';
 import { FaBell, FaEnvelope } from 'react-icons/fa';
-import { MdPerson, MdWork } from 'react-icons/md'; // Improved icons for Client and Freelancer
-import { useSelector } from 'react-redux';
+import { MdPerson, MdWork } from 'react-icons/md';
 
 const Header: React.FC = () => {
-  const username = useSelector((state: any) => state.user.user?.username);
+  const user = useAppSelector((state: any) => state.user.user);
+  const username = user?.username || '';
   const firstLetter = username ? username.charAt(0).toUpperCase() : '';
-  const [role, setRole] = useState("Client");
+  const role = user?.role;
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLUListElement | null>(null); // Ref for the dropdown
+  const dropdownRef = useRef<HTMLUListElement | null>(null);
+
   const roleOptions = [
-    { name: "Client", icon: <MdPerson className="text-teal-700" /> }, // Updated icon
-    { name: "Freelancer", icon: <MdWork className="text-teal-700" /> } // Updated icon
+    { name: "client", icon: <MdPerson className="text-teal-700" /> },
+    { name: "freelancer", icon: <MdWork className="text-teal-700" /> }
   ];
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handleDropdownToggle = () => {
     setDropdownOpen(prev => !prev);
   };
 
   const handleRoleChange = async (option: string) => {
-    if (option === "Freelancer") {
-       const user = await savePersonalInfo({
-          role: 'freelancer'
-      })
-      dispatch(userData(user))
-    } else {
-      const user = await savePersonalInfo({
-          role: 'client'
-      })
-      dispatch(userData(user))
+    try {
+      const updatedUser = await savePersonalInfo({ role: option });
+      dispatch(userData(updatedUser.user));
+      setDropdownOpen(false);
+    } catch (error) {
+      console.error("Error updating role:", error);
     }
-    setRole(option);
-    setDropdownOpen(false);
   };
+
 
   // Close the dropdown when clicking outside
   useEffect(() => {
@@ -54,12 +51,10 @@ const Header: React.FC = () => {
     };
   }, []);
 
-  // Find the selected role option
   const selectedRoleOption = roleOptions.find(option => option.name === role);
 
   return (
     <header className="flex items-center justify-between px-6 py-3 shadow-lg fixed w-full z-50 backdrop-blur-xl border-b border-gray-300 transition duration-300 ease-in-out">
-      {/* Logo and Title */}
       <div className="flex items-center space-x-4">
         <img
           src="/assets/icons/favicon.ico"
@@ -71,15 +66,14 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Notifications, Messages, and User Avatar */}
       <div className="flex items-center space-x-4">
         <div className="relative">
           <button
             onClick={handleDropdownToggle}
             className="flex items-center px-4 py-2 bg-gray-100 border border-gray-300 text-teal-600 font-semibold rounded-full hover:bg-gray-200 focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-md"
           >
-            {selectedRoleOption?.icon} {/* Display the icon for the selected role */}
-            <span className="ml-2">{role}</span> {/* Role name */}
+            {selectedRoleOption?.icon}
+            <span className="ml-2">{user.role}</span>
             <span className="ml-2">▼</span>
           </button>
           {dropdownOpen && (

@@ -158,7 +158,6 @@ const Freelancer: React.FC = () => {
                 </div>
             </div>
 
-            <Footer />
         </div>
     );
 };

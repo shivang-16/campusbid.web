@@ -165,7 +165,7 @@ export const getUser = async () => {
 };
 
 
-export const studentPersonalInfo = async (data: any) => {
+export const savePersonalInfo = async (data: any) => {
   const token = await getCookie("token");
   console.log(data)
   try {

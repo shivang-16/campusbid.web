@@ -67,9 +67,9 @@ const Client: React.FC = () => {
 
   const handleSkillSelect = (skill: string) => {
     setSelectedSkills((prevSkills) => {
-      if (prevSkills.includes(skill)) {
+      if (prevSkills.includes(skill) && prevSkills.length > 1) {
         return prevSkills.filter((s) => s !== skill); // Remove skill if already selected
-      } else if (prevSkills.length < 5) {
+      } else if (prevSkills.length < 5 && !prevSkills.includes(skill)) {
         return [...prevSkills, skill]; // Add skill if not selected, limit to 5
       }
       return prevSkills; // Return existing array if max skills are selected
@@ -340,13 +340,13 @@ const Client: React.FC = () => {
                 </div>
 
                 {/* Skills Section */}
-                <div className="border-b pb-4">
-                  <h3 className="text-md font-semibold mb-2">Skills</h3>
+                <div className="border-b pb-4 flex flex-col items-start gap-2">
+                  <h3 className="text-md text-md font-semibold mb-2">Skills</h3>
                   <div className="flex flex-wrap gap-2">
                     {popularSkills.map((skill) => (
                       <button
                         key={skill}
-                        onClick={() => handleSkillSelect(skill)}
+                        onClick={() => {handleSkillSelect(skill)}}
                         className={`px-2 py-1 border rounded-lg ${selectedSkills.includes(skill)
                           ? "bg-teal-600 text-white"
                           : "bg-gray-200 text-gray-600"
@@ -356,8 +356,8 @@ const Client: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  <div className="mt-2">
-                    <h4 className="text-sm font-semibold">Selected Skills:</h4>
+                  <div className="mt-2 flex flex-col items-start">
+                    <h4 className="text-md font-semibold">Selected Skills:</h4>
                     <p className="text-sm text-gray-600">
                       {selectedSkills.length > 0
                         ? selectedSkills.join(", ")

@@ -1,4 +1,7 @@
 "use client";
+import { savePersonalInfo } from '@/actions/user_actions';
+import { useAppDispatch } from '@/redux/hooks';
+import { userData } from '@/redux/slices/userSlice';
 import React, { useState, useRef, useEffect } from 'react';
 import { FaBell, FaEnvelope } from 'react-icons/fa';
 import { MdPerson, MdWork } from 'react-icons/md'; // Improved icons for Client and Freelancer
@@ -15,17 +18,23 @@ const Header: React.FC = () => {
     { name: "Freelancer", icon: <MdWork className="text-teal-700" /> } // Updated icon
   ];
 
-  
+  const dispatch = useAppDispatch()
 
   const handleDropdownToggle = () => {
     setDropdownOpen(prev => !prev);
   };
 
-  const handleRoleChange = (option: string) => {
+  const handleRoleChange = async (option: string) => {
     if (option === "Freelancer") {
-      localStorage.setItem("isFreelancer", "true");
+       const user = await savePersonalInfo({
+          role: 'freelancer'
+      })
+      dispatch(userData(user))
     } else {
-      localStorage.setItem("isFreelancer", "false");
+      const user = await savePersonalInfo({
+          role: 'client'
+      })
+      dispatch(userData(user))
     }
     setRole(option);
     setDropdownOpen(false);

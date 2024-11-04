@@ -12,7 +12,7 @@ import Scheduleselection from "../../../../../public/assets/images/scheduleSelec
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { StaticImageData } from 'next/image';
-import { studentPersonalInfo } from '@/actions/user_actions';
+import { savePersonalInfo } from '@/actions/user_actions';
 import { useRouter } from 'next/navigation';
 import { getCollegeNames, getCityNames, getStateNames } from '@/actions/data_actions';
 import { modeChanger } from '@/actions/user_actions';
@@ -196,8 +196,7 @@ export default function InitialInfoForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setload(true);
-    const userinfo = await studentPersonalInfo(formData);
-    console.log(userinfo);
+    const userinfo = await savePersonalInfo(formData);
     setTimeout(() => {
       setload(false);
     }, 3000);

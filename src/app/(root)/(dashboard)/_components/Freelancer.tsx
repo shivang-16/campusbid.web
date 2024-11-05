@@ -133,7 +133,7 @@ const Freelancer: React.FC = () => {
                     <section className="py-12 px-6 lg:px-36">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-2xl font-semibold text-gray-800 pb-4">Top Projects for You</h3>
-                            <a onClick={()=>router.replace("/allprojects")} className="text-teal-600 font-medium hover:underline">View more</a>
+                            <a onClick={()=>router.replace("/allprojects")} className="text-teal-600 font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</a>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             {projects.map((project) => (
@@ -160,7 +160,7 @@ const Freelancer: React.FC = () => {
                     <section className="py-12 px-6 lg:px-36">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-2xl font-semibold text-gray-800 pb-4">Projects Nearby You</h3>
-                            <a onClick={()=>router.replace("/allprojects")} className="text-teal-500 font-medium hover:underline">View more</a>
+                            <a onClick={()=>router.replace("/allprojects")} className="text-teal-600 font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</a>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             {nearbyProjects.map((project) => (

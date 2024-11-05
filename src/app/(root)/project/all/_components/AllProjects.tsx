@@ -163,11 +163,11 @@ const AllProjectsPage = ({projects}: AllProjectsPageProps) => {
       {/* Main Content - Project Listings */}
       <main className="flex-1 lg:ml-[25%] pt-[80px] px-6">
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center">
             <input
               type="text"
               placeholder="Search projects..."
-              className="w-72 p-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="w-72 px-3 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-teal-500 focus:outline-none"
             />
             <button className="px-4 py-3 bg-teal-500 text-white rounded-r-lg hover:bg-teal-600 transition duration-200">
               <FaSearch />

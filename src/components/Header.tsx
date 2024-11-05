@@ -5,8 +5,10 @@ import { userData } from '@/redux/slices/userSlice';
 import React, { useState, useRef, useEffect } from 'react';
 import { FaBell, FaEnvelope } from 'react-icons/fa';
 import { MdPerson, MdWork } from 'react-icons/md';
+import { useRouter } from 'next/navigation';
 
 const Header: React.FC = () => {
+  const router = useRouter();
   const user = useAppSelector((state: any) => state.user.user);
   const username = user?.username || '';
   const firstLetter = username ? username.charAt(0).toUpperCase() : '';
@@ -59,9 +61,10 @@ const Header: React.FC = () => {
         <img
           src="/assets/icons/favicon.ico"
           alt="CampusBid Logo"
-          className="w-12 h-12 rounded-full transition-transform transform hover:scale-110 shadow-md"
+          className="w-12 h-12 rounded-full transition-transform transform hover:scale-110 shadow-md hover:cursor-pointer"
+          onClick={()=>router.replace("/")}
         />
-        <div className="text-2xl font-sans font-extrabold text-teal-500 tracking-tight hover:text-teal-600 transition duration-300">
+        <div onClick={()=>router.replace("/")} className="text-2xl hover:cursor-pointer font-sans font-bold text-teal-600 tracking-tight hover:text-teal-700 transition duration-300">
           CampusBid
         </div>
       </div>

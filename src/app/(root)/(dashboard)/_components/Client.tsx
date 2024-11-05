@@ -5,14 +5,17 @@ import Header from '@/components/Header';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { FaEdit } from "react-icons/fa";
+import { createProject } from '@/actions/project_actions';
+import { uploadImageToS3 } from '@/actions/s3_actions';
 
 const Client: React.FC = () => {
   const [stepIndex, setStepIndex] = useState(0);
   const [title, setTitle] = useState<string>('');
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [budget, setBudget] = useState<number | ''>('');
+  const [deadline, setDeadline] = useState<Date | null>(null);
+  const [budget, setBudget] = useState({ min: '', max: '' });
   const [files, setFiles] = useState<File[]>([]);
+  const [filePreviews, setFilePreviews] = useState<string[]>([]); // Store preview URLs
   const [description, setDescription] = useState<string>('');
 
 
@@ -23,29 +26,34 @@ const Client: React.FC = () => {
       case 1:
         return selectedSkills.length > 0;
       case 2:
-        return startDate !== null;
+        return deadline !== null;
       case 3:
-        return budget !== '' && budget > 0;
+        const minBudget = parseFloat(budget.min);
+        const maxBudget = parseFloat(budget.max);
+        return !isNaN(minBudget) && !isNaN(maxBudget) && minBudget > 0 && maxBudget > 0 && minBudget <= maxBudget;
       case 4:
         return description.trim() !== '' || files.length > 0;
       default:
         return false;
     }
   };
+  
 
   const handleDeleteFile = (index: number) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setFilePreviews((prevPreviews) => prevPreviews.filter((_, i) => i !== index));
   };
 
   const onDrop = (acceptedFiles: File[]) => {
-    // Filter files to ensure they are within size limit and of correct type
     const validFiles = acceptedFiles.filter((file) => {
-      const isValidType = file.type === 'application/pdf' || file.type === 'application/msword' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      const isValidSize = file.size <= 50 * 1024 * 1024; // 50 MB in bytes
+      const isValidType = file.type === 'application/pdf' || file.type === 'application/msword' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.type.startsWith('image/');
+      const isValidSize = file.size <= 50 * 1024 * 1024; // 50 MB
       return isValidType && isValidSize;
     });
 
     setFiles((prevFiles) => [...prevFiles, ...validFiles]);
+    const newPreviews = validFiles.map((file) => URL.createObjectURL(file));
+    setFilePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
   };
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -85,6 +93,38 @@ const Client: React.FC = () => {
     if (stepIndex > 0) setStepIndex(stepIndex - 1);
   };
 
+  const formattedFiles = files?.map(( file ) => ({
+    name: file.name,
+    fileSize: file.size,
+    fileType: file.type
+  }))
+  const handleSubmit = async () => {
+    const formattedData = {
+      title,
+      description,
+      budget,
+      deadline,
+      skillsRequired: selectedSkills,
+      supportingDocs: formattedFiles,
+    };
+    console.log("Formatted Data:", formattedData);
+  
+    // Create the project and get signed URLs for file uploads
+    const response = await createProject(formattedData);
+    const { signedUrls } = response;
+  
+    // Map over files to upload each one to its corresponding signed URL
+    const uploadFiles = files.map((file, index) => {
+      const signedUrl = signedUrls[index];
+      return uploadImageToS3(file, signedUrl);
+    });
+  
+    // Wait until all file uploads are complete
+    await Promise.all(uploadFiles);
+  
+    console.log("Response after file uploads:", response);
+  };
+  
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-700 relative">
       <Header />
@@ -213,8 +253,8 @@ const Client: React.FC = () => {
                     Deadline
                   </label>
                   <DatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
+                    selected={deadline}
+                    onChange={(date) => setDeadline(date)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400 font-roboto"
                     placeholderText="Select a deadline"
                     dateFormat="MMMM d, yyyy" // Format for displaying the date
@@ -237,91 +277,106 @@ const Client: React.FC = () => {
           </section>
         )}
 
-        {stepIndex === 3 && ( // Adjust stepIndex according to your needs
-          <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
-            <div>
-              <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 4 of 6</p>
-              <h2 className="text-4xl font-extrabold text-gray-800 mt-2">Set Your Project Budget</h2>
-              <p className="text-lg text-gray-700 mt-4 max-w-lg mx-auto">
-                Defining a budget helps streamline the hiring process and ensures you attract the right talent for your project.
-              </p>
-              <div className="flex flex-col md:flex-row items-start justify-center px-6 lg:px-36 mt-16 space-y-10 md:space-y-0 md:space-x-12">
-                {/* Left Section - Budget Input */}
-                <div className="w-[65%] px-8">
-                  <label htmlFor="budget" className="block text-xl text-gray-800 font-semibold mb-3">
-                    Project Budget (INR)
-                  </label>
-                  <input
-                    id="budget"
-                    type="number"
-                    value={budget}
-                    onChange={(e) => setBudget(Number(e.target.value))}
-                    placeholder="Enter your budget (e.g., 50000)"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400"
-                  />
+{stepIndex === 3 && ( // Adjust stepIndex according to your needs
+  <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
+    <div>
+      <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 4 of 6</p>
+      <h2 className="text-4xl font-extrabold text-gray-800 mt-2">Set Your Project Budget</h2>
+      <p className="text-lg text-gray-700 mt-4 max-w-lg mx-auto">
+        Defining a budget helps streamline the hiring process and ensures you attract the right talent for your project.
+      </p>
+      <div className="flex flex-col md:flex-row items-start justify-center px-6 lg:px-36 mt-16 space-y-10 md:space-y-0 md:space-x-12">
+        {/* Left Section - Budget Input */}
+        <div className="w-[65%] px-8">
+          <label htmlFor="minBudget" className="block text-xl text-gray-800 font-semibold mb-3">
+            Minimum Budget (INR)
+          </label>
+          <input
+  id="minBudget"
+  type="number"
+  value={budget.min}
+  onChange={(e) => setBudget(prev => ({ ...prev, min: e.target.value }))}
+  placeholder="Enter minimum budget (e.g., 50000)"
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400"
+/>
 
-                  {/* Example Budgets */}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+          <label htmlFor="maxBudget" className="block text-xl text-gray-800 font-semibold mb-3 mt-6">
+            Maximum Budget (INR)
+          </label>
+          <input
+  id="maxBudget"
+  type="number"
+  value={budget.max}
+  onChange={(e) => setBudget(prev => ({ ...prev, max: e.target.value }))}
+  placeholder="Enter maximum budget (e.g., 100000)"
+  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400"
+/>
 
-        {stepIndex === 4 && ( // Adjust stepIndex according to your needs
-          <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
-            <div>
-              <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 5 of 6</p>
-              <h2 className="text-4xl font-extrabold text-gray-800 mt-2">Add Project Description and Upload Files</h2>
-              <p className="text-lg text-gray-700 mt-4 max-w-lg mx-auto">
-                Provide a clear project description and upload any relevant documents to support your requirements.
-              </p>
-              <div className="flex flex-col md:flex-row items-start justify-center px-6 lg:px-36 mt-16 space-y-10 md:space-y-0 md:space-x-12">
-                {/* Left Section - Budget Input */}
-                <div className="w-[65%] px-8">
+          {/* Example Budgets */}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
 
-                  {/* Description Input */}
-                  <label htmlFor="description" className="block text-xl text-gray-800 font-semibold mb-3 mt-6">
-                    Project Description
-                  </label>
-                  <textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe your project in detail..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400 h-32"
-                  />
 
-                  {/* Drag and Drop Area */}
-                  <div
-                    {...getRootProps({ className: 'mt-6 border-dashed border-2 border-gray-300 rounded-lg p-6 cursor-pointer hover:bg-gray-50' })}
-                  >
-                    <input {...getInputProps()} />
-                    <p className="text-gray-600">Drag & drop your PDF or DOC files here (max: 50 MB)</p>
-                    <p className="text-gray-500">or click to select files</p>
+{stepIndex === 4 && (
+  <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
+    <div>
+      <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 5 of 6</p>
+      <h2 className="text-4xl font-extrabold text-gray-800 mt-2">Add Project Description and Upload Files</h2>
+      <p className="text-lg text-gray-700 mt-4 max-w-lg mx-auto">
+        Provide a clear project description and upload any relevant documents to support your requirements.
+      </p>
+      <div className="flex flex-col md:flex-row items-start justify-center px-6 lg:px-36 mt-16 space-y-10 md:space-y-0 md:space-x-12">
+        
+        {/* Left Section - Budget Input */}
+        <div className="w-[65%] px-8">
+
+          {/* Description Input */}
+          <label htmlFor="description" className="block text-xl text-gray-800 font-semibold mb-3 mt-6">
+            Project Description
+          </label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe your project in detail..."
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400 h-32"
+          />
+
+          {/* Drag and Drop Area */}
+          <div
+            {...getRootProps({ className: 'mt-6 border-dashed border-2 border-gray-300 rounded-lg p-6 cursor-pointer hover:bg-gray-50' })}
+          >
+            <input {...getInputProps()} />
+            <p className="text-gray-600">Drag & drop your PDF or DOC files here (max: 50 MB)</p>
+            <p className="text-gray-500">or click to select files</p>
+          </div>
+
+          {/* File Previews */}
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            {files.map((file, index) => (
+              <div key={index} className="relative">
+                {file.type.startsWith("image/") ? (
+                  <img src={filePreviews[index]} alt={file.name} className="w-full h-40 object-cover rounded" />
+                ) : file.type === "application/pdf" ? (
+                  <embed src={filePreviews[index]} type="application/pdf" className="w-full h-40 object-cover rounded" />
+                ) : (
+                  <div className="p-4 bg-gray-100 rounded text-sm text-gray-700">
+                    {file.name} ({Math.round(file.size / 1024)} KB)
                   </div>
-
-                  {/* File List with Delete Option */}
-                  <ul className="mt-4 list-disc pl-5 space-y-1 text-gray-600">
-                    {files.map((file, index) => (
-                      <li key={index} className="flex items-center justify-between">
-                        <span>{file.name}</span>
-                        <button
-                          onClick={() => handleDeleteFile(index)}
-                          className="ml-2 text-red-500 hover:text-red-700 transition-colors duration-200 text-sm font-semibold"
-                        >
-                          Remove
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                )}
+                <button onClick={() => handleDeleteFile(index)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1">✕</button>
               </div>
-            </div>
-          </section>
-        )}
-
-
-        {stepIndex === 5 && (
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+       {stepIndex === 5 && (
           <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
             <div className="max-w-4xl mx-auto">
               <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 6 of 6</p>
@@ -371,7 +426,7 @@ const Client: React.FC = () => {
                   <div className="flex flex-col items-start">
                     <h3 className="text-md font-semibold">Deadline</h3>
                     <p className="text-sm text-gray-600">
-                      {startDate ? `${startDate.toLocaleDateString()}` : "Deadline not set"}
+                      {deadline ? deadline.toLocaleDateString() : "Deadline not set"}
                     </p>
                   </div>
                   <FaEdit onClick={() => setStepIndex(2)} className="text-teal-600 cursor-pointer" />
@@ -382,7 +437,7 @@ const Client: React.FC = () => {
                   <div className="flex flex-col items-start">
                     <h3 className="text-md font-semibold">Budget</h3>
                     <p className="text-sm text-gray-600">
-                      {budget ? `${budget} (INR)` : "Budget not set"}
+                      {budget ? `${budget.max} - ${budget.min} (INR)` : "Budget not set"}
                     </p>
                   </div>
                   <FaEdit onClick={() => setStepIndex(3)} className="text-teal-600 cursor-pointer" />
@@ -408,13 +463,17 @@ const Client: React.FC = () => {
 
               {/* Post Button */}
               <div className="flex justify-end mt-6">
-                <button className="px-6 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300">
+                <button
+                  onClick={handleSubmit}
+                  className="px-6 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300"
+                  >
                   Post this job
                 </button>
               </div>
             </div>
           </section>
         )}
+
 
 
         <div className={`bg-gradient-to-r from-teal-50 to-purple-50 p-4 flex ${stepIndex === 0 ? "justify-end" : "justify-between"}  items-center`}>

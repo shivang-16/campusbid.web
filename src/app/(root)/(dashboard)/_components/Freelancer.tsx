@@ -38,9 +38,9 @@ const Freelancer: React.FC = () => {
     return (
         <div className="bg-gray-50 min-h-screen font-sans text-gray-700 relative">
             <Header />
-            <div className="pt-[72px]">
+            <div className="pt-[65px]">
 
-                <section className="text-center py-20 px-6 bg-gradient-to-l from-teal-100 to-purple-100 lg:px-36 flex flex-col md:flex-row md:justify-between md:items-center">
+                <section className="text-center py-20 px-6 bg-gradient-to-l from-teal-50 to-purple-50 lg:px-36 flex flex-col md:flex-row md:justify-between md:items-center">
                     <div>
                         <h1 className="text-4xl font-extrabold text-gray-800 leading-tight animate-fade-in">
                             The work you want, <span className="text-teal-600">The bids you need</span><span className="text-gray-800">.</span>
@@ -158,7 +158,6 @@ const Freelancer: React.FC = () => {
                 </div>
             </div>
 
-            <Footer />
         </div>
     );
 };

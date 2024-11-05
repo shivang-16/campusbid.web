@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import Header from "@/components/Header";
 import { TbFilterCheck } from "react-icons/tb";
+import { ProjectDataProps } from "@/helpers/types";
 
 const popularSkills: string[] = [
   "Public Relations", "Content Writing", "Writing", "People",
@@ -10,172 +11,12 @@ const popularSkills: string[] = [
   "Adobe Photoshop", "Video Editing", "JavaScript"
 ];
 
-// Sample project data
-const projects = [
-  {
-    title: "Marketing Strategy Project",
-    description: "Develop a comprehensive marketing strategy for a new product line.",
-    payment: 10000,
-    duration: "3 Months",
-    skills: ["Marketing", "Content Writing", "Public Relations"],
-    deadline: "2024-12-15",
-  },
-  {
-    title: "Website Redesign",
-    description: "Revamp the company's website to improve user experience and aesthetics.",
-    payment: 15000,
-    duration: "1 Month",
-    skills: ["UI/UX Design", "Adobe Photoshop", "JavaScript"],
-    deadline: "2024-11-30",
-  },
-  {
-    title: "Social Media Campaign",
-    description: "Manage and create content for our social media platforms.",
-    payment: 12000,
-    duration: "6 Months",
-    skills: ["Content Writing", "Copywriting", "Media Relations"],
-    deadline: "2024-12-20",
-  },
-  {
-    title: "Mobile App Development",
-    description: "Develop a mobile app for e-commerce with user-friendly design and secure payment integration.",
-    payment: 30000,
-    duration: "5 Months",
-    skills: ["JavaScript", "React Native", "Firebase"],
-    deadline: "2025-01-10",
-  },
-  {
-    title: "Content Creation for Blog",
-    description: "Write and publish weekly articles on technology trends and innovation.",
-    payment: 8000,
-    duration: "2 Months",
-    skills: ["Content Writing", "SEO", "Article Writing"],
-    deadline: "2024-12-01",
-  },
-  {
-    title: "Graphic Design for Social Media",
-    description: "Create engaging graphics for social media posts and advertisements.",
-    payment: 5000,
-    duration: "1 Month",
-    skills: ["Adobe Photoshop", "Illustrator", "Creativity"],
-    deadline: "2024-11-25",
-  },
-  {
-    title: "SEO Optimization Project",
-    description: "Improve the SEO of our website to increase visibility and ranking on search engines.",
-    payment: 7000,
-    duration: "2 Months",
-    skills: ["SEO", "Google Analytics", "Content Marketing"],
-    deadline: "2024-12-10",
-  },
-  {
-    title: "Customer Support Chatbot",
-    description: "Develop a chatbot for our website to handle customer inquiries efficiently.",
-    payment: 18000,
-    duration: "4 Months",
-    skills: ["Python", "Machine Learning", "Natural Language Processing"],
-    deadline: "2025-02-01",
-  },
-  {
-    title: "Product Photography",
-    description: "Capture high-quality images of products for the online store.",
-    payment: 10000,
-    duration: "1 Month",
-    skills: ["Photography", "Adobe Photoshop", "Lighting"],
-    deadline: "2024-11-15",
-  },
-  {
-    title: "Corporate Video Production",
-    description: "Produce a corporate video to showcase our company's achievements and vision.",
-    payment: 25000,
-    duration: "2 Months",
-    skills: ["Video Editing", "Script Writing", "Adobe Premiere Pro"],
-    deadline: "2024-12-05",
-  },
-  {
-    title: "Backend API Development",
-    description: "Create APIs to support a new feature in our web application.",
-    payment: 20000,
-    duration: "3 Months",
-    skills: ["Node.js", "Express", "MongoDB"],
-    deadline: "2025-01-20",
-  },
-  {
-    title: "Data Analysis for Marketing",
-    description: "Analyze customer data to identify trends and optimize marketing campaigns.",
-    payment: 15000,
-    duration: "3 Months",
-    skills: ["Data Analysis", "Excel", "SQL"],
-    deadline: "2024-12-30",
-  },
-  {
-    title: "Logo Design for Rebranding",
-    description: "Design a new logo for our company as part of a rebranding initiative.",
-    payment: 5000,
-    duration: "2 Weeks",
-    skills: ["Graphic Design", "Adobe Illustrator", "Creativity"],
-    deadline: "2024-11-18",
-  },
-  {
-    title: "Translation of Documents",
-    description: "Translate company documents from English to Spanish.",
-    payment: 6000,
-    duration: "1 Month",
-    skills: ["Translation", "Spanish", "English"],
-    deadline: "2024-12-01",
-  },
-  {
-    title: "E-Commerce Platform Testing",
-    description: "Test and document bugs in our newly developed e-commerce platform.",
-    payment: 9000,
-    duration: "1 Month",
-    skills: ["Software Testing", "Bug Reporting", "Attention to Detail"],
-    deadline: "2024-11-28",
-  },
-  {
-    title: "AI-Based Product Recommendation System",
-    description: "Develop a recommendation system for our online store using AI algorithms.",
-    payment: 28000,
-    duration: "4 Months",
-    skills: ["Machine Learning", "Python", "Data Science"],
-    deadline: "2025-01-25",
-  },
-  {
-    title: "Website Content Update",
-    description: "Update the content on our website to reflect recent company changes.",
-    payment: 4000,
-    duration: "2 Weeks",
-    skills: ["Content Writing", "SEO", "Editing"],
-    deadline: "2024-11-17",
-  },
-  {
-    title: "Corporate Branding Strategy",
-    description: "Develop a comprehensive branding strategy for our corporate identity.",
-    payment: 20000,
-    duration: "3 Months",
-    skills: ["Marketing Strategy", "Branding", "Market Research"],
-    deadline: "2024-12-29",
-  },
-  {
-    title: "CRM System Setup",
-    description: "Implement a CRM system for better customer relationship management.",
-    payment: 22000,
-    duration: "3 Months",
-    skills: ["CRM", "Salesforce", "Customer Support"],
-    deadline: "2025-01-15",
-  },
-  {
-    title: "App Store Optimization",
-    description: "Optimize our app listing on the app store to increase downloads.",
-    payment: 8000,
-    duration: "1 Month",
-    skills: ["App Store Optimization", "Marketing", "SEO"],
-    deadline: "2024-11-27",
-  },
-];
+interface AllProjectsPageProps {
+  projects: ProjectDataProps[];
+}
 
 
-const AllProjectsPage: React.FC = () => {
+const AllProjectsPage = ({projects}: AllProjectsPageProps) => {
   const [minPayment, setMinPayment] = useState(0);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [deadline, setDeadline] = useState("");
@@ -343,13 +184,13 @@ const AllProjectsPage: React.FC = () => {
                 {project.description}
               </p>
               <div className="flex justify-between items-center mb-4">
-                <span className="text-teal-600 font-bold">₹{project.payment} <span className="text-teal-600 font-medium">/ Project</span></span>
+                <span className="text-teal-600 font-bold">₹{project.budget.min} - ₹{project.budget.max} <span className="text-teal-600 font-medium">/ Project</span></span>
                 <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition duration-200">
                   Apply Now
                 </button>
               </div>
               <div className="flex flex-wrap gap-2 mb-2">
-                {project.skills.map((skill, i) => (
+                {project.skillsRequired.map((skill, i) => (
                   <span
                     key={i}
                     className="text-xs bg-teal-100 text-teal-700 px-3 py-1 rounded-full"
@@ -358,8 +199,10 @@ const AllProjectsPage: React.FC = () => {
                   </span>
                 ))}
               </div>
-              <p className="text-gray-500 text-sm">Deadline: {project.deadline}</p>
-            </div>
+              <p className="text-gray-500 text-sm">
+                  Deadline: {new Date(project.deadline).toLocaleDateString('en-GB')}
+              </p>             
+             </div>
           ))}
         </div>
       </main>

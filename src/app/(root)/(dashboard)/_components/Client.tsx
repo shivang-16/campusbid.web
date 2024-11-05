@@ -7,6 +7,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaEdit } from "react-icons/fa";
 import { createProject } from '@/actions/project_actions';
 import { uploadImageToS3 } from '@/actions/s3_actions';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const Client: React.FC = () => {
   const [stepIndex, setStepIndex] = useState(0);
@@ -18,6 +20,7 @@ const Client: React.FC = () => {
   const [filePreviews, setFilePreviews] = useState<string[]>([]); // Store preview URLs
   const [description, setDescription] = useState<string>('');
 
+  const router = useRouter()
 
   const checkEnableNext = () => {
     switch (stepIndex) {
@@ -111,7 +114,7 @@ const Client: React.FC = () => {
   
     // Create the project and get signed URLs for file uploads
     const response = await createProject(formattedData);
-    const { signedUrls } = response;
+    const { signedUrls, project } = response;
   
     // Map over files to upload each one to its corresponding signed URL
     const uploadFiles = files.map((file, index) => {
@@ -121,6 +124,19 @@ const Client: React.FC = () => {
   
     // Wait until all file uploads are complete
     await Promise.all(uploadFiles);
+
+    toast.success("Project created")
+
+
+    setTitle('')
+    setDescription('')
+    setBudget({ min: '', max: '' })
+    setFiles([])
+    setFilePreviews([])
+    setSelectedSkills([])
+    setStepIndex(0)
+
+    router.replace(`/client/project/${project._id}`)
   
     console.log("Response after file uploads:", response);
   };

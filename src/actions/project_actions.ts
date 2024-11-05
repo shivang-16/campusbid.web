@@ -31,3 +31,30 @@ export const createProject = async (data: any) => {
     }
   }
 };
+
+export const fetchProjectById = async (projectId: string) => {
+    const token = await getCookie("token");
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/project/get/${projectId}`,
+      {
+        headers: {
+            "Content-Type": "application/json",
+            Cookie: `token=${token}`,
+          },
+          credentials: "include",
+      }
+    );
+
+    const responseData = await response.json();
+
+    return responseData;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Error registering user: ${error.message}`);
+    } else {
+      throw new Error("An unknown error occurred while registering user!");
+    }
+  }
+};

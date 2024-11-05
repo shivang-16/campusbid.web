@@ -136,7 +136,7 @@ const Client: React.FC = () => {
     setSelectedSkills([])
     setStepIndex(0)
 
-    router.replace(`/client/project/${project._id}`)
+    router.replace(`/project/${project._id}`)
   
     console.log("Response after file uploads:", response);
   };

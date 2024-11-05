@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import Header from "@/components/Header";
 import { TbFilterCheck } from "react-icons/tb";
 import { ProjectDataProps } from "@/helpers/types";
+import Link from "next/link";
 
 const popularSkills: string[] = [
   "Public Relations", "Content Writing", "Writing", "People",
@@ -185,9 +186,11 @@ const AllProjectsPage = ({projects}: AllProjectsPageProps) => {
               </p>
               <div className="flex justify-between items-center mb-4">
                 <span className="text-teal-600 font-bold">₹{project.budget.min} - ₹{project.budget.max} <span className="text-teal-600 font-medium">/ Project</span></span>
+                <Link href = {`/project/${project._id}`} >
                 <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition duration-200">
-                  Apply Now
+                  Bid Now
                 </button>
+                </Link>
               </div>
               <div className="flex flex-wrap gap-2 mb-2">
                 {project.skillsRequired.map((skill, i) => (

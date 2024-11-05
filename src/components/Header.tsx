@@ -61,7 +61,7 @@ const Header: React.FC = () => {
           alt="CampusBid Logo"
           className="w-12 h-12 rounded-full transition-transform transform hover:scale-110 shadow-md"
         />
-        <div className="text-2xl font-bold text-teal-600 tracking-tight hover:text-teal-700 transition duration-300">
+        <div className="text-2xl font-sans font-extrabold text-teal-500 tracking-tight hover:text-teal-600 transition duration-300">
           CampusBid
         </div>
       </div>
@@ -92,10 +92,10 @@ const Header: React.FC = () => {
             </ul>
           )}
         </div>
-        <button className="p-2 rounded-full bg-gray-100 hover:bg-teal-100 transition duration-300 shadow-lg">
+        <button className="p-2 rounded-full bg-gray-100 hover:bg-teal-100 transition duration-300 shadow-md">
           <FaBell className="text-xl text-gray-500 hover:text-teal-700 transition duration-300" />
         </button>
-        <button className="p-2 rounded-full bg-gray-100 hover:bg-teal-100 transition duration-300 shadow-lg">
+        <button className="p-2 rounded-full bg-gray-100 hover:bg-teal-100 transition duration-300 shadow-md">
           <FaEnvelope className="text-xl text-gray-500 hover:text-teal-700 transition duration-300" />
         </button>
         {username && (

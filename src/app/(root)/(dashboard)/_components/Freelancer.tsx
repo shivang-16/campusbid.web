@@ -3,14 +3,35 @@ import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { useDropzone } from 'react-dropzone';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
+import { FaBriefcase, FaMapMarkerAlt } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
 
 const Freelancer: React.FC = () => {
+    const router = useRouter();
     const [projectType, setProjectType] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [files, setFiles] = useState<File[]>([]);
+
+    const popularSkills: string[] = [
+        'Public Relations', 'Content Writing', 'Writing', 'People',
+        'English', 'Article Writing',
+        'Media Relations', 'Copywriting', 'Adobe Photoshop',
+        'Video Editing', 'JavaScript'
+    ];
+
+    const projects = [
+        { id: 1, title: 'Logo Design for Startup', description: 'Create a unique and modern logo for a new tech startup.', price: '₹5,000 - ₹6,000' },
+        { id: 2, title: 'Content Writing for Blog', description: 'Write engaging and SEO-optimized articles for a lifestyle blog.', price: '₹3,000 - ₹4,500' },
+        { id: 3, title: 'Website Development', description: 'Develop a responsive e-commerce website with user-friendly features.', price: '₹20,000 - ₹25,000' }
+    ];
+
+    const nearbyProjects = [
+        { id: 1, title: 'Brochure Design for Local Business', description: 'Design a professional brochure to promote a local business.', price: '₹7,000 - ₹8,000' },
+        { id: 2, title: 'SEO for Nearby Restaurant', description: 'Optimize the restaurant’s online presence to increase local visibility.', price: '₹10,000 - ₹12,000' },
+        { id: 3, title: 'App Development', description: 'Create a customer-facing mobile app for a local service provider.', price: '₹50,000 - ₹60,000' }
+    ];
 
     const handleProjectSubmit = () => {
         if (!projectType || !projectDescription || files.length === 0) {
@@ -82,55 +103,54 @@ const Freelancer: React.FC = () => {
                 <div className="py-10">
                     {/* Categories Section */}
                     <section className="py-12 px-6 lg:px-36">
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center lg:text-left">
+                        <h3 className="text-2xl font-semibold text-gray-800 mb-8 text-center lg:text-left">
                             Explore Categories for You
                         </h3>
                         <div className="relative flex items-center justify-between">
                             <button
                                 onClick={() => scrollCategories(-1)}
-                                className="z-10 bg-gray-200 rounded-full p-3 hover:shadow-lg transition-transform transform hover:scale-105 shadow-md"
+                                className="absolute left-0 z-10 bg-white border border-gray-300 rounded-full p-3 shadow-md hover:shadow-lg transition-all transform hover:scale-105 focus:outline-none"
                                 aria-label="Scroll Left"
                             >
                                 <FaChevronLeft className="text-gray-600" />
                             </button>
-                            <div
-                                id="categories-container"
-                                className="flex space-x-4 overflow-x-auto no-scrollbar px-2 py-2 transition-transform duration-300"
-                            >
-                                {["Popular", "Logo Design", "Web Development", "Graphic Design", "Content Writing"].map((category, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center justify-center h-20 min-w-[250px] rounded-lg bg-gray-100 shadow-sm hover:shadow-md hover:from-teal-50 hover:to-purple-50 text-center"
-                                    >
-                                        <p className="text-gray-700 font-semibold text-lg">{category}</p>
+                            <div id="categories-container" className="flex space-x-9 overflow-x-auto no-scrollbar px-10 py-4 transition-transform duration-300">
+                                {popularSkills.map((category, index) => (
+                                    <div key={index} className="flex items-center justify-center h-24 min-w-[200px] px-4 py-3 rounded-3xl text-gray-700 font-medium text-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                                        <p className="text-lg">{category}</p>
                                     </div>
                                 ))}
                             </div>
                             <button
                                 onClick={() => scrollCategories(1)}
-                                className=" z-10 bg-gray-200 rounded-full p-3 hover:shadow-lg transition-transform transform hover:scale-105 shadow-md"
-                                aria-label="Scroll Right"
-                            >
+                                className="absolute right-0 z-10 bg-white border border-gray-300 rounded-full p-3 shadow-md hover:shadow-lg transition-all transform hover:scale-105 focus:outline-none"
+                                aria-label="Scroll Right">
                                 <FaChevronRight className="text-gray-600" />
                             </button>
                         </div>
                     </section>
 
-                    {/* Top Projects Section */}
                     <section className="py-12 px-6 lg:px-36">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-2xl font-semibold text-gray-800 pb-4">Top Projects for You</h3>
-                            <a href="#" className="text-teal-600 font-medium hover:underline">View more</a>
+                            <a onClick={()=>router.replace("/allprojects")} className="text-teal-600 font-medium hover:underline">View more</a>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            {[
-                                { id: 1, title: 'Logo Design for Startup', price: '₹5,000' },
-                                { id: 2, title: 'Content Writing for Blog', price: '₹3,000' },
-                                { id: 3, title: 'Website Development', price: '₹20,000' }
-                            ].map((project) => (
-                                <div key={project.id} className="h-36 bg-gray-100 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-200 p-4">
-                                    <p className="text-gray-700 font-medium">{project.title}</p>
-                                    <p className="text-teal-600 font-semibold">{project.price}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                            {projects.map((project) => (
+                                <div key={project.id} className="h-52 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between">
+                                    <div>
+                                        <div className="flex items-center mb-2">
+                                            <FaBriefcase className="text-teal-500 mr-2" size={20} />
+                                            <p className="text-lg font-semibold text-gray-800">{project.title}</p>
+                                        </div>
+                                        <p className="text-sm text-gray-600">{project.description}</p>
+                                    </div>
+                                    <div className="flex justify-between items-center mt-4">
+                                        <p className="text-teal-600 font-bold text-lg">{project.price}</p>
+                                        <button className="bg-teal-500 text-white px-4 py-2 rounded-full text-sm hover:bg-teal-600 transition-transform transform hover:scale-105 shadow-md">
+                                            Apply Now
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -140,17 +160,24 @@ const Freelancer: React.FC = () => {
                     <section className="py-12 px-6 lg:px-36">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-2xl font-semibold text-gray-800 pb-4">Projects Nearby You</h3>
-                            <a href="#" className="text-teal-600 font-medium hover:underline">View more</a>
+                            <a onClick={()=>router.replace("/allprojects")} className="text-teal-500 font-medium hover:underline">View more</a>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            {[
-                                { id: 1, title: 'Brochure Design for Local Business', price: '₹7,000' },
-                                { id: 2, title: 'SEO for Nearby Restaurant', price: '₹10,000' },
-                                { id: 3, title: 'App Development', price: '₹50,000' }
-                            ].map((project) => (
-                                <div key={project.id} className="h-36 bg-gray-100 rounded-lg shadow-sm hover:shadow-xl transition-shadow duration-200 p-4">
-                                    <p className="text-gray-700 font-medium">{project.title}</p>
-                                    <p className="text-teal-600 font-semibold">{project.price}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                            {nearbyProjects.map((project) => (
+                                <div key={project.id} className="h-52 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between">
+                                    <div>
+                                        <div className="flex items-center mb-2">
+                                            <FaMapMarkerAlt className="text-teal-500 mr-2" size={20} />
+                                            <p className="text-lg font-semibold text-gray-800">{project.title}</p>
+                                        </div>
+                                        <p className="text-sm text-gray-600">{project.description}</p>
+                                    </div>
+                                    <div className="flex justify-between items-center mt-4">
+                                        <p className="text-teal-600 font-bold text-lg">{project.price}</p>
+                                        <button className="bg-teal-500 text-white px-4 py-2 rounded-full text-sm hover:bg-teal-600 transition-transform transform hover:scale-105 shadow-md">
+                                            Apply Now
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>

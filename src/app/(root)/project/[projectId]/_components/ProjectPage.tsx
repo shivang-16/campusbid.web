@@ -4,6 +4,7 @@ import { ProjectDataProps } from "@/helpers/types";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import Header from "@/components/Header";
 
 const ProjectPage = () => {
   const [project, setProject] = useState<ProjectDataProps>();
@@ -20,54 +21,54 @@ const ProjectPage = () => {
     }
   }, [projectId]);
 
-  if (!project) return <div>Loading...</div>;
+  if (!project) return <div className="text-center py-10">Loading...</div>;
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="min-h-screen">
+      <Header />
+      <div className="max-w-4xl mx-auto pt-[75px] shadow-lg rounded-lg overflow-hidden">
         {/* Project Title and Status */}
-        <header className="bg-green-300 text-white py-4 px-6">
-          <h1 className="text-2xl font-bold">{project.title}</h1>
+        <header className="bg-teal-600 text-white py-6 px-8 flex justify-between items-center">
+          <h1 className="text-3xl font-semibold">{project.title}</h1>
           <span
-            className={`text-sm font-medium ${
-              project.status === "open" ? "text-green-700" : "text-red-400"
+            className={`text-sm font-medium px-3 py-1 rounded-full ${
+              project.status === "open"
+                ? "bg-teal-700 text-white"
+                : "bg-red-400 text-white"
             }`}
           >
-            Status: {project.status}
+            {project.status === "open" ? "Open" : "Closed"}
           </span>
         </header>
 
         {/* Project Details */}
-        <div className="p-6 space-y-4">
-          <p className="text-gray-700 text-lg">{project.description}</p>
+        <div className="p-8 space-y-6">
+          <p className="text-gray-800 text-lg leading-relaxed">{project.description}</p>
 
           {/* Budget */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 bg-teal-50 p-4 rounded-lg shadow-sm">
             <span className="text-gray-600 font-medium">Budget:</span>
-            <span className="text-blue-600 font-bold">
-              {project.budget.currency} {project.budget.min} -{" "}
-              {project.budget.max}
+            <span className="text-teal-800 font-bold">
+              {project.budget.currency} {project.budget.min} - {project.budget.max}
             </span>
           </div>
 
           {/* Deadline */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 bg-teal-50 p-4 rounded-lg shadow-sm">
             <span className="text-gray-600 font-medium">Deadline:</span>
-            <span className="text-gray-800">
+            <span className="text-teal-800 font-semibold">
               {new Date(project.deadline).toLocaleDateString()}
             </span>
           </div>
 
           {/* Skills Required */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">
-              Skills Required
-            </h3>
-            <ul className="flex space-x-2 mt-2">
+            <h3 className="text-lg font-semibold text-teal-700">Skills Required</h3>
+            <ul className="flex flex-wrap gap-2 mt-3">
               {project.skillsRequired.map((skill, index) => (
                 <li
                   key={index}
-                  className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm"
+                  className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm shadow-sm"
                 >
                   {skill}
                 </li>
@@ -77,10 +78,8 @@ const ProjectPage = () => {
 
           {/* Supporting Documents */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">
-              Supporting Documents
-            </h3>
-            <ul className="mt-2 space-y-2">
+            <h3 className="text-lg font-semibold text-teal-700">Supporting Documents</h3>
+            <ul className="mt-4 space-y-3">
               {project.supportingDocs.map((doc, index) => {
                 const isImage = doc.fileType.startsWith("image/");
                 const isPdf = doc.fileType === "application/pdf";
@@ -88,7 +87,7 @@ const ProjectPage = () => {
                 return (
                   <li
                     key={index}
-                    className="flex items-center space-x-3 text-blue-600"
+                    className="flex items-center space-x-3 text-teal-600 hover:text-teal-800"
                   >
                     {isImage && (
                       <a
@@ -101,20 +100,19 @@ const ProjectPage = () => {
                           alt={doc.fileName}
                           width={100}
                           height={100}
+                          className="rounded-lg shadow-md"
                         />
                       </a>
                     )}
                     {isPdf && (
-                      <div>
-                        <div className="pdf-preview">
-                          <embed src={doc.fileUrl} width="100" height="100" />
-                        </div>
+                      <div className="flex items-center space-x-2">
+                        <embed src={doc.fileUrl} width="100" height="100" />
                         <a
                           href={doc.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
+                          className="underline"
                         >
-                          {" "}
                           {doc.fileName}
                         </a>
                       </div>
@@ -127,7 +125,7 @@ const ProjectPage = () => {
 
           {/* College Details */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">College</h3>
+            <h3 className="text-lg font-semibold text-teal-700">College</h3>
             <p className="text-gray-700">
               {project.college.College_Name}, {project.college.State}
             </p>
@@ -136,7 +134,7 @@ const ProjectPage = () => {
 
           {/* Location Details */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">Location</h3>
+            <h3 className="text-lg font-semibold text-teal-700">Location</h3>
             <p className="text-gray-700">
               {project.location.city.name}, {project.location.state.name}
             </p>
@@ -146,11 +144,9 @@ const ProjectPage = () => {
           </div>
 
           {/* Timestamps */}
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 space-y-1">
             <p>Posted on: {new Date(project.createdAt).toLocaleDateString()}</p>
-            <p>
-              Last updated: {new Date(project.updatedAt).toLocaleDateString()}
-            </p>
+            <p>Last updated: {new Date(project.updatedAt).toLocaleDateString()}</p>
           </div>
         </div>
       </div>

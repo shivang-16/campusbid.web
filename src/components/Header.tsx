@@ -87,7 +87,7 @@ const Header: React.FC = () => {
                               ${role === name ? 'bg-teal-100 font-semibold text-teal-700' : 'text-gray-800 hover:bg-teal-100'}`}
                 >
                   {icon}
-                  <span className="ml-2 hidden md:inline">{name}</span>
+                  <span className="ml-2">{name}</span>
                 </li>
               ))}
             </ul>

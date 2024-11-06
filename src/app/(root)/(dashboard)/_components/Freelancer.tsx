@@ -89,7 +89,7 @@ const Freelancer: React.FC = () => {
                             ))}
                         </div>
                     </div>
-                    <div className="mt-8 md:mt-0 flex justify-center items-center hidden md:inline">
+                    <div className="mt-8 md:mt-0 justify-center items-center hidden md:inline">
                         <img
                             src="/assets/icons/search.jpg"
                             alt="Description of Image"

@@ -26,6 +26,7 @@ const AllProjectsPage = ({ projects }: AllProjectsPageProps) => {
   const [deadline, setDeadline] = useState("");
   const [showFilter, setShowFilter] = useState(false);
 
+
   const handleSkillToggle = (skill: string) => {
     setSelectedSkills((prevSkills) =>
       prevSkills.includes(skill)
@@ -82,11 +83,10 @@ const AllProjectsPage = ({ projects }: AllProjectsPageProps) => {
               <button
                 key={skill}
                 onClick={() => handleSkillToggle(skill)}
-                className={`px-3 py-1 rounded-full text-sm font-medium border ${
-                  selectedSkills.includes(skill)
+                className={`px-3 py-1 rounded-full text-sm font-medium border ${selectedSkills.includes(skill)
                     ? "bg-teal-500 text-white border-teal-500"
                     : "bg-white text-teal-500 border-teal-500 hover:bg-teal-100"
-                } transition duration-200`}
+                  } transition duration-200`}
               >
                 {skill}
               </button>
@@ -141,11 +141,11 @@ const AllProjectsPage = ({ projects }: AllProjectsPageProps) => {
               <div className="flex justify-between items-center mb-4">
 
                 <span className="text-teal-600 font-bold">₹{project.budget.min} - ₹{project.budget.max} <span className="text-teal-600 font-medium">/ Project</span></span>
-                <Link href = {`/project/${project._id}`} >
+                <Link href={`/project/${project._id}`} >
 
-                <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition duration-200">
-                  Bid Now
-                </button>
+                  <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition duration-200">
+                    Bid Now
+                  </button>
                 </Link>
               </div>
               <div className="flex flex-wrap gap-2 mb-2">

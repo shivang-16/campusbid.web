@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-
-import { getUser, verifyAuthToken } from "./actions/user_actions";
+import { getUser } from "./actions/user_actions";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-
   const token = getTokenFromStorage(request);
   const userData = await getUser();
 
@@ -14,9 +12,7 @@ export async function middleware(request: NextRequest) {
     path.startsWith("/verify") ||
     path.startsWith("/forgot-password") ||
     path.startsWith("/resetpassword");
-    
-    
-    // IMPORTANT
+
   if (token && isPublicPath) {
     return NextResponse.redirect(new URL("/", request.nextUrl));
   }
@@ -25,7 +21,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.nextUrl));
   }
 
-  // initial personal info middleware
   if (token && !isPublicPath) {
     const hasSubmittedInitialInfo = !!userData.user?.academic.schoolOrCollegeName;
 
@@ -38,35 +33,20 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Restrict clients from accessing /project/all
+  if (token && path === "/project/all") {
+    const isClient = userData.user?.role === "client";
 
-
-
-
-
-
-
-
-  // // free trial activation middleware
-  // if (token && !isPublicPath && path !== "/initial-info") {
-  //   const isSubscribed = !!userData.user?.freeTrial.active === true;
-
-  //   if (!isSubscribed && path !== "/trial-subscription") {
-  //     return NextResponse.redirect(
-  //       new URL("/trial-subscription", request.nextUrl)
-  //     );
-  //   }
-
-  //   if (isSubscribed && path === "/trial-subscription") {
-  //     return NextResponse.redirect(new URL("/", request.nextUrl));
-  //   }
-
+    if (isClient) {
+      return NextResponse.redirect(new URL("/", request.nextUrl));
+    }
+  }
 
   return NextResponse.next();
 }
 
 function getTokenFromStorage(request: NextRequest) {
   const cookies = request.cookies;
-  // console.log("====cookies are coming here =======>",cookies, "===========>")
   const token = cookies.get("token");
   return token;
 }
@@ -79,21 +59,8 @@ export const config = {
     "/resetpassword/:path*",
     "/forgot-password",
     "/",
-    "/chat",
-    "/error-book",
-    "/growth-meter",
-    "/liberty",
-    "/planner",
-    "/quizzes",
-    "/study-room",
-    "/tracker",
-    "/workshops",
-    "/manage-account",
-    "/subscription-plans",
-    "/paymentfailed",
-    "/paymentsuccess",
     "/initial-info",
-    "/trial-subscription",
-    "/initial-study-data",
+    "/project/all",
+    "/project/:path*"
   ],
 };

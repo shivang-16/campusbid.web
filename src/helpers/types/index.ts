@@ -111,6 +111,7 @@ export interface Bids {
 
 // Project Interface
 export interface ProjectDataProps {
+  _id: string;
   title: string;
   description: string;
   budget: {

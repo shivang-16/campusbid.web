@@ -7,6 +7,8 @@ import { ProjectDataProps } from "@/helpers/types";
 import { FaTimes } from "react-icons/fa";
 import { TbFilterFilled } from "react-icons/tb";
 import MinPaymentSlider from "@/components/ui/slider";
+import Link from "next/link";
+
 
 const popularSkills: string[] = [
   "Public Relations", "Content Writing", "Writing", "People",
@@ -137,12 +139,14 @@ const AllProjectsPage = ({ projects }: AllProjectsPageProps) => {
               <h3 className="text-xl font-semibold text-gray-800 mb-2">{project.title}</h3>
               <p className="text-gray-600 mb-4">{project.description}</p>
               <div className="flex justify-between items-center mb-4">
-                <span className="text-teal-600 font-bold">
-                  ₹{project.budget.min} - ₹{project.budget.max} <span className="text-teal-600 font-medium">/ Project</span>
-                </span>
+
+                <span className="text-teal-600 font-bold">₹{project.budget.min} - ₹{project.budget.max} <span className="text-teal-600 font-medium">/ Project</span></span>
+                <Link href = {`/project/${project._id}`} >
+
                 <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition duration-200">
-                  Apply Now
+                  Bid Now
                 </button>
+                </Link>
               </div>
               <div className="flex flex-wrap gap-2 mb-2">
                 {project.skillsRequired.map((skill, i) => (

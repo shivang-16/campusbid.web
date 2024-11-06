@@ -176,7 +176,7 @@ const ProjectPage = () => {
                       </p>
                       <p className="text-sm text-gray-600 flex items-center gap-2 mt-1">
                         <FaCalendarAlt className="text-teal-500" />
-                        Deliverd in: <span className="font-medium text-teal-700">{bid.deliveredIn.day} days</span>
+                        Deliverd in: <span className="font-medium text-teal-700">{bid.deliveredIn.days} days</span>
                       </p>
                     </div>
                   </li>

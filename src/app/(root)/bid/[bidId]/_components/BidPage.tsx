@@ -28,7 +28,8 @@ const BidPage = () => {
         <span className="font-semibold">Bid ID:</span> {bid._id}
       </div>
       <div className="mb-4">
-        <span className="font-semibold">Project ID:</span> {bid.projectId}
+        <span className="font-semibold">Project ID:</span> {typeof bid.projectId === 'object' && bid.projectId !== null ? bid.projectId.title : bid.projectId}
+
       </div>
       <div className="mb-4">
         <span className="font-semibold">User ID:</span> {typeof bid.user === 'string' ? 'Unknown User' : bid.user.name}
@@ -43,7 +44,7 @@ const BidPage = () => {
         <span className="font-semibold">Status:</span> {bid.status}
       </div>
       <div className="mb-4">
-        <span className="font-semibold">Delivery Time:</span> {bid.deliveredIn.day} days
+        <span className="font-semibold">Delivery Time:</span> {bid.deliveredIn.days} days
       </div>
       <div className="mb-4">
         <span className="font-semibold">Created At:</span> {new Date(bid.createdAt).toLocaleDateString()}

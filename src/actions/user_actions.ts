@@ -238,3 +238,60 @@ export const modeChanger = async (data: any) => {
     }
   }
 };
+
+export const fetchMyBids = async (status?: string) => {
+  const token = await getCookie("token");
+
+try {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/list/bids?status=${status}`,
+    {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token}`,
+        },
+        credentials: "include",
+    }
+  );
+
+  const responseData = await response.json();
+
+  return responseData;
+} catch (error) {
+  if (error instanceof Error) {
+    throw new Error(`Error fetching bids: ${error.message}`);
+  } else {
+    throw new Error("An unknown error occurred while fetching bids!");
+  }
+}
+};
+
+// this routes in for freelancer role
+export const fetchMyAssignedProjects = async (status?: string) => {
+  const token = await getCookie("token");
+
+try {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/freelancer/list/projects?status=${status}`,
+    {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token}`,
+        },
+        credentials: "include",
+    }
+  );
+
+  const responseData = await response.json();
+
+  return responseData;
+} catch (error) {
+  if (error instanceof Error) {
+    throw new Error(`Error fetching bids: ${error.message}`);
+  } else {
+    throw new Error("An unknown error occurred while fetching bids!");
+  }
+}
+};

@@ -9,6 +9,7 @@ export const fetchBidById = async (bidId: string) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bid/get/${bidId}`,
       {
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
             Cookie: `token=${token}`,

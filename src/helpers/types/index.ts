@@ -119,7 +119,7 @@ export interface ISupportingDoc {
 export interface Bids {
 
     _id: string; 
-    projectId: string; 
+    projectId: string | ProjectDataProps; 
     user: string | UserDataProps;  
     amount: number;                   
     currency: string;         
@@ -127,7 +127,7 @@ export interface Bids {
     status: 'pending' | 'accepted' | 'rejected' | 'closed'; 
     supportingDocs: ISupportingDoc[]
     deliveredIn: {
-        day: number,
+        days: number,
         date: Date
     }
     createdAt: Date;

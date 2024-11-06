@@ -41,7 +41,7 @@ const ProjectPage = () => {
       <div className="max-w-7xl mx-auto pt-24 pb-16 lg:pb-10 px-1 lg:px-4 xl:px-0 lg:flex gap-4">
         {/* Main Content */}
         <main className="w-full lg:w-3/4">
-          <div className="bg-white p-4 md:p-6 lg:p-8 rounded-xl shadow-md">
+          <div className="bg-white p-4 md:p-6 lg:p-8 rounded-xl shadow-md mb-5">
             <header className="border-b pb-4 mb-4">
               <h1 className="text-2xl md:text-[26px] font-bold text-gray-800">{project.title}</h1>
               <span
@@ -157,7 +157,7 @@ const ProjectPage = () => {
             </section>
 
             {/* Timestamps */}
-            <section className="space-y-1 text-gray-600 text-xs md:text-sm border-t pt-3 mt-4">
+            <section className="space-y-1 text-gray-600 text-xs md:text-sm border-t border-gray-100 pt-3 mt-4">
               <p className="text-gray-600 flex items-center">
                 <FaClock className="mr-2 text-teal-500" />
                 Posted on: {new Date(project.createdAt).toLocaleDateString()}
@@ -167,33 +167,35 @@ const ProjectPage = () => {
           </div>
 
           {/* Bids Section */}
-          <section className="space-y-4 pt-8 px-4">
+          <section className={`space-y-4 pt-8 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
             {project.bids.length === 0 ? (
-              <h2 className="text-xl md:text-xl font-semibold text-gray-700">No bidding has been done yet.</h2>
+              <h2 className="text-xl md:text-[23px] font-semibold text-gray-700">No bids have been placed yet.</h2>
             ) : (
-              <h2 className="text-xl md:text-xl font-semibold text-gray-700">A total of <span className="text-teal-600">{project.bids.length} biddings</span> have been done</h2>
+              <h2 className="text-xl md:text-[23px] pb-[3px] font-semibold text-gray-700 border-b-2 border-gray-200">A total of <span className="text-teal-600">{project.bids.length} bids</span> have been placed.</h2>
             )}
 
             <ul className="space-y-4">
               {project.bids.map((bid, index) => (
                 <Link href={`/bid/${bid._id}`} key={index}>
-                  <li className="flex items-center gap-4 py-4 md:py-6 md:px-2">
-                    <div className="w-10 h-10 flex items-center justify-center bg-teal-600 text-white text-lg font-bold rounded-full shadow-md">
+                  <li className="flex items-center gap-6 py-6 px-4 md:px-6 bg-white hover:shadow-sm transition-all duration-300 ease-in-out">
+                    <div className="w-12 h-12 flex items-center justify-center bg-teal-600 text-white text-xl font-bold rounded-full shadow-md">
                       {typeof bid.user === 'string' ? '?' : bid.user.name.charAt(0)}
                     </div>
-                    <div className="flex-1">
-                      <p className="text-lg font-semibold text-gray-800">  {typeof bid.user === 'string' ? 'Unknown User' : bid.user.name}</p>
-                      <p className="text-sm text-gray-600 flex items-center gap-2">
+                    <div className="flex-1 ml-4">
+                      <p className="text-lg font-semibold text-gray-900 truncate">{typeof bid.user === 'string' ? 'Unknown User' : bid.user.name}</p>
+                      <p className="text-sm text-gray-700 flex items-center gap-2 mt-2">
                         <FaUserCircle className="text-teal-500" />
-                        Bid Amount: <span className="font-medium text-teal-700">{bid.currency} {bid.amount}</span>
+                        Bid Amount:
+                        <span className="font-medium text-teal-700">{bid.currency} {bid.amount}</span>
                       </p>
-                      <p className="text-sm text-gray-600 flex items-center gap-2 mt-1">
+                      <p className="text-sm text-gray-700 flex items-center gap-2 mt-2">
                         <FaCalendarAlt className="text-teal-500" />
-                        Deliverd in: <span className="font-medium text-teal-700">{bid.deliveredIn.days} days</span>
+                        Delivered in:
+                        <span className="font-medium text-teal-700">{bid.deliveredIn.days} days</span>
                       </p>
                     </div>
                   </li>
-                  <hr className="border-gray-300" />
+                  <hr className="border-gray-300 my-4" />
                 </Link>
               ))}
             </ul>

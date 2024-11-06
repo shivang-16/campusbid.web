@@ -1,6 +1,7 @@
 export type UserDataProps = {
     name: string;
     email: string;
+    username:string;
     category: 'basic' | 'pro' | 'premium' | 'free';
     phone: {
       personal?: number | null;
@@ -11,10 +12,16 @@ export type UserDataProps = {
       addressLine?: string | null;
       pincode?: number | null;
     };
+    role: "freelancer" | "client";
+    mode: "anonymous" | "public"
     academic: {
       branch?: string | null;
       standard?: number | null;
-      schoolOrCollegeName?: string | null;
+      schoolOrCollegeName: {
+        College_Name: string;
+        State: string;
+        Stream: string;
+      };
       schoolOrCollegeAddress?: string | null;
     };
     about: {

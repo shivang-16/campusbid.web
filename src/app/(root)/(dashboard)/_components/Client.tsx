@@ -40,7 +40,7 @@ const Client: React.FC = () => {
         return false;
     }
   };
-  
+
 
   const handleDeleteFile = (index: number) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
@@ -87,6 +87,15 @@ const Client: React.FC = () => {
     });
   };
 
+  const recommendedFreelancers = [
+    { name: "John Doe", id: 1 },
+    { name: "Jane Smith", id: 2 },
+    { name: "Alice Brown", id: 3 },
+    { name: "Bob Johnson", id: 4 },
+    { name: "Charlie White", id: 5 },
+  ];
+
+
 
   const goToNextStep = () => {
     setStepIndex(stepIndex + 1);
@@ -96,7 +105,7 @@ const Client: React.FC = () => {
     if (stepIndex > 0) setStepIndex(stepIndex - 1);
   };
 
-  const formattedFiles = files?.map(( file ) => ({
+  const formattedFiles = files?.map((file) => ({
     name: file.name,
     fileSize: file.size,
     fileType: file.type
@@ -111,17 +120,17 @@ const Client: React.FC = () => {
       supportingDocs: formattedFiles,
     };
     console.log("Formatted Data:", formattedData);
-  
+
     // Create the project and get signed URLs for file uploads
     const response = await createProject(formattedData);
     const { signedUrls, project } = response;
-  
+
     // Map over files to upload each one to its corresponding signed URL
     const uploadFiles = files.map((file, index) => {
       const signedUrl = signedUrls[index];
       return uploadImageToS3(file, signedUrl);
     });
-  
+
     // Wait until all file uploads are complete
     await Promise.all(uploadFiles);
 
@@ -137,10 +146,10 @@ const Client: React.FC = () => {
     setStepIndex(0)
 
     router.replace(`/project/${project._id}`)
-  
+
     console.log("Response after file uploads:", response);
   };
-  
+
   return (
     <div className="bg-gray-50 min-h-screen font-sans text-gray-700 relative">
       <Header />
@@ -293,106 +302,106 @@ const Client: React.FC = () => {
           </section>
         )}
 
-{stepIndex === 3 && ( // Adjust stepIndex according to your needs
-  <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
-    <div>
-      <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 4 of 6</p>
-      <h2 className="text-4xl font-extrabold text-gray-800 mt-2">Set Your Project Budget</h2>
-      <p className="text-lg text-gray-700 mt-4 max-w-lg mx-auto">
-        Defining a budget helps streamline the hiring process and ensures you attract the right talent for your project.
-      </p>
-      <div className="flex flex-col md:flex-row items-start justify-center px-6 lg:px-36 mt-16 space-y-10 md:space-y-0 md:space-x-12">
-        {/* Left Section - Budget Input */}
-        <div className="w-[65%] px-8">
-          <label htmlFor="minBudget" className="block text-xl text-gray-800 font-semibold mb-3">
-            Minimum Budget (INR)
-          </label>
-          <input
-  id="minBudget"
-  type="number"
-  value={budget.min}
-  onChange={(e) => setBudget(prev => ({ ...prev, min: e.target.value }))}
-  placeholder="Enter minimum budget (e.g., 50000)"
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400"
-/>
+        {stepIndex === 3 && ( // Adjust stepIndex according to your needs
+          <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
+            <div>
+              <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 4 of 6</p>
+              <h2 className="text-4xl font-extrabold text-gray-800 mt-2">Set Your Project Budget</h2>
+              <p className="text-lg text-gray-700 mt-4 max-w-lg mx-auto">
+                Defining a budget helps streamline the hiring process and ensures you attract the right talent for your project.
+              </p>
+              <div className="flex flex-col md:flex-row items-start justify-center px-6 lg:px-36 mt-16 space-y-10 md:space-y-0 md:space-x-12">
+                {/* Left Section - Budget Input */}
+                <div className="w-[65%] px-8">
+                  <label htmlFor="minBudget" className="block text-xl text-gray-800 font-semibold mb-3">
+                    Minimum Budget (INR)
+                  </label>
+                  <input
+                    id="minBudget"
+                    type="number"
+                    value={budget.min}
+                    onChange={(e) => setBudget(prev => ({ ...prev, min: e.target.value }))}
+                    placeholder="Enter minimum budget (e.g., 50000)"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400"
+                  />
 
-          <label htmlFor="maxBudget" className="block text-xl text-gray-800 font-semibold mb-3 mt-6">
-            Maximum Budget (INR)
-          </label>
-          <input
-  id="maxBudget"
-  type="number"
-  value={budget.max}
-  onChange={(e) => setBudget(prev => ({ ...prev, max: e.target.value }))}
-  placeholder="Enter maximum budget (e.g., 100000)"
-  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400"
-/>
+                  <label htmlFor="maxBudget" className="block text-xl text-gray-800 font-semibold mb-3 mt-6">
+                    Maximum Budget (INR)
+                  </label>
+                  <input
+                    id="maxBudget"
+                    type="number"
+                    value={budget.max}
+                    onChange={(e) => setBudget(prev => ({ ...prev, max: e.target.value }))}
+                    placeholder="Enter maximum budget (e.g., 100000)"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400"
+                  />
 
-          {/* Example Budgets */}
-        </div>
-      </div>
-    </div>
-  </section>
-)}
-
-
-{stepIndex === 4 && (
-  <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
-    <div>
-      <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 5 of 6</p>
-      <h2 className="text-4xl font-extrabold text-gray-800 mt-2">Add Project Description and Upload Files</h2>
-      <p className="text-lg text-gray-700 mt-4 max-w-lg mx-auto">
-        Provide a clear project description and upload any relevant documents to support your requirements.
-      </p>
-      <div className="flex flex-col md:flex-row items-start justify-center px-6 lg:px-36 mt-16 space-y-10 md:space-y-0 md:space-x-12">
-        
-        {/* Left Section - Budget Input */}
-        <div className="w-[65%] px-8">
-
-          {/* Description Input */}
-          <label htmlFor="description" className="block text-xl text-gray-800 font-semibold mb-3 mt-6">
-            Project Description
-          </label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe your project in detail..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400 h-32"
-          />
-
-          {/* Drag and Drop Area */}
-          <div
-            {...getRootProps({ className: 'mt-6 border-dashed border-2 border-gray-300 rounded-lg p-6 cursor-pointer hover:bg-gray-50' })}
-          >
-            <input {...getInputProps()} />
-            <p className="text-gray-600">Drag & drop your PDF or DOC files here (max: 50 MB)</p>
-            <p className="text-gray-500">or click to select files</p>
-          </div>
-
-          {/* File Previews */}
-          <div className="mt-4 grid grid-cols-2 gap-4">
-            {files.map((file, index) => (
-              <div key={index} className="relative">
-                {file.type.startsWith("image/") ? (
-                  <img src={filePreviews[index]} alt={file.name} className="w-full h-40 object-cover rounded" />
-                ) : file.type === "application/pdf" ? (
-                  <embed src={filePreviews[index]} type="application/pdf" className="w-full h-40 object-cover rounded" />
-                ) : (
-                  <div className="p-4 bg-gray-100 rounded text-sm text-gray-700">
-                    {file.name} ({Math.round(file.size / 1024)} KB)
-                  </div>
-                )}
-                <button onClick={() => handleDeleteFile(index)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1">✕</button>
+                  {/* Example Budgets */}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-)}
-       {stepIndex === 5 && (
+            </div>
+          </section>
+        )}
+
+
+        {stepIndex === 4 && (
+          <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
+            <div>
+              <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 5 of 6</p>
+              <h2 className="text-4xl font-extrabold text-gray-800 mt-2">Add Project Description and Upload Files</h2>
+              <p className="text-lg text-gray-700 mt-4 max-w-lg mx-auto">
+                Provide a clear project description and upload any relevant documents to support your requirements.
+              </p>
+              <div className="flex flex-col md:flex-row items-start justify-center px-6 lg:px-36 mt-16 space-y-10 md:space-y-0 md:space-x-12">
+
+                {/* Left Section - Budget Input */}
+                <div className="w-[65%] px-8">
+
+                  {/* Description Input */}
+                  <label htmlFor="description" className="block text-xl text-gray-800 font-semibold mb-3 mt-6">
+                    Project Description
+                  </label>
+                  <textarea
+                    id="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Describe your project in detail..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 transition duration-300 shadow-sm placeholder-gray-400 h-32"
+                  />
+
+                  {/* Drag and Drop Area */}
+                  <div
+                    {...getRootProps({ className: 'mt-6 border-dashed border-2 border-gray-300 rounded-lg p-6 cursor-pointer hover:bg-gray-50' })}
+                  >
+                    <input {...getInputProps()} />
+                    <p className="text-gray-600">Drag & drop your PDF or DOC files here (max: 50 MB)</p>
+                    <p className="text-gray-500">or click to select files</p>
+                  </div>
+
+                  {/* File Previews */}
+                  <div className="mt-4 grid grid-cols-2 gap-4">
+                    {files.map((file, index) => (
+                      <div key={index} className="relative">
+                        {file.type.startsWith("image/") ? (
+                          <img src={filePreviews[index]} alt={file.name} className="w-full h-40 object-cover rounded" />
+                        ) : file.type === "application/pdf" ? (
+                          <embed src={filePreviews[index]} type="application/pdf" className="w-full h-40 object-cover rounded" />
+                        ) : (
+                          <div className="p-4 bg-gray-100 rounded text-sm text-gray-700">
+                            {file.name} ({Math.round(file.size / 1024)} KB)
+                          </div>
+                        )}
+                        <button onClick={() => handleDeleteFile(index)} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1">✕</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+        {stepIndex === 5 && (
           <section className="text-center pt-12 pb-3 px-6 bg-gradient-to-r from-teal-50 to-purple-50 lg:px-36">
             <div className="max-w-4xl mx-auto">
               <p className="text-sm font-semibold text-teal-600 tracking-wider uppercase">Step 6 of 6</p>
@@ -417,7 +426,7 @@ const Client: React.FC = () => {
                     {popularSkills.map((skill) => (
                       <button
                         key={skill}
-                        onClick={() => {handleSkillSelect(skill)}}
+                        onClick={() => { handleSkillSelect(skill) }}
                         className={`px-2 py-1 border rounded-lg ${selectedSkills.includes(skill)
                           ? "bg-teal-600 text-white"
                           : "bg-gray-200 text-gray-600"
@@ -482,7 +491,7 @@ const Client: React.FC = () => {
                 <button
                   onClick={handleSubmit}
                   className="px-6 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300"
-                  >
+                >
                   Post this job
                 </button>
               </div>
@@ -513,19 +522,28 @@ const Client: React.FC = () => {
         </div>
 
 
-        <div className="w-full p-8 rounded-lg ">
-          <p className="text-lg font-semibold text-gray-800 mb-6">Recommended Freelancers</p>
-          <div className="flex flex-wrap justify-center space-x-10">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="w-24 h-24 rounded-full bg-gray-200 mb-3"></div>
-                <div className="w-16 h-3 bg-gray-300 rounded mb-1"></div>
-                <div className="w-20 h-3 bg-gray-300 rounded"></div>
+        <div className="w-full p-8 bg-white shadow-lg rounded-lg">
+          <p className="text-2xl font-semibold text-gray-800 mb-8">Recommended Freelancers</p>
+          <div className="flex flex-wrap justify-center gap-8">
+            {recommendedFreelancers.map((freelancer) => (
+              <div
+                key={freelancer.id}
+                className="flex flex-col items-center p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 ease-in-out transform hover:scale-102"
+              >
+                <div className="w-24 h-24 rounded-full flex items-center justify-center bg-teal-500 text-white text-3xl font-bold mb-4">
+                  {freelancer.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="text-lg font-semibold text-gray-800 mb-2">{freelancer.name}</div>
+                <div className="w-20 h-1 bg-gray-300 rounded mb-3"></div>
+                <div className="text-sm text-gray-600">Freelancer Title</div>
               </div>
             ))}
           </div>
-          <button className="text-teal-600 font-medium text-sm mt-6 hover:underline">View More Freelancers</button>
+          <button className="mt-8 text-teal-600 font-medium text-sm px-6 py-2 rounded-full border-2 border-teal-600 hover:bg-teal-600 hover:text-white transition-all duration-300 ease-in-out">
+            View More Freelancers
+          </button>
         </div>
+
 
         {/* Fixed Step Indicator with Navigation Buttons */}
 

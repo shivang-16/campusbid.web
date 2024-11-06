@@ -289,9 +289,38 @@ try {
   return responseData;
 } catch (error) {
   if (error instanceof Error) {
-    throw new Error(`Error fetching bids: ${error.message}`);
+    throw new Error(`Error fetching projects: ${error.message}`);
   } else {
-    throw new Error("An unknown error occurred while fetching bids!");
+    throw new Error("An unknown error occurred while fetching projects!");
+  }
+}
+};
+
+//this route is client role
+export const fetchMyProjects = async (status?: string) => {
+  const token = await getCookie("token");
+
+try {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/user/client/list/projects?status=${status}`,
+    {
+      method: "GET",
+      headers: {
+          "Content-Type": "application/json",
+          Cookie: `token=${token}`,
+        },
+        credentials: "include",
+    }
+  );
+
+  const responseData = await response.json();
+
+  return responseData;
+} catch (error) {
+  if (error instanceof Error) {
+    throw new Error(`Error fetching projects: ${error.message}`);
+  } else {
+    throw new Error("An unknown error occurred while fetching projects!");
   }
 }
 };

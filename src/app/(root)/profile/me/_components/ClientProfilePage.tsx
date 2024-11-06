@@ -1,71 +1,35 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
-import { fetchMyAssignedProjects, fetchMyBids } from "@/actions/user_actions";
-import { Bids, ProjectDataProps } from "@/helpers/types";
+import { fetchMyProjects } from "@/actions/user_actions";
+import {  ProjectDataProps } from "@/helpers/types";
 import Link from "next/link";
 
-const MyProfilePage = () => {
-    const router = useRouter();
+const ClientProfilePage = () => {
     const userdetails = useSelector((state: RootState) => state.user.user);
-    const [activeTab, setActiveTab] = useState("bids");
-    const [bids, setBids] = useState<Bids[]>([]);
+    const [activeTab, setActiveTab] = useState("projects");
     const [projects, setProjects] = useState<ProjectDataProps[]>([]);
-    const [bidStatus, setBidStatus] = useState("Pending");
     const [projectStatus, setProjectStatus] = useState("open");
 
     useEffect(() => {
         (async () => {
-            const { bids } = await fetchMyBids(bidStatus.toLowerCase());
-            setBids(bids);
-        })();
-    }, [bidStatus]);
-
-    const handleFetchProjects = async () => {
-        try {
-            const { projects } = await fetchMyAssignedProjects(projectStatus.toLowerCase());
+            const { projects } = await fetchMyProjects(projectStatus.toLowerCase());
             setProjects(projects);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+            console.log(projects)
+        })();
+    }, [projectStatus]);
 
-    useEffect(() => {
-        if (activeTab === "projects") {
-            handleFetchProjects();
-        }
-    }, [projectStatus, activeTab]);
 
-    const renderBids = () => (
-        <div className="space-y-6">
-            {bids.length > 0 ? bids.map((bid, index) => (
-                <Link href={`/bid/${bid._id}`} key={index} className="bg-gray-50 p-5 rounded-lg flex justify-between items-center shadow-sm">
-                    <div>
-                        <h5 className="text-lg font-semibold text-gray-700">{bid.proposal}</h5>
-                        <p className="text-gray-500">
-                            {typeof bid.projectId === 'object' && bid.projectId !== null ? bid.projectId.title : bid.projectId}
-                        </p>
-                        <p className="text-teal-600 font-medium mt-2">{bid.amount}</p>
-                        <p className="text-gray-400 mt-1">Delivered in: {bid.deliveredIn.days} days</p>
-                    </div>
-                    <button className={`px-5 py-1 rounded-full text-white ${bid.status === "accepted" ? "bg-teal-500" : "bg-yellow-500"} shadow-md transition duration-150`}>
-                        {bid.status}
-                    </button>
-                </Link>
-            )) : ("No bids present")}
-        </div>
-    );
 
     const renderProjects = () => (
        
         <div className="space-y-6">
             {projects.length > 0 ? projects.map((project, index) => (
-                 <Link href={`/project/${project._id}`}>
-                <div key={index} className="bg-gray-50 p-5 rounded-lg shadow-sm">
+                 <Link href={`/project/${project._id}`} key={index}>
+                <div  className="bg-gray-50 p-5 rounded-lg shadow-sm">
                     <h5 className="text-lg font-semibold text-gray-700">{project.title}</h5>
                     <p className="text-gray-500 mt-2">{project.description}</p>
                     <p className="text-teal-600 font-medium mt-2">{project.budget.min} - {project.budget.max}</p>
@@ -125,12 +89,7 @@ const MyProfilePage = () => {
 
                 {/* Tabs Section */}
                 <div className="mt-10 flex gap-4 justify-center">
-                    <button
-                        className={`px-6 py-2 rounded-full font-semibold shadow-md transition duration-150 ${activeTab === "bids" ? "bg-teal-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
-                        onClick={() => setActiveTab("bids")}
-                    >
-                        My Bids
-                    </button>
+            
                     <button
                         className={`px-6 py-2 rounded-full font-semibold shadow-md transition duration-150 ${activeTab === "projects" ? "bg-teal-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
                         onClick={() => setActiveTab("projects")}
@@ -143,22 +102,15 @@ const MyProfilePage = () => {
                 <div className="space-y-10 mt-10">
                     <div className="bg-white rounded-lg shadow-md border border-gray-200">
                         {/* Status Filters */}
-                        {activeTab === "bids" ? (
-                            <div className="flex justify-around mt-6 pb-4 text-gray-600 font-medium text-sm">
-                                <span className={`cursor-pointer hover:text-teal-600 ${bidStatus === "Pending" ? "border-b-2 border-teal-500" : ""}`} onClick={() => setBidStatus("Pending")}>Pending</span>
-                                <span className={`cursor-pointer hover:text-teal-600 ${bidStatus === "Accepted" ? "border-b-2 border-teal-500" : ""}`} onClick={() => setBidStatus("Accepted")}>Accepted</span>
-                                <span className={`cursor-pointer hover:text-teal-600 ${bidStatus === "Rejected" ? "border-b-2 border-teal-500" : ""}`} onClick={() => setBidStatus("Rejected")}>Rejected</span>
-                                <span className={`cursor-pointer hover:text-teal-600 ${bidStatus === "Closed" ? "border-b-2 border-teal-500" : ""}`} onClick={() => setBidStatus("Closed")}>Closed</span>
-                            </div>
-                        ) : (
+                
                             <div className="flex justify-around mt-6 pb-4 text-gray-600 font-medium text-sm">
                                 <span className={`cursor-pointer hover:text-teal-600 ${projectStatus === "open" ? "border-b-2 border-teal-500" : ""}`} onClick={() => setProjectStatus("open")}>Open</span>
                                 <span className={`cursor-pointer hover:text-teal-600 ${projectStatus === "in_progress" ? "border-b-2 border-teal-500" : ""}`} onClick={() => setProjectStatus("in_progress")}>In Progress</span>
                                 <span className={`cursor-pointer hover:text-teal-600 ${projectStatus === "completed" ? "border-b-2 border-teal-500" : ""}`} onClick={() => setProjectStatus("completed")}>Completed</span>
                                 <span className={`cursor-pointer hover:text-teal-600 ${projectStatus === "closed" ? "border-b-2 border-teal-500" : ""}`} onClick={() => setProjectStatus("closed")}>Closed</span>
                             </div>
-                        )}
-                        {activeTab === "bids" ? renderBids() : renderProjects()}
+                        
+                        {activeTab === "projects" ? renderProjects() : ""}
                     </div>
                 </div>
             </div>
@@ -166,4 +118,4 @@ const MyProfilePage = () => {
     );
 };
 
-export default MyProfilePage;
+export default ClientProfilePage;

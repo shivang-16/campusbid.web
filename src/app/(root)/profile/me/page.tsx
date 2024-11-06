@@ -1,8 +1,20 @@
 import React from "react";
-import MyProfilePage from "./_components/MyProfilePage";
+import FreelancerProfilePage from "./_components/FreelancerProfilePage";
+import { getUser } from "@/actions/user_actions";
+import ClientProfilePage from "./_components/ClientProfilePage";
 
-const Profile = () => {
-  return <MyProfilePage/>;
+const Profile = async () => {
+  const { user } = await getUser();
+
+  return (
+    <>
+      {user.role === "freelancer" ? (
+        <FreelancerProfilePage />
+      ) : (
+        <ClientProfilePage />
+      )}
+    </>
+  );
 };
 
 export default Profile;

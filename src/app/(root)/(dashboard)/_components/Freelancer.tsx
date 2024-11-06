@@ -1,18 +1,20 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { useDropzone } from 'react-dropzone';
 import Header from '@/components/Header';
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { FaBriefcase, FaMapMarkerAlt } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
+import { ProjectDataProps } from '@/helpers/types';
+import Link from 'next/link';
 
-const Freelancer: React.FC = () => {
-    const router = useRouter();
-    const [projectType, setProjectType] = useState("");
-    const [projectDescription, setProjectDescription] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [files, setFiles] = useState<File[]>([]);
+interface AllProjectsPageProps {
+    projects: {
+        nearbyProjects: ProjectDataProps[]
+        collegeProjects: ProjectDataProps[]
+    };
+  }
+
+const Freelancer = ({projects}: AllProjectsPageProps ) => {
 
     const popularSkills: string[] = [
         'Public Relations', 'Content Writing', 'Writing', 'People',
@@ -21,30 +23,7 @@ const Freelancer: React.FC = () => {
         'Video Editing', 'JavaScript'
     ];
 
-    const projects = [
-        { id: 1, title: 'Logo Design for Startup', description: 'Create a unique and modern logo for a new tech startup.', price: '₹5,000 - ₹6,000' },
-        { id: 2, title: 'Content Writing for Blog', description: 'Write engaging and SEO-optimized articles for a lifestyle blog.', price: '₹3,000 - ₹4,500' },
-        { id: 3, title: 'Website Development', description: 'Develop a responsive e-commerce website with user-friendly features.', price: '₹20,000 - ₹25,000' }
-    ];
-
-    const nearbyProjects = [
-        { id: 1, title: 'Brochure Design for Local Business', description: 'Design a professional brochure to promote a local business.', price: '₹7,000 - ₹8,000' },
-        { id: 2, title: 'SEO for Nearby Restaurant', description: 'Optimize the restaurant’s online presence to increase local visibility.', price: '₹10,000 - ₹12,000' },
-        { id: 3, title: 'App Development', description: 'Create a customer-facing mobile app for a local service provider.', price: '₹50,000 - ₹60,000' }
-    ];
-
-    const handleProjectSubmit = () => {
-        if (!projectType || !projectDescription || files.length === 0) {
-            setErrorMessage("Please fill in all fields and upload files.");
-            return;
-        }
-        setErrorMessage("");
-        alert(`Project Type: ${projectType}\nDescription: ${projectDescription}\nFiles: ${files.map(file => file.name).join(', ')}`);
-    };
-
-    const onDrop = (acceptedFiles: File[]) => {
-        setFiles(acceptedFiles);
-    };
+    const { nearbyProjects, collegeProjects } = projects
 
     const scrollCategories = (direction: any) => {
         const container = document.getElementById("categories-container");
@@ -53,8 +32,6 @@ const Freelancer: React.FC = () => {
             behavior: "smooth",
         });
     };
-
-    const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
     return (
         <div className="bg-gray-50 min-h-screen font-sans text-gray-700 relative">
@@ -133,26 +110,30 @@ const Freelancer: React.FC = () => {
                     <section className="py-12 px-6 lg:px-36">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-2xl font-semibold text-gray-800 pb-4">Top Projects for You</h3>
-                            <a onClick={()=>router.replace("/project/all")} className="text-teal-600 font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</a>
+                            <Link href={'/project/all'} className="text-teal-600 font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</Link>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                            {projects.map((project) => (
-                                <div key={project.id} className="h-52 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between">
+                        {collegeProjects.length > 0 ? collegeProjects
+                                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // Sort by createdAt in descending order
+                                .slice(0, 3).map((project) => (
+                                <div key={project._id} className="h-52 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between">
                                     <div>
                                         <div className="flex items-center mb-2">
                                             <FaBriefcase className="text-teal-500 mr-2" size={20} />
-                                            <p className="text-lg font-semibold text-gray-800">{project.title}</p>
+                                            <p className="text-lg font-semibold text-gray-800">{project.title.slice(0, 50)}</p>
                                         </div>
-                                        <p className="text-sm text-gray-600">{project.description}</p>
+                                        <p className="text-sm text-gray-600">{project.description.slice(0, 200)}</p>
                                     </div>
                                     <div className="flex justify-between items-center mt-4">
-                                        <p className="text-teal-600 font-bold text-lg">{project.price}</p>
+                                        <p className="text-teal-600 font-bold text-lg">₹{project.budget.min} - ₹{project.budget.max}</p>
+                                        <Link href={`/project/${project._id}`}>
                                         <button className="bg-teal-500 text-white px-4 py-2 rounded-full text-sm hover:bg-teal-600 transition-transform transform hover:scale-105 shadow-md">
-                                            Apply Now
+                                            Bid Now
                                         </button>
+                                        </Link>
                                     </div>
                                 </div>
-                            ))}
+                            )): ('No College Projects for now')}
                         </div>
                     </section>
 
@@ -160,26 +141,28 @@ const Freelancer: React.FC = () => {
                     <section className="py-12 px-6 lg:px-36">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-2xl font-semibold text-gray-800 pb-4">Projects Nearby You</h3>
-                            <a onClick={()=>router.replace("/project/all")} className="text-teal-600 font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</a>
+                            <Link href={'/project/all'} className="text-teal-600 font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</Link>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                            {nearbyProjects.map((project) => (
-                                <div key={project.id} className="h-52 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between">
+                            {nearbyProjects.length > 0 ? nearbyProjects.map((project) => (
+                                <div key={project._id} className="h-52 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between">
                                     <div>
                                         <div className="flex items-center mb-2">
                                             <FaMapMarkerAlt className="text-teal-500 mr-2" size={20} />
-                                            <p className="text-lg font-semibold text-gray-800">{project.title}</p>
+                                            <p className="text-lg font-semibold text-gray-800">{project.title.slice(0, 50)}</p>
                                         </div>
-                                        <p className="text-sm text-gray-600">{project.description}</p>
+                                        <p className="text-sm text-gray-600">{project.description.slice(0, 200)}</p>
                                     </div>
                                     <div className="flex justify-between items-center mt-4">
-                                        <p className="text-teal-600 font-bold text-lg">{project.price}</p>
+                                        <p className="text-teal-600 font-bold text-lg">₹{project.budget.min} - ₹{project.budget.max}</p>
+                                        <Link href={`/project/${project._id}`}>
                                         <button className="bg-teal-500 text-white px-4 py-2 rounded-full text-sm hover:bg-teal-600 transition-transform transform hover:scale-105 shadow-md">
-                                            Apply Now
+                                            Bid Now
                                         </button>
+                                        </Link>
                                     </div>
                                 </div>
-                            ))}
+                            )): ("No nearby projects")}
                         </div>
                     </section>
                 </div>

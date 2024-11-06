@@ -1,66 +1,80 @@
 export type UserDataProps = {
-    name: string;
-    email: string;
-    username:string;
-    category: 'basic' | 'pro' | 'premium' | 'free';
-    phone: {
-      personal?: number | null;
-      other?: number | null;
+  name: string;
+  email: string;
+  username: string;
+  category: 'basic' | 'pro' | 'premium' | 'free';
+  phone: {
+    personal?: number | null;
+    other?: number | null;
+  };
+  address: {
+    country?: string | null;
+    addressLine?: string | null;
+    pincode?: number | null;
+    city?: {
+      name: string;
+      countryCode: string;
+      stateCode: string;
+      latitude: string;
+      longitude: string;
     };
-    address: {
-      country?: string | null;
-      addressLine?: string | null;
-      pincode?: number | null;
+    state?: {
+      name: string;
+      countryCode: string;
+      stateCode: string;
+      latitude: string;
+      longitude: string;
+    }
+  };
+  role: "freelancer" | "client";
+  mode: "anonymous" | "public"
+  academic: {
+    branch?: string | null;
+    standard?: number | null;
+    schoolOrCollegeName: {
+      College_Name: string;
+      State: string;
+      Stream: string;
     };
-    role: "freelancer" | "client";
-    mode: "anonymous" | "public"
-    academic: {
-      branch?: string | null;
-      standard?: number | null;
-      schoolOrCollegeName: {
-        College_Name: string;
-        State: string;
-        Stream: string;
-      };
-      schoolOrCollegeAddress?: string | null;
+    schoolOrCollegeAddress?: string | null;
+  };
+  about: {
+    dateOfBirth?: string | null;
+    gender?: string | null;
+  };
+  password?: string | null;
+  salt?: string | null;
+  avatar: {
+    url: string;
+    key: string;
+  };
+  details: {
+    level: {
+      number: number;
     };
-    about: {
-      dateOfBirth?: string | null;
-      gender?: string | null;
+    points: {
+      number: number;
     };
-    password?: string | null;
-    salt?: string | null;
-    avatar: {
-      url: string;
-      key: string;
+    rating: {
+      number: number;
+      updatedAt?: Date;
     };
-    details: {
-      level: {
-        number: number;
-      };
-      points: {
-        number: number;
-      };
-      rating: {
-        number: number;
-        updatedAt?: Date;
-      };
-    };
-    badges: {
-      name?: string;
-      url?: string;
-    }[];
-    documents: {
-      name: string,
-      url: string,
-      key: string,
-    }[],
-    resetPasswordToken?: string | null;
-    resetTokenExpiry?: Date | null;
-    createdAt?: Date;
-    updatedAt?: Date;
-    comparePassword(candidatePassword: string): Promise<boolean>;
-    getToken(): Promise<string>;
+  };
+  badges: {
+    name?: string;
+    url?: string;
+  }[];
+  documents: {
+    name: string,
+    url: string,
+    key: string,
+  }[],
+  resetPasswordToken?: string | null;
+  resetTokenExpiry?: Date | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+  getToken(): Promise<string>;
 }
 
 
@@ -103,6 +117,7 @@ export interface ISupportingDoc {
 
 // Bid Interface
 export interface Bids {
+
     _id: string; 
     projectId: string; 
     user: string | UserDataProps;  
@@ -117,6 +132,7 @@ export interface Bids {
     }
     createdAt: Date;
     updatedAt: Date;
+
 }
 
 // Project Interface

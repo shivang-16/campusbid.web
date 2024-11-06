@@ -1,41 +1,24 @@
 export type UserDataProps = {
   name: string;
-  email: string;
   username: string;
-  category: 'basic' | 'pro' | 'premium' | 'free';
+  email: string;
+  role: 'client' | 'freelancer';
+  mode: 'public' | 'anonymous'
   phone: {
     personal?: number | null;
     other?: number | null;
   };
   address: {
     country?: string | null;
+    city: ICity,
+    state: IState,
     addressLine?: string | null;
     pincode?: number | null;
-    city?: {
-      name: string;
-      countryCode: string;
-      stateCode: string;
-      latitude: string;
-      longitude: string;
-    };
-    state?: {
-      name: string;
-      countryCode: string;
-      stateCode: string;
-      latitude: string;
-      longitude: string;
-    }
   };
-  role: "freelancer" | "client";
-  mode: "anonymous" | "public"
   academic: {
     branch?: string | null;
     standard?: number | null;
-    schoolOrCollegeName: {
-      College_Name: string;
-      State: string;
-      Stream: string;
-    };
+    schoolOrCollegeName: ICollege;
     schoolOrCollegeAddress?: string | null;
   };
   about: {
@@ -64,15 +47,12 @@ export type UserDataProps = {
     name?: string;
     url?: string;
   }[];
-  documents: {
-    name: string,
-    url: string,
-    key: string,
-  }[],
+  documents: ISupportingDoc[]
   resetPasswordToken?: string | null;
   resetTokenExpiry?: Date | null;
   createdAt?: Date;
   updatedAt?: Date;
+  access_list?: [] 
   comparePassword(candidatePassword: string): Promise<boolean>;
   getToken(): Promise<string>;
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";

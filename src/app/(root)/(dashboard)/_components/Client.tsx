@@ -106,7 +106,7 @@ const Client: React.FC = () => {
   };
 
   const formattedFiles = files?.map((file) => ({
-    name: file.name,
+    fileName: file.name,
     fileSize: file.size,
     fileType: file.type
   }))

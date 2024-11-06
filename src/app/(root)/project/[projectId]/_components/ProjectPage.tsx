@@ -6,23 +6,18 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { FaMapMarkerAlt, FaCalendarAlt, FaUserCircle, FaClock } from "react-icons/fa";
+import Link from "next/link";
 
 const ProjectPage = () => {
   const [project, setProject] = useState<ProjectDataProps>();
   const { projectId } = useParams();
-
-  // Sample bids data
-  const sampleBids = [
-    { name: "Alice", amount: "500", currency: "INR", deadline: "2024-12-01" },
-    { name: "Bob", amount: "750", currency: "INR", deadline: "2024-12-05" },
-    { name: "Charlie", amount: "600", currency: "INR", deadline: "2024-12-03" },
-  ];
 
   useEffect(() => {
     if (typeof projectId === "string") {
       (async () => {
         const { project } = await fetchProjectById(projectId);
         setProject(project);
+        console.log(project, "here is project")
       })();
     } else {
       console.error("Invalid projectId:", projectId);
@@ -156,28 +151,28 @@ const ProjectPage = () => {
 
           {/* Bids Section */}
           <section className="space-y-4 pt-8">
-            <h2 className="text-xl md:text-2xl font-semibold text-gray-800">{sampleBids.length} freelancers are bidding:</h2>
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Total Bids: {project.bids.length}</h2>
             <ul className="space-y-4">
-              {sampleBids.map((bid, index) => (
-                <React.Fragment key={index}>
+              {project.bids.map((bid, index) => (
+                <Link href={`/bid/${bid._id}`} key={index}>
                   <li className="flex items-center gap-4 p-4 md:p-6">
                     <div className="w-10 h-10 flex items-center justify-center bg-teal-600 text-white text-lg font-bold rounded-full shadow-md">
-                      {bid.name.charAt(0)}
+                    {typeof bid.user === 'string' ? '?' : bid.user.name.charAt(0)}
                     </div>
                     <div className="flex-1">
-                      <p className="text-lg font-semibold text-gray-800">{bid.name}</p>
+                      <p className="text-lg font-semibold text-gray-800">  {typeof bid.user === 'string' ? 'Unknown User' : bid.user.name}</p>
                       <p className="text-sm text-gray-600 flex items-center gap-2">
                         <FaUserCircle className="text-teal-500" />
                         Bid Amount: <span className="font-medium text-teal-700">{bid.currency} {bid.amount}</span>
                       </p>
                       <p className="text-sm text-gray-600 flex items-center gap-2 mt-1">
                         <FaCalendarAlt className="text-teal-500" />
-                        Deadline: <span className="font-medium text-teal-700">{new Date(bid.deadline).toLocaleDateString()}</span>
+                        Deliverd in: <span className="font-medium text-teal-700">{bid.deliveredIn.day} days</span>
                       </p>
                     </div>
                   </li>
                   <hr className="border-gray-300" />
-                </React.Fragment>
+                </Link>
               ))}
             </ul>
           </section>

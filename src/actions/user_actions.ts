@@ -232,9 +232,9 @@ export const modeChanger = async (data: any) => {
     return responseData;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      throw new Error(`Error in saving student info: ${error.message}`);
+      throw new Error(`Error in changing mode: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while saving student info");
+      throw new Error("An unknown error occurred while changing mode");
     }
   }
 };

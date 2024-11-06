@@ -103,10 +103,20 @@ export interface ISupportingDoc {
 
 // Bid Interface
 export interface Bids {
-  user: string; 
-  amount: number;
-  message?: string;
-  bidDate?: Date;
+    _id: string; 
+    projectId: string; 
+    user: string | UserDataProps;  
+    amount: number;                   
+    currency: string;         
+    proposal: string;                        
+    status: 'pending' | 'accepted' | 'rejected' | 'closed'; 
+    supportingDocs: ISupportingDoc[]
+    deliveredIn: {
+        day: number,
+        date: Date
+    }
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 // Project Interface

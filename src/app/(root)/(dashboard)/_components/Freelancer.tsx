@@ -61,12 +61,12 @@ const Freelancer: React.FC = () => {
             <Header />
             <div className="pt-[65px]">
 
-                <section className="text-center py-20 px-6 bg-gradient-to-l from-teal-50 to-purple-50 lg:px-36 flex flex-col md:flex-row md:justify-between md:items-center">
+                <section className="text-center h-screen lg:h-auto py-20 px-6 bg-gradient-to-l lg:gap-2 from-teal-50 to-purple-50 lg:px-36 flex flex-col md:flex-row justify-center lg:justify-between md:items-center">
                     <div>
-                        <h1 className="text-4xl font-extrabold text-gray-800 leading-tight animate-fade-in">
+                        <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-800 leading-tight animate-fade-in">
                             The work you want, <span className="text-teal-600">The bids you need</span><span className="text-gray-800">.</span>
                         </h1>
-                        <p className="mt-5 text-gray-600 max-w-3xl mx-auto text-xl animate-fade-in">
+                        <p className="mt-5 text-gray-600 max-w-3xl mx-auto text-lg lg:text-xl animate-fade-in">
                             Discover top-tier projects at competitive prices.
                         </p>
                         {/* <div className="mt-10 flex justify-center items-center flex-col md:flex-row space-y-3 md:space-y-0 ">
@@ -81,15 +81,15 @@ const Freelancer: React.FC = () => {
                                 </button>
                             </div>
                         </div> */}
-                        <div className="mt-6 space-x-2 text-teal-600 flex justify-center flex-wrap gap-2">
+                        <div className="mt-6 space-x-2 text-teal-700 flex justify-center flex-wrap gap-2">
                             {['Popular', 'Logo Design', 'Articles & Blog Posts'].map((tag) => (
-                                <span key={tag} className="px-4 py-2 bg-gray-200 text-sm rounded-full cursor-pointer hover:bg-teal-300 transition duration-200 shadow-md">
+                                <span key={tag} className="px-4 py-2 bg-gray-100 text-sm rounded-full cursor-pointer hover:bg-teal-100 transition duration-300 shadow-md">
                                     {tag}
                                 </span>
                             ))}
                         </div>
                     </div>
-                    <div className="mt-8 md:mt-0 justify-center items-center hidden md:inline">
+                    <div className="mt-8 md:mt-0 justify-center items-center hidden lg:inline">
                         <img
                             src="/assets/icons/search.jpg"
                             alt="Description of Image"
@@ -101,7 +101,7 @@ const Freelancer: React.FC = () => {
                     {/* Categories Section */}
                     <section className="py-12 px-6 lg:px-32">
                         <h3 className="text-2xl font-semibold text-gray-800 mb-8 text-center lg:text-left">
-                            Explore Categories for You
+                            Explore Categories for <span className="text-teal-600">You</span><span className="text-gray-800">.</span>
                         </h3>
                         <div className="relative flex items-center justify-between">
                             <button
@@ -130,7 +130,7 @@ const Freelancer: React.FC = () => {
                     <section className="py-12 px-6 lg:px-32">
                         {/* Top Projects Section */}
                         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-                            <h3 className="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">Top Projects for You</h3>
+                            <h3 className="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">Top Projects for <span className="text-teal-600">You</span><span className="text-gray-800">.</span></h3>
                             <a
                                 onClick={() => router.replace("/project/all")}
                                 className="text-teal-600 font-medium hover:underline hover:text-teal-700 transition-colors duration-200 cursor-pointer"
@@ -165,7 +165,7 @@ const Freelancer: React.FC = () => {
                     {/* Projects Nearby Section */}
                     <section className="py-12 px-6 lg:px-32">
                         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-                            <h3 className="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">Projects Nearby You</h3>
+                            <h3 className="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">Projects Nearby <span className="text-teal-600">You</span><span className="text-gray-800">.</span></h3>
                             <a
                                 onClick={() => router.replace("/project/all")}
                                 className="text-teal-600 font-medium hover:underline hover:text-teal-700 transition-colors duration-200 cursor-pointer"

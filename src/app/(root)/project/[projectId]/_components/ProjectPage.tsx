@@ -50,29 +50,37 @@ const ProjectPage = () => {
 
             {/* Project Description */}
             <section className="space-y-3 md:space-y-4 pb-4">
-              <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Project Description</h2>
-              <p className="text-gray-700 leading-relaxed text-justify">{project.description}</p>
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-700">Project Description</h2>
+              <p className="text-gray-700 leading-relaxed text-justify">
+                {project.description.split("\n").map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
+              </p>
             </section>
+
 
             {/* Budget and Deadline */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4 py-3 border-t border-b">
               <div className="space-y-1">
-                <h3 className="text-teal-600 font-semibold">Budget</h3>
-                <p className="text-teal-800 text-lg font-bold">
+                <h3 className="text-teal-500 font-semibold">Budget</h3>
+                <p className="text-teal-600 text-lg font-bold">
                   {project.budget.currency} {project.budget.min} - {project.budget.max}
                 </p>
               </div>
               <div className="space-y-1">
-                <h3 className="text-teal-600 font-semibold">Deadline</h3>
-                <p className="text-teal-800 text-lg font-semibold">
+                <h3 className="text-teal-500 font-semibold">Deadline</h3>
+                <p className="text-teal-600 text-lg font-semibold">
                   {new Date(project.deadline).toLocaleDateString()}
                 </p>
               </div>
             </section>
 
             {/* Skills Required */}
-            <section className="space-y-3 mt-4">
-              <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Skills Required</h2>
+            <section className="space-y-4 mt-9">
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-700">Skills Required</h2>
               <ul className="flex flex-wrap gap-2 md:gap-3">
                 {project.skillsRequired.map((skill, index) => (
                   <li
@@ -86,8 +94,8 @@ const ProjectPage = () => {
             </section>
 
             {/* Supporting Documents */}
-            <section className="space-y-3 mt-4">
-              <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Supporting Documents</h2>
+            <section className="space-y-3 mt-9">
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-700">Supporting Documents</h2>
               <ul className="space-y-2">
                 {project.supportingDocs.map((doc, index) => {
                   const isImage = doc.fileType.startsWith("image/");
@@ -126,8 +134,8 @@ const ProjectPage = () => {
             </section>
 
             {/* College Information */}
-            <section className="space-y-3 mt-4">
-              <h2 className="text-xl md:text-2xl font-semibold text-gray-800">College Information</h2>
+            <section className="space-y-3 mt-9">
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-700">College Information</h2>
               <p className="text-gray-700">
                 {project.college.College_Name}, {project.college.State}
               </p>
@@ -135,8 +143,8 @@ const ProjectPage = () => {
             </section>
 
             {/* Location Information */}
-            <section className="space-y-3 mt-4">
-              <h2 className="text-xl md:text-2xl font-semibold text-gray-800">Location</h2>
+            <section className="space-y-3 mt-9">
+              <h2 className="text-xl md:text-2xl font-semibold text-gray-700">Location</h2>
               <p className="text-gray-700 flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-teal-500" />
                 {project.location.city.name}, {project.location.state.name}
@@ -156,7 +164,7 @@ const ProjectPage = () => {
 
           {/* Bids Section */}
           <section className="space-y-4 pt-8">
-            <h2 className="text-xl md:text-2xl font-semibold text-gray-800">{sampleBids.length} freelancers are bidding:</h2>
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-700">{sampleBids.length} freelancers are bidding:</h2>
             <ul className="space-y-4">
               {sampleBids.map((bid, index) => (
                 <React.Fragment key={index}>
@@ -185,7 +193,7 @@ const ProjectPage = () => {
 
         {/* Sidebar */}
         <aside className="w-full lg:w-1/4 p-8 mt-8 lg:mt-0 space-y-6">
-          <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-gray-700 flex items-center gap-2">
             <FaUserCircle className="text-teal-500" /> Client Information
           </h2>
           <div className="space-y-4">
@@ -199,12 +207,12 @@ const ProjectPage = () => {
               <div>
                 <p className="text-gray-700 text-sm">Email</p>
                 <a href={`mailto:piyushjoshi81204@gmail.com`} className="text-teal-600 hover:underline font-medium">
-                {"piyushjoshi81204@gmail.com"}
-              </a>
+                  {"piyushjoshi81204@gmail.com"}
+                </a>
+              </div>
             </div>
           </div>
-      </div>
-    </aside>
+        </aside>
       </div >
     </div >
   );

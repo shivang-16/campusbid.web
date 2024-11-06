@@ -1,9 +1,6 @@
 "use server";
 
 import { getCookie } from "./cookie_actions";
-import { revalidateTag } from "next/cache";
-import apiClient from "@/apiClient/apiClient";
-import { string } from "zod";
 
 export const getCollegeNames = async (query: string) => {
   const token = await getCookie("token");
@@ -23,9 +20,9 @@ export const getCollegeNames = async (query: string) => {
     return responseData;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      throw new Error(`Error in saving student info: ${error.message}`);
+      throw new Error(`Error fetching colleges: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while saving student info");
+      throw new Error("An unknown error occurred while fetching colleges");
     }
   }
 };
@@ -49,9 +46,9 @@ export const getCityNames = async (query: string, stateCode:string) => {
     return responseData;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      throw new Error(`Error in saving student info: ${error.message}`);
+      throw new Error(`Error fetching city: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while saving student info");
+      throw new Error("An unknown error occurred while fetching city");
     }
   }
 };
@@ -75,9 +72,9 @@ export const getStateNames = async (query: string) => {
     return responseData;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      throw new Error(`Error in saving student info: ${error.message}`);
+      throw new Error(`Error fetching states: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while saving student info");
+      throw new Error("An unknown error occurred while fetching state");
     }
   }
 };

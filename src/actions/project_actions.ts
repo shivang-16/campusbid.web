@@ -25,9 +25,9 @@ export const createProject = async (data: any) => {
     return responseData;
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Error registering user: ${error.message}`);
+      throw new Error(`Error creating project: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while registering user!");
+      throw new Error("An unknown error occurred while creating project!");
     }
   }
 };
@@ -52,9 +52,9 @@ export const fetchProjectById = async (projectId: string) => {
     return responseData;
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Error registering user: ${error.message}`);
+      throw new Error(`Error fetching project: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while registering user!");
+      throw new Error("An unknown error occurred while fetching project!");
     }
   }
 };
@@ -79,9 +79,9 @@ export const fetchAllProjects = async (query?: string) => {
     return responseData;
   } catch (error) {
     if (error instanceof Error) {
-      throw new Error(`Error registering user: ${error.message}`);
+      throw new Error(`Error fetching projects: ${error.message}`);
     } else {
-      throw new Error("An unknown error occurred while registering user!");
+      throw new Error("An unknown error occurred while fetching projects!");
     }
   }
 };

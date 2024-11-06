@@ -1,8 +1,8 @@
 import React from "react";
 import MyProfilePage from "./_components/MyProfilePage";
 
-const Project = () => {
+const Profile = () => {
   return <MyProfilePage/>;
 };
 
-export default Project;
+export default Profile;

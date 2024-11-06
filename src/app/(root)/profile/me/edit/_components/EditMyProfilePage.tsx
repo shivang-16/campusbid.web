@@ -11,12 +11,13 @@ import { userData } from "@/redux/slices/userSlice";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { uploadImageToS3 } from "@/actions/s3_actions";
+import { UserDataProps } from "@/helpers/types";
 
 const EditMyProfilePage = () => {
     const router = useRouter();
     const dispatch = useDispatch();
-    const userDetails = useSelector((state: RootState) => state.user.user);
-    const [formData, setFormData] = useState(userDetails);
+    const userDetails = useSelector((state: RootState) => state.user.user) as UserDataProps;
+    const [formData, setFormData] = useState<UserDataProps>(userDetails);
     const [newDocs, setNewDocs] = useState<File[]>([]);
     const [filePreviews, setFilePreviews] = useState<string[]>([]);
 
@@ -24,7 +25,7 @@ const EditMyProfilePage = () => {
         router.replace("/profile/me");
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>, field: string) => {
         setFormData({
             ...formData,
             [field]: e.target.value,

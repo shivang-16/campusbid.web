@@ -12,6 +12,33 @@ import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { uploadImageToS3 } from "@/actions/s3_actions";
 import { UserDataProps } from "@/helpers/types";
+import { getCollegeNames, getCityNames, getStateNames } from '@/actions/data_actions';
+import { number } from "zod";
+
+
+
+interface Institution {
+    College_Name: string,
+    State: string,
+    StateCode: string,
+    Stream: string,
+}
+
+interface State {
+    name: string;
+    isoCode: string;
+    countryCode: string;
+    latitude: string;
+    longitude: string
+}
+
+interface City {
+    name: string;
+    stateCode: string;
+    latitude: string;
+    longitude: string
+}
+
 
 const EditMyProfilePage = () => {
     const router = useRouter();
@@ -20,6 +47,85 @@ const EditMyProfilePage = () => {
     const [formData, setFormData] = useState<UserDataProps>(userDetails);
     const [newDocs, setNewDocs] = useState<File[]>([]);
     const [filePreviews, setFilePreviews] = useState<string[]>([]);
+    const [states, setStates] = useState<State[]>([]);
+    const [cities, setCities] = useState<City[]>([]);
+    const [institutionName, setInstitutionName] = useState(userDetails?.academic.schoolOrCollegeName.College_Name || "");
+    const [stateName, setStateName] = useState(formData?.address?.state?.name || "");
+    const [cityName, setCityName] = useState(formData?.address?.city?.name || "");
+    const [isInstitutionFocused, setIsInstitutionFocused] = useState(false);
+    const [isStateFocused, setIsStateFocused] = useState(false);
+    const [isCityFocused, setIsCityFocused] = useState(false);
+    const [institutions, setInstitutions] = useState<Institution[]>([]);
+    const [city, setcity] = useState<City>(formData?.address?.city);
+    const [state, setstate] = useState<State>(formData?.address?.state);
+    const [institution, setinstitution] = useState<Institution>(userDetails?.academic?.schoolOrCollegeName);
+
+
+    const fetchColleges = async (query: string) => {
+        try {
+            const response = await getCollegeNames(query);
+            setInstitutions(response.data);
+        } catch (error) {
+            console.error("Error fetching colleges:", error);
+        }
+    };
+
+    const fetchStates = async (query: string) => {
+        try {
+            const response = await getStateNames(query);
+            setStates(response.data);
+        } catch (error) {
+            console.error("Error fetching states:", error);
+        }
+    };
+
+    const fetchCities = async (query: string) => {
+        try {
+            const response = await getCityNames(query, state?.isoCode || "");
+            setCities(response.data);
+        } catch (error) {
+            console.error("Error fetching cities:", error);
+        }
+    };
+
+
+    const handleInstitutionSearch = (value: string) => {
+        setInstitutionName(value)
+        if (value) fetchColleges(value);
+        else setInstitutions([]);
+    };
+
+    const handleStateSearch = (value: string) => {
+        setStateName(value)
+        if (value) fetchStates(value);
+        else setStates([]);
+    };
+
+    const handleCitySearch = (value: string) => {
+        setCityName(value)
+        if (value) fetchCities(value);
+        else setCities([]);
+    };
+
+
+    const handleSelect = (item: object, type: string) => {
+        setFormData((prev) => ({ ...prev, [type]: item }));
+        if (type === "schoolOrCollegeName") setInstitutions([]);
+        if (type === "state") setStates([]);
+        if (type === "city") setCities([]);
+    };
+
+    const handleFocus = (inputType: string) => {
+        if (inputType === "schoolOrCollegeName") setIsInstitutionFocused(true);
+        else if (inputType === "state") setIsStateFocused(true);
+        else if (inputType === "city") setIsCityFocused(true);
+    };
+
+    const handleBlur = (inputType: string) => {
+        if (inputType === "schoolOrCollegeName") setIsInstitutionFocused(false);
+        else if (inputType === "state") setIsStateFocused(false);
+        else if (inputType === "city") setIsCityFocused(false);
+    };
 
     const handleBack = () => {
         router.replace("/profile/me");
@@ -31,6 +137,20 @@ const EditMyProfilePage = () => {
             [field]: e.target.value,
         });
     };
+
+    const handleChangePhone = (
+        e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>,
+    ) => {
+        setFormData({
+            ...formData,
+            phone: {
+                ...formData.phone,
+                ["personal"]: Number(e.target.value), // Convert the input to a number
+            },
+        });
+    };
+
+
 
     const getUpdatedFields = (newData: any, originalData: any) => {
         const updates: any = {};
@@ -44,22 +164,27 @@ const EditMyProfilePage = () => {
 
     const handleSaveChanges = async () => {
         try {
+            console.log(formData)
             const updatedData = getUpdatedFields(formData, userDetails);
+            console.log(updatedData)
 
             const formattedFiles = newDocs?.map((file) => ({
                 fileName: file.name,
                 fileSize: file.size,
                 fileType: file.type
-              }))
+            }))
 
             const formattedData = {
                 ...updatedData,
             };
 
-            if(newDocs.length > 0) {
-                formattedData.documents =  formattedFiles
+            if (newDocs.length > 0) {
+                formattedData.documents = formattedFiles
             }
-
+            console.log("odjo", formattedData)
+            if (formattedData && formattedData.phone) {
+                formattedData.phone = Number(formattedData.phone.personal);
+            }
             const userinfo = await savePersonalInfo(formattedData);
             dispatch(userData(userinfo.user));
 
@@ -120,9 +245,8 @@ const EditMyProfilePage = () => {
 
             <div
                 {...getRootProps()}
-                className={`mt-6 p-4 border-2 border-dashed rounded-lg ${
-                    isDragActive ? "border-teal-600" : "border-gray-300"
-                }`}
+                className={`mt-6 p-4 border-2 border-dashed rounded-lg ${isDragActive ? "border-teal-600" : "border-gray-300"
+                    }`}
             >
                 <input {...getInputProps()} />
                 {isDragActive ? (
@@ -189,7 +313,7 @@ const EditMyProfilePage = () => {
                         type="tel"
                         placeholder="+91 Enter Phone Number"
                         value={formData?.phone?.personal || ""}
-                        onChange={(e) => handleChange(e, "phone")}
+                        onChange={(e) => handleChangePhone(e)}
                         className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-teal-500"
                     />
                 </div>
@@ -235,21 +359,79 @@ const EditMyProfilePage = () => {
                     <label className="block text-gray-700">City</label>
                     <input
                         type="text"
-                        placeholder="City"
-                        value={formData?.address?.city?.name || ""}
-                        onChange={(e) => handleChange(e, "city")}
+                        name="city"
+                        placeholder="Select your City..."
                         className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-teal-500"
+                        value={cityName}
+                        onChange={(e) => handleCitySearch(e.target.value)}
+                        onFocus={() => handleFocus("city")}
+                        onBlur={() => {
+                            handleBlur("city");
+                            if (!cityName) setCityName(''); // Clear the input on blur if empty
+                        }}
+                        disabled={!state?.isoCode} // Disable input if no state is selected
                     />
+                    {isCityFocused && cities.length > 0 && (
+                        <div className="absolute z-10 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                            {cities.map((city) => (
+                                <div
+                                    key={city.name}
+                                    className="p-3 hover:bg-blue-100 cursor-pointer"
+                                    onMouseDown={() => {
+                                        handleSelect(city, "city");
+                                        setcity(city);
+                                        setCityName(city.name); // Update cityName with selected value
+                                    }}
+                                >
+                                    {city.name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {isCityFocused && cities.length === 0 && (
+                        <div className="absolute z-10 bg-white rounded-lg shadow-lg">
+                            <div className="p-3 text-gray-500">No cities found</div>
+                        </div>
+                    )}
                 </div>
                 <div>
                     <label className="block text-gray-700">State</label>
                     <input
                         type="text"
-                        placeholder="State"
-                        value={formData?.address?.state?.name || ""}
-                        onChange={(e) => handleChange(e, "state")}
+                        name="state"
+                        placeholder="Select your State..."
                         className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-teal-500"
+                        value={stateName}
+                        onChange={(e) => handleStateSearch(e.target.value)}
+                        onFocus={() => handleFocus("state")}
+                        onBlur={() => {
+                            handleBlur("state");
+                            if (!stateName) setStateName(''); // Clear the input on blur if empty
+                        }}
+                        required
                     />
+                    {isStateFocused && states.length > 0 && (
+                        <div className="absolute z-10 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                            {states.map((state) => (
+                                <div
+                                    key={state.name}
+                                    className="p-3 hover:bg-blue-100 cursor-pointer"
+                                    onMouseDown={() => {
+                                        setstate(state);
+                                        handleSelect(state, "state"); // Update stateName with selected value
+                                        setStateName(state.name)
+                                    }}
+                                >
+                                    {state.name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {isStateFocused && states.length === 0 && (
+                        <div className="absolute z-10 bg-white rounded-lg shadow-lg">
+                            <div className="p-3 text-gray-500">No states found</div>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -259,24 +441,54 @@ const EditMyProfilePage = () => {
                     <label className="block text-gray-700">Institution</label>
                     <input
                         type="text"
-                        placeholder="School/College Name"
-                        value={userDetails?.academic.schoolOrCollegeName.College_Name || ""}
-                        onChange={(e) => handleChange(e, "schoolOrCollegeName")}
+                        name="institution"
+                        placeholder="Select your Institution..."
                         className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-teal-500"
+                        value={institutionName}
+                        onChange={(e) => handleInstitutionSearch(e.target.value)}
+                        onFocus={() => handleFocus("schoolOrCollegeName")}
+                        onBlur={() => {
+                            handleBlur("schoolOrCollegeName");
+                            if (!institution?.College_Name) {
+                                setInstitutionName('');  // Clear the input on blur if empty
+                            }
+                        }}
+                        required
                     />
+                    {isInstitutionFocused && institutions.length > 0 && (
+                        <div className="absolute z-10 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                            {institutions.map((institution) => (
+                                <div
+                                    key={institution.College_Name}
+                                    className="p-3 hover:bg-blue-100 cursor-pointer"
+                                    onMouseDown={() => {
+                                        handleSelect(institution, "schoolOrCollegeName");
+                                        setinstitution(institution);
+                                        setInstitutionName(institution.College_Name); // Update institutionName with selected value
+                                    }}>
+                                    {institution.College_Name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {isInstitutionFocused && institutions.length === 0 && (
+                        <div className="absolute z-10 bg-white rounded-lg shadow-lg">
+                            <div className="p-3 text-gray-500">No institutions found</div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
     );
 
     return (
-        <div className="container mx-auto p-4">
+        <div>
             <Header />
-            <button onClick={handleBack} className="text-teal-600 flex items-center mt-4 mb-6">
+            <button onClick={handleBack} className="text-teal-600 flex items-center mb-6">
                 <IoArrowBack className="mr-2" />
                 Back to Profile
             </button>
-
+            <div className="pt-10 pb-6">
             <div className="max-w-2xl mx-auto space-y-6">
                 {renderProfileForm()}
                 {renderSupportingDocs()}
@@ -286,6 +498,7 @@ const EditMyProfilePage = () => {
                 >
                     Save Changes
                 </button>
+            </div>
             </div>
         </div>
     );

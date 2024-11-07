@@ -25,10 +25,10 @@ const PlaceBid = ({
   const router = useRouter()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setUploadedFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
-    }
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    setUploadedFiles((prevFiles) => [...prevFiles, ...files]);
   };
+  
 
   const removeFile = (index: number) => {
     setUploadedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));

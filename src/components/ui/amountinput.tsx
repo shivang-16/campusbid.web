@@ -13,7 +13,8 @@ const InputWithCurrency: React.FC<InputWithCurrencyProps> = ({
   onCurrencyChange,
   onAmountChange,
 }) => {
-  const currencies = ["USD", "EUR", "GBP", "JPY", "INR"]; // Add more as needed
+  
+  const currencies = ["USD", "EUR", "GBP", "JPY", "INR"]; 
 
   return (
     <div className="flex items-center">

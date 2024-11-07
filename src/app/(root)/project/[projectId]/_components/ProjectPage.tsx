@@ -8,12 +8,13 @@ import Header from "@/components/Header";
 import { FaMapMarkerAlt, FaCalendarAlt, FaUserCircle, FaClock, FaBookmark } from "react-icons/fa";
 import Link from "next/link";
 import { FaTimes } from "react-icons/fa";
-import InputWithCurrency from "@/components/ui/amountinput";
+import PlaceBid from "./PlaceBid";
+import BidList from "./BidList";
 
 const ProjectPage = () => {
   const [showPlaceBid, setShowPlaceBid] = useState(false);
   const [project, setProject] = useState<ProjectDataProps>();
-  const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  const [selectedCurrency, setSelectedCurrency] = useState("INR");
   const [amount, setAmount] = useState(0);
   const { projectId } = useParams();
 
@@ -168,42 +169,12 @@ const ProjectPage = () => {
 
           {/* Bids Section */}
           <section className={`space-y-4 pt-8 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
-            {project.bids.length === 0 ? (
-              <h2 className="text-xl md:text-[23px] font-semibold text-gray-700">No bids have been placed yet.</h2>
-            ) : (
-              <h2 className="text-xl md:text-[23px] pb-[3px] font-semibold text-gray-700 border-b-2 border-gray-200">A total of <span className="text-teal-600">{project.bids.length} bids</span> have been placed.</h2>
-            )}
-
-            <ul className="space-y-4">
-              {project.bids.map((bid, index) => (
-                <Link href={`/bid/${bid._id}`} key={index}>
-                  <li className="flex items-center gap-6 py-6 px-4 md:px-6 bg-white hover:shadow-sm transition-all duration-300 ease-in-out">
-                    <div className="w-12 h-12 flex items-center justify-center bg-teal-600 text-white text-xl font-bold rounded-full shadow-md">
-                      {typeof bid.user === 'string' ? '?' : bid.user.name.charAt(0)}
-                    </div>
-                    <div className="flex-1 ml-4">
-                      <p className="text-lg font-semibold text-gray-900 truncate">{typeof bid.user === 'string' ? 'Unknown User' : bid.user.name}</p>
-                      <p className="text-sm text-gray-700 flex items-center gap-2 mt-2">
-                        <FaUserCircle className="text-teal-500" />
-                        Bid Amount:
-                        <span className="font-medium text-teal-700">{bid.currency} {bid.amount}</span>
-                      </p>
-                      <p className="text-sm text-gray-700 flex items-center gap-2 mt-2">
-                        <FaCalendarAlt className="text-teal-500" />
-                        Delivered in:
-                        <span className="font-medium text-teal-700">{bid.deliveredIn.days} days</span>
-                      </p>
-                    </div>
-                  </li>
-                  <hr className="border-gray-300 my-4" />
-                </Link>
-              ))}
-            </ul>
+            <BidList project={project}/>
           </section>
         </main>
 
         <aside
-          className={`w-full lg:w-1/4 bg-white px-7 lg:px-2 py-8 right-0 lg:right-7 lg:fixed top-[80px] h-[calc(100vh-80px)] overflow-y-auto 
+          className={`w-full lg:w-1/4 bg-white px-4 lg:px-2 py-8 right-0 lg:right-7 lg:fixed top-[80px] h-[calc(100vh-80px)] overflow-y-auto 
     fixed bottom-0 lg:translate-y-0 transition-transform duration-300 ease-in-out z-20
     ${showPlaceBid ? "translate-y-0" : "translate-y-full lg:translate-y-0"}`}
         >
@@ -235,37 +206,16 @@ const ProjectPage = () => {
             </div>
           </div>
 
-          <div className="mt-12">
-            <h3 className="text-lg font-extrabold text-gray-800">Bid Now</h3>
-            <div className="space-y-4 mt-4">
-              <div>
-                <p className="text-gray-700 font-extrabold text-sm mb-1">Your Proposal</p>
-                <textarea
-                  placeholder="Enter your bid proposal details"
-                  className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none min-h-[120px] placeholder:text-gray-500"
-                />
-              </div>
-              <div>
-                <p className="text-gray-700 font-extrabold text-sm mb-1">Set Your Price</p>
-                <InputWithCurrency
-                  selectedCurrency={selectedCurrency}
-                  amount={amount}
-                  onCurrencyChange={setSelectedCurrency}
-                  onAmountChange={setAmount}
-                />
-              </div>
-              <div>
-                <p className="text-gray-700 font-extrabold text-sm mb-1">Set Deadline</p>
-                <input
-                  type="date"
-                  className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-            </div>
-            <button className="w-full py-3 mt-4 bg-teal-500 text-white rounded-lg font-semibold hover:bg-teal-600 transition duration-150 shadow-md">
-              Submit Bid
-            </button>
+          <div className="mt-10">
+           <PlaceBid 
+             selectedCurrency={selectedCurrency}
+             amount={amount}
+             setSelectedCurrency={setSelectedCurrency}
+             setAmount={setAmount}
+             projectId={projectId as string}
+           />
           </div>
+        
         </aside>
       </div>
 

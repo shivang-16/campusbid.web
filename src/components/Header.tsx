@@ -54,7 +54,7 @@ const Header: React.FC = () => {
   const selectedRoleOption = roleOptions.find(option => option.name === role);
 
   return (
-    <header className="flex items-center justify-between px-4 py-3 shadow-md fixed w-full z-50 backdrop-blur-2xl  border-b border-gray-300 transition duration-300 ease-in-out">
+    <header className="flex items-center justify-between px-4 py-2 md:py-2.5 shadow-md fixed w-full z-50 backdrop-blur-2xl bg-[#f8fffe]  border-b border-gray-300 transition duration-300 ease-in-out">
       <div className="flex items-center justify-between w-auto space-x-4">
         <img
           src="/assets/icons/favicon.ico"
@@ -71,7 +71,7 @@ const Header: React.FC = () => {
         <div className="relative">
           <button
             onClick={handleDropdownToggle}
-            className="flex items-center px-3 text-base md:text-none py-1 lg:px-4 md:py-1.5 bg-gray-100 border border-gray-300 text-teal-600 font-semibold rounded-full hover:bg-gray-200 focus:ring-2 focus:ring-teal-500 transition duration-300 shadow md:shadow-md"
+            className="flex items-center px-3 text-base md:text-none py-1 lg:px-4 md:py-1.5 bg-gray-100 border border-gray-300 text-teal-600 font-semibold rounded-3xl hover:bg-gray-200 focus:ring-2 focus:ring-teal-500 transition duration-300 shadow md:shadow-md"
           >
             {selectedRoleOption?.icon}
             <span className="ml-2 hidden sm:inline">{user.role}</span>

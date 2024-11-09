@@ -9,12 +9,12 @@ import Link from 'next/link';
 
 interface AllProjectsPageProps {
     projects: {
-        nearbyProjects: ProjectDataProps[]
-        collegeProjects: ProjectDataProps[]
+        nearbyProjects: ProjectDataProps[];
+        collegeProjects: ProjectDataProps[];
     };
-  }
+}
 
-const Freelancer = ({projects}: AllProjectsPageProps ) => {
+const Freelancer = ({ projects }: AllProjectsPageProps) => {
 
     const popularSkills: string[] = [
         'Public Relations', 'Content Writing', 'Writing', 'People',
@@ -23,7 +23,7 @@ const Freelancer = ({projects}: AllProjectsPageProps ) => {
         'Video Editing', 'JavaScript'
     ];
 
-    const { nearbyProjects, collegeProjects } = projects
+    const { nearbyProjects, collegeProjects } = projects;
 
     const scrollCategories = (direction: any) => {
         const container = document.getElementById("categories-container");
@@ -36,18 +36,19 @@ const Freelancer = ({projects}: AllProjectsPageProps ) => {
     return (
         <div className="bg-gray-50 min-h-screen font-sans text-gray-700 relative">
             <Header />
-            <div className="pt-[65px]">
+            <div className="pt-[60px]">
 
-                <section className="text-center h-screen lg:h-auto py-20 px-6 bg-gradient-to-l lg:gap-2 from-teal-50 to-purple-50 lg:px-36 flex flex-col md:flex-row justify-center lg:justify-between md:items-center">
+                {/* Hero Section */}
+                <section className="text-center h-screen lg:h-auto py-20 px-6 bg-gradient-to-l lg:gap-2 from-teal-50 to-purple-50 lg:px-36 flex flex-col md:flex-row justify-center lg:justify-between md:items-center transition-all ease-in-out duration-500">
                     <div>
-                        <h1 className="text-3xl lg:text-4xl font-extrabold text-gray-800 leading-tight animate-fade-in">
+                        <h1 className="text-[28px] lg:text-[33px] font-extrabold text-gray-700 leading-tight animate-fade-in">
                             The work you want, <span className="text-teal-600">The bids you need</span><span className="text-gray-800">.</span>
                         </h1>
-                        <p className="mt-5 text-gray-600 max-w-3xl mx-auto text-lg lg:text-xl animate-fade-in">
+                        <p className="mt-5 text-gray-500 max-w-3xl mx-auto text-[15px] lg:text-xl animate-fade-in">
                             Discover top-tier projects at competitive prices.
                         </p>
                         <div className="mt-10 flex justify-center items-center flex-col md:flex-row space-y-3 md:space-y-0 ">
-                            <div className="flex items-center border border-gray-300 rounded-full overflow-hidden shadow-sm">
+                            <div className="flex items-center border border-gray-300 rounded-full overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
                                 <input
                                     type="text"
                                     placeholder="Find Projects..."
@@ -57,7 +58,7 @@ const Freelancer = ({projects}: AllProjectsPageProps ) => {
                                     <FaSearch />
                                 </button>
                             </div>
-                        </div> 
+                        </div>
                         <div className="mt-6 space-x-2 text-teal-700 flex justify-center flex-wrap gap-2">
                             {['Popular', 'Logo Design', 'Articles & Blog Posts'].map((tag) => (
                                 <span key={tag} className="px-4 py-2 bg-gray-100 text-sm rounded-full cursor-pointer hover:bg-teal-100 transition duration-300 shadow-md">
@@ -74,49 +75,47 @@ const Freelancer = ({projects}: AllProjectsPageProps ) => {
                         />
                     </div>
                 </section>
-                <div className="py-10">
-                    {/* Categories Section */}
-                    <section className="py-12 px-6 lg:px-32">
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-8 text-center lg:text-left">
-                            Explore Categories for <span className="text-teal-600">You</span><span className="text-gray-800">.</span>
-                        </h3>
-                        <div className="relative flex items-center justify-between">
-                            <button
-                                onClick={() => scrollCategories(-1)}
-                                className="absolute left-0 z-10 bg-white border border-gray-300 rounded-full p-3 shadow-md hover:shadow-lg transition-all transform hover:scale-105 focus:outline-none"
-                                aria-label="Scroll Left"
-                            >
-                                <FaChevronLeft className="text-gray-600" />
-                            </button>
-                            <div id="categories-container" className="flex space-x-9 overflow-x-auto no-scrollbar px-10 py-4 transition-transform duration-300">
-                                {popularSkills.map((category, index) => (
-                                    <div key={index} className="flex items-center justify-center h-24 min-w-[200px] px-4 py-3 rounded-3xl text-gray-700 font-medium text-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer">
-                                        <p className="text-lg">{category}</p>
-                                    </div>
-                                ))}
-                            </div>
-                            <button
-                                onClick={() => scrollCategories(1)}
-                                className="absolute right-0 z-10 bg-white border border-gray-300 rounded-full p-3 shadow-md hover:shadow-lg transition-all transform hover:scale-105 focus:outline-none"
-                                aria-label="Scroll Right">
-                                <FaChevronRight className="text-gray-600" />
-                            </button>
+
+                {/* Categories Section */}
+                <section className="py-12 px-6 lg:px-32">
+                    <h3 className="text-2xl font-semibold text-gray-800 mb-8 text-center lg:text-left">
+                        Top Categories for <span className="text-teal-600">You</span><span className="text-gray-800">.</span>
+                    </h3>
+                    <div className="relative flex items-center justify-between">
+                        <button
+                            onClick={() => scrollCategories(-1)}
+                            className="absolute left-0 z-10 bg-white border border-gray-300 rounded-full p-3 shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 focus:outline-none"
+                            aria-label="Scroll Left"
+                        >
+                            <FaChevronLeft className="text-gray-600" />
+                        </button>
+                        <div id="categories-container" className="flex space-x-9 overflow-x-auto no-scrollbar px-10 py-4 transition-transform duration-300">
+                            {popularSkills.map((category, index) => (
+                                <div key={index} className="border-gray-100 border-2 flex items-center justify-center h-24 min-w-[200px] px-4 py-3 rounded-3xl text-gray-600 font-medium text-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-102 cursor-pointer">
+                                    <p className="text-base">{category}</p>
+                                </div>
+                            ))}
                         </div>
-                    </section>
+                        <button
+                            onClick={() => scrollCategories(1)}
+                            className="absolute right-0 z-10 bg-white border border-gray-300 rounded-full p-3 shadow-lg hover:shadow-2xl transition-all transform hover:scale-105 focus:outline-none"
+                            aria-label="Scroll Right">
+                            <FaChevronRight className="text-gray-600" />
+                        </button>
+                    </div>
+                </section>
 
-
-
-                    <section className="py-12 px-6 lg:px-36">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-2xl font-semibold text-gray-800 pb-4">Top Projects for <span className="text-teal-600">You</span><span className="text-gray-800">.</span></h3>
-                            <Link href={'/project/all'} className="text-teal-600 font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</Link>
-
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {/* College Projects Section */}
+                <section className="py-12 px-6 lg:px-32">
+                    <div className="flex justify-between items-center mb-4 pb-4">
+                        <h3 className="text-2xl font-semibold text-gray-800">Top Projects for <span className="text-teal-600">You</span><span className="text-gray-800">.</span></h3>
+                        {collegeProjects.length > 0 && <Link href={'/project/all'} className="text-teal-600 text-sm font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</Link>}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {collegeProjects.length > 0 ? collegeProjects
-                                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) // Sort by createdAt in descending order
-                                .slice(0, 3).map((project) => (
-                                <div key={project._id} className="h-52 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between">
+                            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                            .slice(0, 3).map((project) => (
+                                <div key={project._id} className="h-52 rounded-lg border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex flex-col justify-between">
                                     <div>
                                         <div className="flex items-center mb-4">
                                             <FaBriefcase className="text-teal-500 mr-2" size={20} />
@@ -127,51 +126,47 @@ const Freelancer = ({projects}: AllProjectsPageProps ) => {
                                     <div className="flex justify-between items-center mt-4">
                                         <p className="text-teal-600 font-bold text-lg">₹{project.budget.min} - ₹{project.budget.max}</p>
                                         <Link href={`/project/${project._id}`}>
-                                        <button className="bg-teal-500 text-white px-4 py-2 rounded-full text-sm hover:bg-teal-600 transition-transform transform hover:scale-105 shadow-md">
-                                            Bid Now
-                                        </button>
+                                            <button className="bg-teal-500 text-white px-4 py-2 rounded-full text-sm hover:bg-teal-600 transition-transform transform hover:scale-105 shadow-md">
+                                                Bid Now
+                                            </button>
                                         </Link>
                                     </div>
                                 </div>
-                            )): ('No College Projects for now')}
-                        </div>
-                    </section>
+                            )) : <h1 className='text-gray-400'>No Nearby Projects for now</h1>}
+                    </div>
+                </section>
 
-                    {/* Projects Nearby Section */}
-
-
-                    <section className="py-12 px-6 lg:px-36">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-2xl font-semibold text-gray-800 pb-4">Projects Nearby <span className="text-teal-600">You</span><span className="text-gray-800">.</span></h3>
-                            <Link href={'/project/all'} className="text-teal-600 font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</Link>
-
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                            {nearbyProjects.length > 0 ? nearbyProjects.map((project) => (
-                                <div key={project._id} className="h-52 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between">
-                                    <div>
-                                        <div className="flex items-center mb-4">
-                                            <FaMapMarkerAlt className="text-teal-500 mr-2" size={20} />
-                                            <p className="text-lg font-semibold text-gray-800">{project.title.slice(0, 10)}</p>
-                                        </div>
-                                        <p className="text-sm text-gray-600">{project.description.slice(0, 50)}</p>
+                {/* Nearby Projects Section */}
+                <section className="py-12 px-6 lg:px-32">
+                    <div className="flex justify-between items-center mb-4 pb-4">
+                        <h3 className="text-2xl font-semibold text-gray-800">Projects Nearby <span className="text-teal-600">You</span><span className="text-gray-800">.</span></h3>
+                        {nearbyProjects.length > 0 && <Link href={'/project/all'} className="text-teal-600 text-sm font-medium hover:underline hover:text-teal-700 hover:cursor-pointer">View more</Link>}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        {nearbyProjects.length > 0 ? nearbyProjects.map((project) => (
+                            <div key={project._id} className="h-52 border-gray-200 border-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 px-6 py-5 xl:px-6 xl:py-6 flex flex-col justify-between">
+                                <div>
+                                    <div className="flex items-center mb-4">
+                                        <FaMapMarkerAlt className="text-teal-500 mr-2" size={20} />
+                                        <p className="text-base font-semibold text-gray-800">{project.title.slice(0, 20)}</p>
                                     </div>
-                                    <div className="flex justify-between items-center mt-4">
-                                        <p className="text-teal-600 font-bold text-lg">₹{project.budget.min} - ₹{project.budget.max}</p>
-                                        <Link href={`/project/${project._id}`}>
-                                        <button className="bg-teal-500 text-white px-4 py-2 rounded-full text-sm hover:bg-teal-600 transition-transform transform hover:scale-105 shadow-md">
+                                    <p className="text-sm text-gray-600">{project.description.slice(0, 110)}...</p>
+                                </div>
+                                <div className="flex justify-between items-center mt-4 ">
+                                    <p className="text-teal-500 font-semibold text-[16px]">₹{project.budget.min} - ₹{project.budget.max}</p>
+                                    <Link href={`/project/${project._id}`}>
+                                        <button className="bg-teal-500 text-white font-semibold px-4 py-2 rounded-full text-xs hover:bg-teal-600 transition-transform transform hover:scale-105 shadow-md">
                                             Bid Now
                                         </button>
-                                        </Link>
-                                    </div>
+                                    </Link>
                                 </div>
-                            )): ("No nearby projects")}
-                        </div>
-                    </section>
+                            </div>
 
-                </div>
+                        )) : <h1 className='text-gray-400'>No Nearby Projects for now</h1>}
+                    </div>
+                </section>
+
             </div>
-
         </div>
     );
 };

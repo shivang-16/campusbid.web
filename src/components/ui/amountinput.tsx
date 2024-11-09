@@ -13,8 +13,8 @@ const InputWithCurrency: React.FC<InputWithCurrencyProps> = ({
   onCurrencyChange,
   onAmountChange,
 }) => {
-  
-  const currencies = ["USD", "EUR", "GBP", "JPY", "INR"]; 
+
+  const currencies = ["USD", "EUR", "GBP", "JPY", "INR"];
 
   return (
     <div className="flex items-center">
@@ -22,7 +22,7 @@ const InputWithCurrency: React.FC<InputWithCurrencyProps> = ({
       <select
         value={selectedCurrency}
         onChange={(e) => onCurrencyChange(e.target.value)}
-        className="p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
+        className="py-2 px-1 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
       >
         {currencies.map((currency) => (
           <option key={currency} value={currency}>

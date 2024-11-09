@@ -7,7 +7,7 @@ const BidList = ({ project }: { project: ProjectDataProps }) => {
   return (
     <>
       {project.bids.length === 0 ? (
-        <h2 className="text-xl md:text-[23px] font-semibold text-gray-700">
+        <h2 className="text-base md:text-[20px] font-medium text-gray-400">
           No bids have been placed yet.
         </h2>
       ) : (

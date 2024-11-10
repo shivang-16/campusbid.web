@@ -28,7 +28,7 @@ const PlaceBid = ({
     const files = e.target.files ? Array.from(e.target.files) : [];
     setUploadedFiles((prevFiles) => [...prevFiles, ...files]);
   };
-  
+
 
   const removeFile = (index: number) => {
     setUploadedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
@@ -42,7 +42,7 @@ const PlaceBid = ({
         fileSize: file.size,
         fileType: file.type,
       }));
-  
+
       // Create bid data
       const bidData = {
         projectId,
@@ -51,31 +51,31 @@ const PlaceBid = ({
         days,
         supportingDocs: formattedFiles,
       };
-  
+
       const response = await createBid(bidData);
-  
+
       console.log(response, "here is response"); // Debugging line
-  
+
       if (response.success) {
         toast.success(response.message);
         router.replace(`/bid/${response.bid._id}`); // Ensure correct route format
       } else {
         toast.error(response.message);
       }
-  
+
       // Map over files to upload each one to its corresponding signed URL
       const uploadFiles = uploadedFiles.map((file, index) => {
         const signedUrl = response.signedUrls[index];
         return uploadImageToS3(file, signedUrl);
       });
-  
+
       // Wait until all file uploads are complete
       await Promise.all(uploadFiles);
     } catch (error) {
       console.error("Error creating bid:", error);
     }
   };
-  
+
 
   return (
     <>
@@ -124,29 +124,29 @@ const PlaceBid = ({
             ))}
           </div>
         </div>
-        <div className="flex justify-between">
-            <div>
-          <p className="text-gray-700 font-extrabold text-sm mb-1">
-            Set Your Price
-          </p>
-          <InputWithCurrency
-            selectedCurrency={selectedCurrency}
-            amount={amount}
-            onCurrencyChange={setSelectedCurrency}
-            onAmountChange={setAmount}
-          />
+        <div className="flex justify-between gap-2">
+          <div className="w-1/2">
+            <p className="text-gray-700 font-extrabold text-sm mb-1">
+              Set Your Price
+            </p>
+            <InputWithCurrency
+              selectedCurrency={selectedCurrency}
+              amount={amount}
+              onCurrencyChange={setSelectedCurrency}
+              onAmountChange={setAmount}
+            />
           </div>
-          <div>
-          <p className="text-gray-700 font-extrabold text-sm mb-1">
-            Completed in
-          </p>
-           <input
-            type="number"
-            className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-            value={days}
-            placeholder="Required Days to complete"
-            onChange={(e) => setDays(e.target.value)}
-          />
+          <div className="w-1/2">
+            <p className="text-gray-700 font-extrabold text-sm mb-1">
+              Completed in
+            </p>
+            <input
+              type="number"
+              className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+              value={days}
+              placeholder="Required Days to complete"
+              onChange={(e) => setDays(e.target.value)}
+            />
           </div>
         </div>
       </div>

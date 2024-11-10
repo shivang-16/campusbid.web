@@ -478,6 +478,7 @@ const EditMyProfilePage = () => {
                     )}
                 </div>
             </div>
+            {renderSupportingDocs()}
         </div>
     );
 
@@ -488,17 +489,16 @@ const EditMyProfilePage = () => {
                 <IoArrowBack className="mr-2" />
                 Back to Profile
             </button>
-            <div className="pt-10 pb-6">
-            <div className="max-w-2xl mx-auto space-y-6">
-                {renderProfileForm()}
-                {renderSupportingDocs()}
-                <button
-                    onClick={handleSaveChanges}
-                    className="w-full bg-teal-600 text-white py-2 px-4 rounded-md mt-6 hover:bg-teal-700"
-                >
-                    Save Changes
-                </button>
-            </div>
+            <div className="pt-10 pb-6 px-2">
+                <div className="max-w-2xl mx-auto space-y-6">
+                    {renderProfileForm()}
+                    <button
+                        onClick={handleSaveChanges}
+                        className="w-full bg-teal-600 text-white py-2 px-4 rounded-md mt-6 hover:bg-teal-700"
+                    >
+                        Save Changes
+                    </button>
+                </div>
             </div>
         </div>
     );

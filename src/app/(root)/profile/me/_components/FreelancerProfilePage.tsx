@@ -39,38 +39,36 @@ const FreelancerProfilePage = () => {
     }, [projectStatus, activeTab]);
 
     const renderBids = () => (
-        <div className="space-y-6">
+        <div className="space-y-6 py-6 px-4">
             {bids.length > 0 ? bids.map((bid, index) => (
-                <Link href={`/bid/${bid._id}`} key={index} className="bg-gray-50 p-5 rounded-lg flex justify-between items-center shadow-sm">
+                <Link href={`/bid/${bid._id}`} key={index} className="bg-gray-50 p-5 mb-3 rounded-lg flex justify-between items-center shadow-sm">
                     <div>
-                        <h5 className="text-lg font-semibold text-gray-700">{bid.proposal}</h5>
-                        <p className="text-gray-500">
+                        <h5 className="text-[16px] font-medium text-gray-600">{bid.proposal.substring(0,200)}... <span className="text-teal-500 font-medium hover:underline text-sm md:text-sm">View More</span></h5>
+                        <p className="text-gray-500 py-2">
                             {typeof bid.projectId === 'object' && bid.projectId !== null ? bid.projectId.title : bid.projectId}
                         </p>
-                        <p className="text-teal-600 font-medium mt-2">{bid.amount}</p>
+                        <p className="text-teal-600 font-medium">{bid.amount}</p>
                         <p className="text-gray-400 mt-1">Delivered in: {bid.deliveredIn.days} days</p>
                     </div>
-                    <button className={`px-5 py-1 rounded-full text-white ${bid.status === "accepted" ? "bg-teal-500" : "bg-yellow-500"} shadow-md transition duration-150`}>
-                        {bid.status}
-                    </button>
                 </Link>
-            )) : ("No bids present")}
+            )) :
+                <div className="w-full py-10 h-full flex items-center justify-center"><h1 className="text-gray-400 font-semibold">No bids present</h1></div>}
         </div>
     );
 
     const renderProjects = () => (
-       
-        <div className="space-y-6">
+
+        <div className="space-y-6 py-6">
             {projects.length > 0 ? projects.map((project, index) => (
-                 <Link href={`/project/${project._id}`} key={index}>
-                <div  className="bg-gray-50 p-5 rounded-lg shadow-sm">
-                    <h5 className="text-lg font-semibold text-gray-700">{project.title}</h5>
-                    <p className="text-gray-500 mt-2">{project.description}</p>
-                    <p className="text-teal-600 font-medium mt-2">{project.budget.min} - {project.budget.max}</p>
-                    <p className="text-gray-400 mt-1">Deadline: {new Date(project.deadline).toLocaleDateString()}</p>
-                </div>
+                <Link href={`/project/${project._id}`} key={index}>
+                    <div className="bg-gray-50 p-5 rounded-lg shadow-sm">
+                        <h5 className="text-lg font-semibold text-gray-700">{project.title}</h5>
+                        <p className="text-gray-500 mt-2">{project.description}</p>
+                        <p className="text-teal-600 font-medium mt-2">{project.budget.min} - {project.budget.max}</p>
+                        <p className="text-gray-400 mt-1">Deadline: {new Date(project.deadline).toLocaleDateString()}</p>
+                    </div>
                 </Link>
-            )) : ("No projects present")}
+            )) : <div className="w-full py-10 h-full flex items-center justify-center"><h1 className="text-gray-400 font-semibold">No projects present</h1></div>}
         </div>
     );
 
@@ -78,9 +76,7 @@ const FreelancerProfilePage = () => {
         <div className="min-h-screen bg-gray-50 text-gray-900">
             <Header />
             <div className="max-w-5xl mx-auto pt-20 pb-10 px-4 lg:px-0">
-                {/* Profile Header */}
                 <div className="bg-white shadow-md rounded-lg p-8 flex flex-col lg:flex-row justify-between items-center gap-6">
-                    {/* Profile Picture and Details */}
                     <div className="flex items-center gap-6">
                         <div className="flex flex-col items-center justify-center gap-1">
                             <div className="relative w-24 h-24 bg-teal-500 rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-md">
@@ -95,10 +91,8 @@ const FreelancerProfilePage = () => {
                             <p className="text-gray-500">{userdetails?.academic.schoolOrCollegeName.College_Name}</p>
                         </div>
                     </div>
-                    
-                    {/* Pencil Icon for Editing */}
                     <Link href={'/profile/me/edit'}>
-                        <button  
+                        <button
                             className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-full shadow-md hover:bg-teal-600 transition duration-150"
                             title="Edit Profile"
                         >
@@ -128,12 +122,6 @@ const FreelancerProfilePage = () => {
                         onClick={() => setActiveTab("bids")}
                     >
                         My Bids
-                    </button>
-                    <button
-                        className={`px-6 py-2 rounded-full font-semibold shadow-md transition duration-150 ${activeTab === "projects" ? "bg-teal-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
-                        onClick={() => setActiveTab("projects")}
-                    >
-                        My Projects
                     </button>
                 </div>
 

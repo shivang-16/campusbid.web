@@ -50,12 +50,9 @@ export const fetchProjectById = async (projectId: string) => {
     const responseData = await response.json();
 
     return responseData;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Error fetching project: ${error.message}`);
-    } else {
-      throw new Error("An unknown error occurred while fetching project!");
-    }
+  } catch (error: any) {
+      // throw new Error(`Error fetching project: ${error.message}`);
+      return {error: error.message}
   }
 };
 

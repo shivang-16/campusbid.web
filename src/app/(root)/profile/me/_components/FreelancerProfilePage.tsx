@@ -123,6 +123,12 @@ const FreelancerProfilePage = () => {
                     >
                         My Bids
                     </button>
+                    <button
+                        className={`px-6 py-2 rounded-full font-semibold shadow-md transition duration-150 ${activeTab === "projects" ? "bg-teal-500 text-white" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+                        onClick={() => setActiveTab("projects")}
+                    >
+                        Assigned Projects
+                    </button>
                 </div>
 
                 {/* Bids and Projects Cards */}

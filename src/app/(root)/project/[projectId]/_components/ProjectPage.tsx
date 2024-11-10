@@ -10,20 +10,28 @@ import Description from "@/components/ui/description";
 import { FaTimes } from "react-icons/fa";
 import PlaceBid from "./PlaceBid";
 import BidList from "./BidList";
+import { useAppSelector } from "@/redux/hooks";
+import { toast } from "sonner";
 
 const ProjectPage = () => {
   const [showPlaceBid, setShowPlaceBid] = useState(false);
   const [project, setProject] = useState<ProjectDataProps>();
   const [selectedCurrency, setSelectedCurrency] = useState("INR");
   const [amount, setAmount] = useState(0);
+  const [error, setError] = useState('')
   const { projectId } = useParams();
+  const user = useAppSelector(state => state.user.user)
 
   useEffect(() => {
     if (typeof projectId === "string") {
       (async () => {
-        const { project } = await fetchProjectById(projectId);
-        setProject(project);
-        console.log(project, "here is project");
+        const data = await fetchProjectById(projectId);
+        setProject(data?.project);
+        console.log(data.project, "here is project");
+        if (data?.success === false) {
+          toast.error(data.message)
+          setError(data.message)
+        }
       })();
     } else {
       console.error("Invalid projectId:", projectId);
@@ -34,7 +42,7 @@ const ProjectPage = () => {
     setShowPlaceBid(!showPlaceBid);
   };
 
-  if (!project) return <div className="text-center py-10 text-gray-700">Loading...</div>;
+  if (!project) return <div className="text-center py-10 text-red-500">{error ? error : 'Loading...'}</div>;
 
   return (
     <div className="min-h-screen text-gray-900">
@@ -162,53 +170,67 @@ const ProjectPage = () => {
           </div>
 
           {/* Bids Section */}
-          <section className={`space-y-4 pt-8 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
-            <BidList project={project} />
-          </section>
+          {user?.role === "freelancer" &&
+           <section className={`space-y-4 pt-8 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
+           <BidList project={project} />
+         </section>
+          }
+         
         </main>
 
-        <aside
-          className={`w-full lg:w-1/4 bg-white px-4 lg:px-2 py-8 right-0 lg:right-7 lg:fixed top-[80px] h-[calc(100vh-80px)] overflow-y-auto 
-    fixed bottom-0 lg:translate-y-0 transition-transform duration-300 ease-in-out z-20
-    ${showPlaceBid ? "translate-y-0" : "translate-y-full lg:translate-y-0"}`}
-        >
-          {/* Close Button */}
-          <button
-            onClick={() => setShowPlaceBid(false)}
-            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 lg:hidden"
-          >
-            <FaTimes size={20} />
-          </button>
+        {user?.role === "client" &&
+           <section className={`space-y-4 pt-2 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
+           <BidList project={project} />
+         </section>
+          }
 
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div>
-                <p className="text-gray-700 text-sm">Client Name</p>
-                <p className="text-gray-900 font-semibold">Piyush Joshi</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div>
-                <p className="text-gray-700 text-sm">Email</p>
-                <a
-                  href={`mailto:piyushjoshi81204@gmail.com`}
-                  className="text-teal-600 hover:underline font-medium"
-                >
-                  piyushjoshi81204@gmail.com
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-10">
-            <PlaceBid
-              selectedCurrency={selectedCurrency}
-              amount={amount}
-              setSelectedCurrency={setSelectedCurrency}
-              setAmount={setAmount}
-              projectId={projectId as string}
-            />
-          </div>
-        </aside>
+        { user?.role === "freelancer" && 
+        <>  
+         <aside
+         className={`w-full lg:w-1/4 bg-white px-4 lg:px-2 py-8 right-0 lg:right-7 lg:fixed top-[80px] h-[calc(100vh-80px)] overflow-y-auto 
+   fixed bottom-0 lg:translate-y-0 transition-transform duration-300 ease-in-out z-20
+   ${showPlaceBid ? "translate-y-0" : "translate-y-full lg:translate-y-0"}`}
+       >
+         {/* Close Button */}
+         <button
+           onClick={() => setShowPlaceBid(false)}
+           className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 lg:hidden"
+         >
+           <FaTimes size={20} />
+         </button>
+
+         <div className="space-y-4">
+           <div className="flex items-center gap-4">
+             <div>
+               <p className="text-gray-700 text-sm">Client Name</p>
+               <p className="text-gray-900 font-semibold">Piyush Joshi</p>
+             </div>
+           </div>
+           <div className="flex items-center gap-4">
+             <div>
+               <p className="text-gray-700 text-sm">Email</p>
+               <a
+                 href={`mailto:piyushjoshi81204@gmail.com`}
+                 className="text-teal-600 hover:underline font-medium"
+               >
+                 piyushjoshi81204@gmail.com
+               </a>
+             </div>
+           </div>
+         </div>
+         <div className="mt-10">
+           <PlaceBid
+             selectedCurrency={selectedCurrency}
+             amount={amount}
+             setSelectedCurrency={setSelectedCurrency}
+             setAmount={setAmount}
+             projectId={projectId as string}
+           />
+         </div>
+       </aside>
+       </>
+        }
+      
       </div>
       <button
         className="lg:hidden fixed bottom-0 left-0 right-0 text-lg md:text-xl bg-teal-500 text-white py-3 flex items-center justify-center gap-2 text-center font-medium shadow-2xl shadow-teal-500/30 -mt-1"

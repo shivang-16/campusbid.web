@@ -33,6 +33,7 @@ const Header: React.FC = () => {
       const updatedUser = await savePersonalInfo({ role: option });
       dispatch(userData(updatedUser.user));
       setDropdownOpen(false);
+      router.replace('/')
     } catch (error) {
       console.error("Error updating role:", error);
     }

@@ -12,6 +12,7 @@ import PlaceBid from "./PlaceBid";
 import BidList from "./BidList";
 import { useAppSelector } from "@/redux/hooks";
 import { toast } from "sonner";
+import Bid from "./Bid";
 
 const ProjectPage = () => {
   const [showPlaceBid, setShowPlaceBid] = useState(false);
@@ -49,15 +50,15 @@ const ProjectPage = () => {
       <Header />
       <div className="max-w-7xl mx-auto pt-24 pb-16 lg:pb-10 px-1 lg:px-4 xl:px-0 lg:flex gap-4">
         {/* Main Content */}
-        <main className="w-full lg:w-3/4">
+        <main className="w-full">
           <div className="bg-white p-4 md:p-6 lg:p-8 border-r-[1px] border-gray-200 mb-5">
             <header className=" pb-4 mb-4">
               <h1 className="text-2xl md:text-[26px] font-semibold text-gray-700">{project.title}</h1>
               <span
-                className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-semibold ${project.status === "open" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-semibold ${project.status === "open" ? "bg-green-100 text-green-700" : project.status === "closed" ? "bg-red-100 text-red-700" : "bg-orange-100 text-yellow-700"
                   }`}
               >
-                {project.status === "open" ? "Open" : "Closed"}
+                {project.status}
               </span>
             </header>
 
@@ -178,10 +179,16 @@ const ProjectPage = () => {
          
         </main>
 
-        {user?.role === "client" &&
-           <section className={`space-y-4 pt-2 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
+        {user?.role === "client" && 
+           <div className="flex flex-col">
+           { project?.assignedBid && <div className="mb-7">
+             <h1>Assigned Bid</h1>
+             <Bid bid= {typeof project.assignedBid === "object" && project?.assignedBid} />
+            </div>}
+           <section className={`space-y-4 pt-2  px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
            <BidList project={project} />
          </section>
+         </div>
           }
 
         { user?.role === "freelancer" && 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Header from '@/components/Header';
 import DatePicker from 'react-datepicker';
@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import Description from '@/components/ui/description';
 import { ChangeEvent, KeyboardEvent } from 'react';
 import InputWithCurrency from '@/components/ui/amountinput';
-
+import { getAllOptions } from '@/actions/data_actions';
 
 interface Budget {
   min: number;
@@ -27,11 +27,17 @@ interface StepFiveProps {
   setBudget: React.Dispatch<React.SetStateAction<Budget>>;
 }
 
+interface option {
+  _id: string;
+  option: string
+  type: string
+  values: string
+  tag: string
+}
+
 const Client: React.FC = () => {
   const [stepIndex, setStepIndex] = useState(0);
   const [title, setTitle] = useState<string>('');
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [deadline, setDeadline] = useState<Date | null>(null);
   const [budget, setBudget] = useState({
     min: 0, max: 0, currency: ''
@@ -40,7 +46,49 @@ const Client: React.FC = () => {
   const [filePreviews, setFilePreviews] = useState<string[]>([]); // Store preview URLs
   const [description, setDescription] = useState<string>('');
   const [inputSkillValue, setInputSkillValue] = useState<string>("");
-  const [inputCategoryValue, setInputCategoryValue] = useState<string>("");
+  const [typeValueCategory, setTypeValueCategory] = useState("");
+  const [typeValueSkill, setTypeValueSkill] = useState("");
+  const [options, setOptions] = useState<option[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<option[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<option[]>([]);
+  const [blurCategory, setBlurCategory] = useState(false);
+  const [blurSkill, setBlurSkill] = useState(false);
+
+
+  useEffect(() => {
+    setOptions([])
+    const fetchData = async () => {
+      try {
+        const data = await getAllOptions("skill", "", typeValueSkill);
+        setOptions(data.options);
+        console.log(data.options);
+      } catch (error) {
+        console.error("Error fetching options:", error);
+      }
+    };
+    if (stepIndex == 2) {
+      fetchData();
+    }
+  }, [typeValueSkill, stepIndex]);
+
+
+
+  useEffect(() => {
+    setOptions([])
+    const fetchData = async () => {
+      try {
+        const data = await getAllOptions("category", "", typeValueCategory);
+        setOptions(data.options);
+        console.log(data.options);
+      } catch (error) {
+        console.error("Error fetching options:", error);
+      }
+    };
+    if (stepIndex == 1) {
+      fetchData();
+    }
+  }, [typeValueCategory, stepIndex]);
+
 
 
   const router = useRouter()
@@ -117,33 +165,33 @@ const Client: React.FC = () => {
 
 
 
-  const handleRemoveSkill = (skillToRemove: string) => {
+  const handleRemoveSkill = (skillToRemove: option) => {
     setSelectedSkills(selectedSkills.filter((skill) => skill !== skillToRemove));
   };
 
   const handleInputSkillChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputSkillValue(e.target.value);
+    setTypeValueSkill(e.target.value);
   };
 
-  const handleRemoveCategory = (categoryToRemove: string) => {
+  const handleRemoveCategory = (categoryToRemove: option) => {
     setSelectedCategories(selectedCategories.filter((category) => category !== categoryToRemove));
   };
 
   const handleInputCategoryChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputCategoryValue(e.target.value);
+    setTypeValueCategory(e.target.value);
   };
 
-  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputSkillValue) {
-      e.preventDefault();
-      if (!selectedSkills.includes(inputSkillValue)) {
-        setSelectedSkills([...selectedSkills, inputSkillValue]);
-        setInputSkillValue("");
-      }
-    }
-  };
+  // const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === "Enter" && inputSkillValue) {
+  //     e.preventDefault();
+  //     if (!selectedSkills.includes(inputSkillValue)) {
+  //       setSelectedSkills([...selectedSkills, inputSkillValue]);
+  //       setInputSkillValue("");
+  //     }
+  //   }
+  // };
 
-  const handleSkillSelect = (skill: string) => {
+  const handleSkillSelect = (skill: option) => {
     setSelectedSkills((prevSkills) => {
       if (prevSkills.includes(skill) && prevSkills.length > 1) {
         return prevSkills.filter((s) => s !== skill); // Remove skill if already selected
@@ -155,7 +203,7 @@ const Client: React.FC = () => {
   };
 
 
-  const handleCategorySelect = (category: string) => {
+  const handleCategorySelect = (category: option) => {
     setSelectedCategories((prevCategories) => {
       if (prevCategories.includes(category) && prevCategories.length > 1) {
         return prevCategories.filter((s) => s !== category); // Remove skill if already selected
@@ -313,33 +361,55 @@ const Client: React.FC = () => {
                 <p className="text-base lg:text-lg text-gray-600 mt-4 max-w-lg mx-auto text-justify md:text-none">
                   Select the category that best represents your project. This will help us tailor recommendations and resources for your project needs.
                 </p>
+
                 <div className="w-full max-w-md mx-auto mt-8">
-                  <div className="flex flex-wrap items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-700 focus-within:border-teal-500">
-                    {selectedCategories.map((Category) => (
-                      <span
-                        key={Category}
-                        className="flex items-center px-3 py-1.5 bg-teal-600 text-white rounded-full text-xs font-medium"
-                      >
-                        {Category}
-                        <button
-                          onClick={() => handleRemoveCategory(Category)}
-                          className="ml-2 text-white hover:text-gray-200 focus:outline-none"
+                  <div className="relative">
+                    <div className="flex flex-wrap items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus-within:border-teal-500">
+                      {selectedCategories.map((category) => (
+                        <span
+                          key={category._id}
+                          className="flex items-center px-2.5 py-1 bg-teal-600 text-white rounded-full text-xs md:text-sm font-medium"
                         >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
-                    <input
-                      type="text"
-                      value={inputCategoryValue}
-                      onChange={handleInputCategoryChange}
-                      onKeyDown={handleInputKeyDown}
-                      placeholder={selectedCategories.length === 0 ? "Add at least one relevant Category" : ""}
-                      className="flex-grow px-2 py-1 outline-none bg-transparent text-sm"
-                    />
+                          {category.values}
+                          <button
+                            onClick={() => handleRemoveCategory(category)}
+                            className="ml-1 text-white hover:text-gray-200 focus:outline-none font-medium"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
+                      <input
+                        type="text"
+                        value={typeValueCategory}
+                        onChange={handleInputCategoryChange}
+                        onClick={() => setBlurCategory(true)}
+                        onBlur={() => setTimeout(() => setBlurCategory(false), 100)}
+                        placeholder={selectedCategories.length === 0 ? "Add at least one relevant Category" : ""}
+                        className="flex-1 bg-transparent outline-none text-sm md:text-base py-0.5 px-2 text-gray-700 placeholder-gray-400"
+                      />
+                    </div>
+
+                    {blurCategory && (
+                      <div className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 w-full max-h-60 overflow-y-auto">
+                        {options.length > 0 ? (
+                          options.map((category) => (
+                            <div
+                              key={category._id}
+                              className="px-4 py-2 hover:bg-blue-50 hover:text-teal-600 cursor-pointer text-sm md:text-base transition-all duration-200"
+                              onMouseDown={() => handleCategorySelect(category)}
+                            >
+                              {category.values}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-gray-500 text-sm">No Categories found</div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
-                <p className="block text-lg md:text:xl text-gray-700 font-semibold mb-3 mt-3">Popular Categories:</p>
+                {/* <p className="block text-lg md:text:xl text-gray-700 font-semibold mb-3 mt-3">Popular Categories:</p>
                 <div className="flex flex-wrap gap-3 mb-6">
                   {Categories.map((category) => (
                     <button
@@ -353,7 +423,7 @@ const Client: React.FC = () => {
                       {category}
                     </button>
                   ))}
-                </div>
+                </div> */}
               </div>
             </section>
           )}
@@ -367,32 +437,53 @@ const Client: React.FC = () => {
                   Select the skills that are essential for the job. Aim for 3-5 skills to get the best match for your role requirements.
                 </p>
                 <div className="w-full max-w-md mx-auto mt-8">
-                  <div className="flex flex-wrap items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-700 focus-within:border-teal-500">
-                    {selectedSkills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="flex items-center px-3 py-1.5 bg-teal-600 text-white rounded-full text-xs font-medium"
-                      >
-                        {skill}
-                        <button
-                          onClick={() => handleRemoveSkill(skill)}
-                          className="ml-2 text-white hover:text-gray-200 focus:outline-none"
+                  <div className="relative">
+                    <div className="flex flex-wrap items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus-within:border-teal-500">
+                      {selectedSkills.map((skill) => (
+                        <span
+                          key={skill._id}
+                          className="flex items-center px-2.5 py-1 bg-teal-600 text-white rounded-full text-xs md:text-sm font-medium"
                         >
-                          ✕
-                        </button>
-                      </span>
-                    ))}
-                    <input
-                      type="text"
-                      value={inputSkillValue}
-                      onChange={handleInputSkillChange}
-                      onKeyDown={handleInputKeyDown}
-                      placeholder={selectedSkills.length === 0 ? "Add at least one relevant skill" : ""}
-                      className="flex-grow px-2 py-1 outline-none bg-transparent text-sm"
-                    />
+                          {skill.values}
+                          <button
+                            onClick={() => handleRemoveSkill(skill)}
+                            className="ml-1 text-white hover:text-gray-200 focus:outline-none font-medium"
+                          >
+                            ✕
+                          </button>
+                        </span>
+                      ))}
+                      <input
+                        type="text"
+                        value={typeValueSkill}
+                        onChange={handleInputSkillChange}
+                        onClick={() => setBlurSkill(true)}
+                        onBlur={() => setTimeout(() => setBlurSkill(false), 100)}
+                        placeholder={selectedSkills.length === 0 ? "Add at least one relevant skill" : ""}
+                        className="flex-1 bg-transparent outline-none text-sm md:text-base py-0.5 px-2 text-gray-700 placeholder-gray-400"
+                      />
+                    </div>
+
+                    {blurSkill && (
+                      <div className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 w-full max-h-60 overflow-y-auto">
+                        {options.length > 0 ? (
+                          options.map((skill) => (
+                            <div
+                              key={skill._id}
+                              className="px-4 py-2 hover:bg-blue-50 hover:text-teal-600 cursor-pointer text-sm md:text-base transition-all duration-200"
+                              onMouseDown={() => handleSkillSelect(skill)}
+                            >
+                              {skill.values}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-4 py-2 text-gray-500 text-sm">No skills found</div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
-                <p className="block text-lg md:text:xl text-gray-700 font-semibold mb-3 mt-5">Popular Skills:</p>
+                {/* <p className="block text-lg md:text:xl text-gray-700 font-semibold mb-3 mt-5">Popular Skills:</p>
                 <div className="flex flex-wrap gap-3 mb-6">
                   {popularSkills.map((skill) => (
                     <button
@@ -404,7 +495,7 @@ const Client: React.FC = () => {
                       {skill}
                     </button>
                   ))}
-                </div>
+                </div> */}
               </div>
             </section>
           )}
@@ -570,57 +661,48 @@ const Client: React.FC = () => {
                     <FaEdit onClick={() => setStepIndex(0)} className="text-teal-600 cursor-pointer" />
                   </div>
 
-                  <div className="border-b pb-4 flex flex-col items-start gap-2">
-                    <h3 className="text-gray-700 font-semibold mb-2 text-lg md:text:xl">Categories</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {Categories.map((category) => (
-                        <button
-                          key={category}
-                          onClick={() => { handleCategorySelect(category) }}
-                          className={`px-2 py-1 border text-xs md:text-sm rounded-lg ${selectedCategories.includes(category)
-                            ? "bg-teal-600 text-white"
-                            : "bg-gray-200 text-gray-700"
-                            }`}
-                        >
-                          {category}
-                        </button>
-                      ))}
+                  <div className="border-b pb-4 flex flex-row justify-between items-center gap-2">
+                    <div className='flex flex-col items-start justify-center'>
+                      <h3 className="text-gray-700 font-semibold mb-2 text-lg md:text:lg">Categories</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedCategories.map((category) => (
+                          <button
+                            key={category._id}
+                            onClick={() => { handleCategorySelect(category) }}
+                            className={`px-2 py-1 border text-xs md:text-sm rounded-lg ${selectedCategories.includes(category)
+                              ? "bg-teal-600 text-white"
+                              : "bg-gray-200 text-gray-700"
+                              }`}
+                          >
+                            {category.values}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    {/* <div className="mt-2 flex flex-col items-start">
-                    <h4 className="text-gray-600 font-semibold mb-2 text-lg md:text:lg">Selected Categories:</h4>
-                    <p className="text-sm text-gray-600">
-                      {selectedCategories.length > 0
-                        ? selectedCategories.join(", ")
-                        : "No categories selected"}
-                    </p>
-                  </div> */}
+                    <FaEdit onClick={() => setStepIndex(1)} className="text-teal-600 cursor-pointer" />
                   </div>
 
                   {/* Skills Section */}
-                  <div className="border-b pb-4 flex flex-col items-start gap-2">
-                    <h3 className="text-gray-700 font-semibold mb-2 text-lg md:text:xl">Skills</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {popularSkills.map((skill) => (
-                        <button
-                          key={skill}
-                          onClick={() => { handleSkillSelect(skill) }}
-                          className={`px-2 py-1 border text-xs md:text-sm rounded-lg ${selectedSkills.includes(skill)
-                            ? "bg-teal-600 text-white"
-                            : "bg-gray-200 text-gray-700"
-                            }`}
-                        >
-                          {skill}
-                        </button>
-                      ))}
+                  <div className="border-b pb-4 flex flex-row justify-between items-center gap-2">
+                    <div className='flex flex-col items-start justify-center'>
+                      <h3 className="text-gray-700 font-semibold mb-2 text-lg md:text:lg">Skills</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedSkills.map((skill) => (
+                          <button
+                            key={skill._id}
+                            onClick={() => { handleSkillSelect(skill) }}
+                            className={`px-2 py-1 border text-xs md:text-sm rounded-lg ${selectedSkills.includes(skill)
+                              ? "bg-teal-600 text-white"
+                              : "bg-gray-200 text-gray-700"
+                              }`}
+                          >
+                            {skill.values}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    {/* <div className="mt-2 flex flex-col items-start">
-                    <h4 className="text-gray-600 font-semibold mb-2 text-lg md:text:lg">Selected Skills:</h4>
-                    <p className="text-sm text-gray-600">
-                      {selectedSkills.length > 0
-                        ? selectedSkills.join(", ")
-                        : "No skills selected"}
-                    </p>
-                  </div> */}
+                    
+                    <FaEdit onClick={() => setStepIndex(2)} className="text-teal-600 cursor-pointer" />
                   </div>
 
                   {/* Deadline Section */}
@@ -631,7 +713,7 @@ const Client: React.FC = () => {
                         {deadline ? deadline.toLocaleDateString() : "Deadline not set"}
                       </p>
                     </div>
-                    <FaEdit onClick={() => setStepIndex(2)} className="text-teal-600 cursor-pointer" />
+                    <FaEdit onClick={() => setStepIndex(3)} className="text-teal-600 cursor-pointer" />
                   </div>
 
                   {/* Budget Section */}
@@ -642,7 +724,7 @@ const Client: React.FC = () => {
                         {budget ? `${budget.min} - ${budget.max} (INR)` : "Budget not set"}
                       </p>
                     </div>
-                    <FaEdit onClick={() => setStepIndex(3)} className="text-teal-600 cursor-pointer" />
+                    <FaEdit onClick={() => setStepIndex(4)} className="text-teal-600 cursor-pointer" />
                   </div>
 
                   {/* Files Section */}
@@ -653,7 +735,7 @@ const Client: React.FC = () => {
                         {files.map((file, index) => (
                           <li key={index} className="flex items-center justify-between">
                             <span>{file.name}</span>
-                            <FaEdit onClick={() => setStepIndex(4)} className="text-teal-600 cursor-pointer ml-2" />
+                            <FaEdit onClick={() => setStepIndex(5)} className="text-teal-600 cursor-pointer ml-2" />
                           </li>
                         ))}
                       </ul>

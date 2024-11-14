@@ -90,14 +90,15 @@ const ProjectPage = () => {
             <section className="space-y-4 mt-9">
               <h2 className="text-xl md:text-[20px] font-semibold text-gray-700">Skills Required</h2>
               <ul className="flex flex-wrap gap-2 md:gap-3">
-                {project.skillsRequired.map((skill, index) => (
-                  <li
+                {project.skillsRequired?.map((skill, index) => {
+                const skillLabel = typeof skill === 'string' ? skill : skill.value;
+                return <li
                     key={index}
                     className="bg-teal-50 text-teal-800 px-3 py-1 rounded-full text-xs md:text-sm font-medium shadow-sm"
                   >
-                    {skill}
+                    {skillLabel}
                   </li>
-                ))}
+                })}
               </ul>
             </section>
 

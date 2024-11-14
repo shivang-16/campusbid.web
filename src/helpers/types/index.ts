@@ -114,6 +114,13 @@ export interface Bids {
     updatedAt: Date;
 
 }
+export interface IOptionset {
+  _id: string,
+  option: string,
+  type: string,
+  tag: string,
+  value: string
+}
 
 // Project Interface
 export interface ProjectDataProps {
@@ -130,8 +137,8 @@ export interface ProjectDataProps {
   assignedBid: any
   postedBy: string; // Reference to the User who created the project
   bids: Bids[]; // Array of bids
-  category: 'writing' | 'design' | 'development' | 'data-entry' | 'marketing';
-  skillsRequired: string[];
+  category: any[] ;
+  skillsRequired: any[] ;
   supportingDocs: ISupportingDoc[]; // Array of supporting documents
   college: ICollege,
   location: {

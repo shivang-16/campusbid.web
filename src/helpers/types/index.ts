@@ -127,7 +127,7 @@ export interface ProjectDataProps {
   };
   deadline: Date;
   status: 'open' | 'in_progress' | 'completed' | 'closed';
-  assignedBid: string
+  assignedBid: any
   postedBy: string; // Reference to the User who created the project
   bids: Bids[]; // Array of bids
   category: 'writing' | 'design' | 'development' | 'data-entry' | 'marketing';

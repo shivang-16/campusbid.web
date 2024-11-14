@@ -56,12 +56,7 @@ const PlaceBid = ({
 
       console.log(response, "here is response"); // Debugging line
 
-      if (response.success) {
-        toast.success(response.message);
-        router.replace(`/bid/${response.bid._id}`); // Ensure correct route format
-      } else {
-        toast.error(response.message);
-      }
+   
 
       // Map over files to upload each one to its corresponding signed URL
       const uploadFiles = uploadedFiles.map((file, index) => {
@@ -71,6 +66,14 @@ const PlaceBid = ({
 
       // Wait until all file uploads are complete
       await Promise.all(uploadFiles);
+
+      if (response.success) {
+        toast.success(response.message);
+        router.replace(`/bid/${response.bid._id}`); // Ensure correct route format
+      } else {
+        toast.error(response.message);
+      }
+      
     } catch (error) {
       console.error("Error creating bid:", error);
     }

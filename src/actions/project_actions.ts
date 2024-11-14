@@ -39,6 +39,7 @@ export const fetchProjectById = async (projectId: string) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/project/get/${projectId}`,
       {
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
             Cookie: `token=${token}`,
@@ -63,6 +64,7 @@ export const fetchAllProjects = async (query?: string) => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/project/get`,
       {
+        method: "GET",
         headers: {
             "Content-Type": "application/json",
             Cookie: `token=${token}`,
@@ -80,5 +82,29 @@ export const fetchAllProjects = async (query?: string) => {
     } else {
       throw new Error("An unknown error occurred while fetching projects!");
     }
+  }
+};
+
+export const assignBidToProject = async (bidId: string, projectId: string) => {
+    const token = await getCookie("token");
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/project/assign/bid?bidId=${bidId}&projectId=${projectId}`,
+      {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Cookie: `token=${token}`,
+          },
+          credentials: "include",
+      }
+    );
+
+    const responseData = await response.json();
+
+    return responseData;
+  } catch (error: any) {
+    return error.message
   }
 };

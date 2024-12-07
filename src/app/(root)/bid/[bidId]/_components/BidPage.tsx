@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Image from 'next/image';
+import Loader from '@/components/Loader';
 
 const BidPage = () => {
   const [bid, setBid] = useState<Bids | null>(null);
@@ -24,7 +25,7 @@ const BidPage = () => {
 
   if (!bid) return (
     <div className="text-center py-20 text-gray-700 animate-pulse">
-      Loading...
+      <Loader/>
     </div>
   );
 
@@ -34,9 +35,10 @@ const BidPage = () => {
       <div className="pb-8 pt-20">
         <div className="max-w-4xl mx-auto px-8 py-12 bg-white shadow-lg rounded-2xl border border-gray-200">
           {/* Back Button */}
+          
           <button
             onClick={() => router.back()}
-            className="text-teal-500 font-semibold mb-6 flex items-center space-x-2 hover:text-teal-800 transition-all"
+            className="text-teal-500 font-semibold flex items-center space-x-2 hover:text-teal-800 transition-all"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -44,7 +46,7 @@ const BidPage = () => {
             <span>Back</span>
           </button>
 
-          <h1 className="text-2xl lg:text-3xl font-semibold text-teal-700 py-5 mb-8 text-center">Bid Application Details</h1>
+          <h1 className="text-2xl lg:text-3xl font-semibold text-teal-700 pt-3 pb-5 mb-8 text-center">Bid Application Details</h1>
 
           <div className="space-y-8">
             <SectionTitle title="Application Information" />

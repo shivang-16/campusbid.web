@@ -12,6 +12,7 @@ import PlaceBid from "./PlaceBid";
 import BidList from "./BidList";
 import { useAppSelector } from "@/redux/hooks";
 import { toast } from "sonner";
+import Loader from "@/components/Loader";
 
 const ProjectPage = () => {
   const [showPlaceBid, setShowPlaceBid] = useState(false);
@@ -42,7 +43,7 @@ const ProjectPage = () => {
     setShowPlaceBid(!showPlaceBid);
   };
 
-  if (!project) return <div className="text-center py-10 text-red-500">{error ? error : 'Loading...'}</div>;
+  if (!project) return <div className="text-center text-red-500">{error ? error : <Loader/>}</div>;
 
   return (
     <div className="min-h-screen text-gray-900">
@@ -52,7 +53,7 @@ const ProjectPage = () => {
         <main className="w-full lg:w-3/4">
           <div className="bg-white p-4 md:p-6 lg:p-8 border-r-[1px] border-gray-200 mb-5">
             <header className=" pb-4 mb-4">
-              <h1 className="text-2xl md:text-[26px] font-semibold text-gray-700">{project.title}</h1>
+              <h1 className="text-2xl md:text-[26px] font-bold text-gray-700">{project.title}</h1>
               <span
                 className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-semibold ${project.status === "open" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                   }`}
@@ -63,9 +64,9 @@ const ProjectPage = () => {
 
             {/* Project Description */}
             <section className="space-y-3 md:space-y-4 pb-4">
-              <p className="text-gray-700 leading-relaxed text-justify">
+              <div className="text-gray-700 leading-relaxed text-justify">
                 <Description description={project.description} previewLength={300} />
-              </p>
+              </div>
             </section>
 
 
@@ -101,7 +102,8 @@ const ProjectPage = () => {
             </section>
 
             {/* Supporting Documents */}
-            <section className="space-y-3 mt-9">
+            {project.supportingDocs.length>0 && (
+              <section className="space-y-3 mt-9">
               <h2 className="text-xl md:text-[20px] font-semibold text-gray-700">Supporting Documents</h2>
               <ul className="space-y-2">
                 {project.supportingDocs.map((doc, index) => {
@@ -139,6 +141,8 @@ const ProjectPage = () => {
                 })}
               </ul>
             </section>
+            )}
+            
 
             {/* College Information */}
             <section className="space-y-3 mt-9">
@@ -171,66 +175,66 @@ const ProjectPage = () => {
 
           {/* Bids Section */}
           {user?.role === "freelancer" &&
-           <section className={`space-y-4 pt-8 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
-           <BidList project={project} />
-         </section>
+            <section className={`space-y-4 pt-8 px-4 bg-white ${project.bids.length > 0 && "rounded-xl "}`}>
+              <BidList project={project} />
+            </section>
           }
-         
+
         </main>
 
         {user?.role === "client" &&
-           <section className={`space-y-4 pt-2 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
-           <BidList project={project} />
-         </section>
-          }
+          <section className={`space-y-4 pt-2 px-4 bg-white ${project.bids.length > 0 && "rounded-xl shadow-md"}`}>
+            <BidList project={project} />
+          </section>
+        }
 
-        { user?.role === "freelancer" && 
-        <>  
-         <aside
-         className={`w-full lg:w-1/4 bg-white px-4 lg:px-2 py-8 right-0 lg:right-7 lg:fixed top-[80px] h-[calc(100vh-80px)] overflow-y-auto 
+        {user?.role === "freelancer" &&
+          <>
+            <aside
+              className={`w-full lg:w-1/4 bg-white px-4 lg:px-2 py-8 right-0 lg:right-7 lg:fixed top-[80px] h-[calc(100vh-80px)] overflow-y-auto 
    fixed bottom-0 lg:translate-y-0 transition-transform duration-300 ease-in-out z-20
    ${showPlaceBid ? "translate-y-0" : "translate-y-full lg:translate-y-0"}`}
-       >
-         {/* Close Button */}
-         <button
-           onClick={() => setShowPlaceBid(false)}
-           className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 lg:hidden"
-         >
-           <FaTimes size={20} />
-         </button>
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowPlaceBid(false)}
+                className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 lg:hidden"
+              >
+                <FaTimes size={20} />
+              </button>
 
-         <div className="space-y-4">
-           <div className="flex items-center gap-4">
-             <div>
-               <p className="text-gray-700 text-sm">Client Name</p>
-               <p className="text-gray-900 font-semibold">Piyush Joshi</p>
-             </div>
-           </div>
-           <div className="flex items-center gap-4">
-             <div>
-               <p className="text-gray-700 text-sm">Email</p>
-               <a
-                 href={`mailto:piyushjoshi81204@gmail.com`}
-                 className="text-teal-600 hover:underline font-medium"
-               >
-                 piyushjoshi81204@gmail.com
-               </a>
-             </div>
-           </div>
-         </div>
-         <div className="mt-10">
-           <PlaceBid
-             selectedCurrency={selectedCurrency}
-             amount={amount}
-             setSelectedCurrency={setSelectedCurrency}
-             setAmount={setAmount}
-             projectId={projectId as string}
-           />
-         </div>
-       </aside>
-       </>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <p className="text-gray-700 text-sm">Client Name</p>
+                    <p className="text-gray-900 font-semibold">Piyush Joshi</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div>
+                    <p className="text-gray-700 text-sm">Email</p>
+                    <a
+                      href={`mailto:piyushjoshi81204@gmail.com`}
+                      className="text-teal-600 hover:underline font-medium"
+                    >
+                      piyushjoshi81204@gmail.com
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-10">
+                <PlaceBid
+                  selectedCurrency={selectedCurrency}
+                  amount={amount}
+                  setSelectedCurrency={setSelectedCurrency}
+                  setAmount={setAmount}
+                  projectId={projectId as string}
+                />
+              </div>
+            </aside>
+          </>
         }
-      
+
       </div>
       <button
         className="lg:hidden fixed bottom-0 left-0 right-0 text-lg md:text-xl bg-teal-500 text-white py-3 flex items-center justify-center gap-2 text-center font-medium shadow-2xl shadow-teal-500/30 -mt-1"

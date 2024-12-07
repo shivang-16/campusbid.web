@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { fetchMyAssignedProjects, fetchMyBids } from "@/actions/user_actions";
 import { Bids, ProjectDataProps } from "@/helpers/types";
 import Link from "next/link";
+import Loader from "@/components/Loader";
 
 const FreelancerProfilePage = () => {
     const userdetails = useSelector((state: RootState) => state.user.user);
@@ -37,6 +38,9 @@ const FreelancerProfilePage = () => {
             handleFetchProjects();
         }
     }, [projectStatus, activeTab]);
+
+    if (!bids || !projects ) return <div className="text-center text-red-500">{<Loader/>}</div>;
+    
 
     const renderBids = () => (
         <div className="space-y-6 py-6 px-4">
@@ -81,9 +85,9 @@ const FreelancerProfilePage = () => {
                         <div className="flex flex-col items-center justify-center gap-1">
                             <div className="relative w-24 h-24 bg-teal-500 rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-md">
                                 {userdetails?.name.charAt(0)}
-                                <span className="absolute bottom-0 right-0 bg-teal-700 text-white text-xs px-2 py-1 rounded-full font-semibold">{userdetails?.role}</span>
+                                <span className="absolute bottom-0 left-5 bg-teal-800 text-white text-xs px-2 py-1 rounded-full font-medium">{userdetails?.role}</span>
                             </div>
-                            <h2 className="text-sm font-semibold text-gray-500 mt-2 bg-teal-100 rounded-3xl py-1.5 px-2.5">{userdetails?.username}</h2>
+                            <h2 className="text-xs font-semibold text-gray-600 mt-2 bg-teal-100 rounded-3xl py-1.5 px-2.5">{userdetails?.username}</h2>
                         </div>
                         <div className="space-y-1">
                             <h1 className="text-2xl font-bold text-gray-800">{userdetails?.name}</h1>

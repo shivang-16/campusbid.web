@@ -3,7 +3,7 @@
 import { getCookie } from "./cookie_actions";
 
 export const createProject = async (data: any) => {
-    const token = await getCookie("token");
+  const token = await getCookie("token");
 
   try {
     const response = await fetch(
@@ -33,17 +33,17 @@ export const createProject = async (data: any) => {
 };
 
 export const fetchProjectById = async (projectId: string) => {
-    const token = await getCookie("token");
+  const token = await getCookie("token");
 
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/project/get/${projectId}`,
       {
         headers: {
-            "Content-Type": "application/json",
-            Cookie: `token=${token}`,
-          },
-          credentials: "include",
+          "Content-Type": "application/json",
+          Cookie: `token=${token}`,
+        },
+        credentials: "include",
       }
     );
 
@@ -51,23 +51,23 @@ export const fetchProjectById = async (projectId: string) => {
 
     return responseData;
   } catch (error: any) {
-      // throw new Error(`Error fetching project: ${error.message}`);
-      return {error: error.message}
+    // throw new Error(`Error fetching project: ${error.message}`);
+    return { error: error.message }
   }
 };
 
 export const fetchAllProjects = async (query?: string) => {
-    const token = await getCookie("token");
+  const token = await getCookie("token");
 
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/project/get`,
       {
         headers: {
-            "Content-Type": "application/json",
-            Cookie: `token=${token}`,
-          },
-          credentials: "include",
+          "Content-Type": "application/json",
+          Cookie: `token=${token}`,
+        },
+        credentials: "include",
       }
     );
 

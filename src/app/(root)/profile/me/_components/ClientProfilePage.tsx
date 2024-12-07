@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { fetchMyProjects } from "@/actions/user_actions";
 import { ProjectDataProps } from "@/helpers/types";
 import Link from "next/link";
+import Loader from "@/components/Loader";
 
 const ClientProfilePage = () => {
     const userdetails = useSelector((state: RootState) => state.user.user);
@@ -21,6 +22,8 @@ const ClientProfilePage = () => {
             console.log(projects)
         })();
     }, [projectStatus]);
+
+    if (!projects ) return <div className="text-center text-red-500">{<Loader/>}</div>;
 
 
 

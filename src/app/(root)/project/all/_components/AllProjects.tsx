@@ -84,8 +84,8 @@ const AllProjectsPage = ({ projects }: AllProjectsPageProps) => {
                 key={skill}
                 onClick={() => handleSkillToggle(skill)}
                 className={`px-3 py-1 rounded-full text-sm font-medium border ${selectedSkills.includes(skill)
-                    ? "bg-teal-500 text-white border-teal-500"
-                    : "bg-white text-teal-500 border-teal-500 hover:bg-teal-100"
+                  ? "bg-teal-500 text-white border-teal-500"
+                  : "bg-white text-teal-500 border-teal-500 hover:bg-teal-100"
                   } transition duration-200`}
               >
                 {skill}
@@ -132,31 +132,40 @@ const AllProjectsPage = ({ projects }: AllProjectsPageProps) => {
         {/* Project Listings */}
         <div className="flex flex-col gap-6 md:gap-8">
           {projects.map((project, index) => (
+
             <div
               key={index}
-              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              className="bg-white p-8 rounded-xl shadow-md transition-transform transform duration-300 border border-gray-200"
             >
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">{project.title}</h3>
-              <p className="text-gray-600 mb-4">{project.description}</p>
-              <div className="flex justify-between items-center mb-4">
-
-                <span className="text-teal-600 font-bold">₹{project.budget.min} - ₹{project.budget.max} <span className="text-teal-600 font-medium">/ Project</span></span>
-                <Link href={`/project/${project._id}`} >
-
-                  <button className="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition duration-200">
+              <h3 className="text-2xl font-bold text-gray-700 mb-4">{project.title}</h3>
+              <p className="text-gray-700 mb-6 leading-relaxed">{project.description.substring(0,800)}...</p>
+              <div className="flex justify-between items-center mb-6">
+                <span className="text-teal-700 font-semibold text-lg">
+                  ₹{project.budget.min} - ₹{project.budget.max}
+                  <span className="text-teal-600 text-sm font-medium"> / Project</span>
+                </span>
+                <Link href={`/project/${project._id}`}>
+                  <button className="px-5 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-lg shadow-md hover:from-teal-600 hover:to-teal-700 transition-all duration-300">
                     Bid Now
                   </button>
                 </Link>
               </div>
-              <div className="flex flex-wrap gap-2 mb-2">
+              <div className="flex flex-wrap gap-3 mb-4">
                 {project.skillsRequired.map((skill, i) => (
-                  <span key={i} className="text-xs bg-teal-100 text-teal-700 px-3 py-1 rounded-full">
+                  <span
+                    key={i}
+                    className="text-xs font-medium bg-teal-50 text-teal-800 px-4 py-2 rounded-full border border-teal-200 shadow-sm"
+                  >
                     {skill}
                   </span>
                 ))}
               </div>
-              <p className="text-gray-500 text-sm">Deadline: {new Date(project.deadline).toLocaleDateString('en-GB')}</p>
+              <p className="text-gray-500 text-sm">
+                <span className="font-semibold text-gray-700">Deadline:</span>{" "}
+                {new Date(project.deadline).toLocaleDateString('en-GB')}
+              </p>
             </div>
+
           ))}
         </div>
       </main>

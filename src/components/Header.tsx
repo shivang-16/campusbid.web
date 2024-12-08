@@ -55,17 +55,14 @@ const Header: React.FC = () => {
   const selectedRoleOption = roleOptions.find(option => option.name === role);
 
   return (
-    <header className="flex items-center justify-between px-4 py-2 md:py-2.5 shadow-md fixed w-full z-50 backdrop-blur-2xl bg-[#f8fffe]  border-b border-gray-300 transition duration-300 ease-in-out">
+    <header className="flex items-center justify-between px-4 py-2 md:py-2 md:px-10 rounded-b-3xl shadow-md fixed w-full z-50 backdrop-blur-2xl bg-[#f8fffe]  border-b border-gray-300 transition duration-300 ease-in-out">
       <div className="flex items-center justify-between w-auto space-x-4">
         <img
           src="/assets/icons/favicon.ico"
           alt="CampusBid Logo"
-          className="w-12 h-12 md:w-10 md:h-10 rounded-full transition-transform transform hover:scale-110 shadow-2xl md:shadow-md hover:cursor-pointer"
+          className="w-12 h-12 md:w-12 md:h-12 rounded-full transition-transform transform hover:scale-110 shadow-2xl md:shadow-md hover:cursor-pointer"
           onClick={() => router.replace("/")}
         />
-        <div onClick={() => router.replace("/")} className="hidden md:inline text-xl lg:text-[22px] hover:cursor-pointer font-sans font-bold text-teal-700 tracking-tight hover:text-teal-800 transition duration-300">
-          CampusBid
-        </div>
       </div>
 
       <div className="flex items-center space-x-3 lg:space-x-4 w-auto">

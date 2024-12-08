@@ -1,79 +1,68 @@
-import React, { useState } from "react";
-import { useAppSelector } from "@/redux/hooks";
-import ConfirmationModal from "./BidConfirmationModel"; // Adjust the path as necessary
 import { ProjectDataProps } from "@/helpers/types";
-import { assignBidToProject } from "@/actions/project_actions";
-import { toast } from "sonner";
-import Bid from "./Bid";
+import { useAppSelector } from "@/redux/hooks";
+import Link from "next/link";
+import React from "react";
+import { FaCalendarAlt, FaUserCircle } from "react-icons/fa";
 
 const BidList = ({ project }: { project: ProjectDataProps }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBid, setSelectedBid] = useState<any>(null);
-
-  const handleAssignClick = (bid: any) => {
-    setSelectedBid(bid);
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedBid(null);
-  };
-
-  const handleConfirmAssign = async () => {
-    if (!selectedBid) return;
-
-    try {
-      const response = await assignBidToProject( selectedBid._id, project._id);
-
-      if(response.success) {
-        toast.success(response.message)
-      } else {
-        toast.error(response.message)
-      }
-      
-      handleModalClose();
-    } catch (error) {
-      console.error("Error assigning bid:", error);
-      alert("Failed to assign bid. Please try again.");
-    }
-  };
+  const user = useAppSelector(state => state.user.user);
 
   return (
     <>
-      {project.bids
-      .filter((bid) => !project.assignedBid?._id || bid._id !== project.assignedBid._id)
-      .length === 0 ? (
+      {project.bids.length === 0 ? (
         <h2 className="text-base md:text-[20px] font-medium text-gray-400">
-          No new bid.
+          No bids have been placed yet.
         </h2>
       ) : (
         <h2 className="text-xl md:text-[23px] pb-3 font-semibold text-gray-700 border-b-2 border-gray-200">
-          A total of{" "}
-          <span className="text-teal-600">{project.bids.length} bids</span> have
-          been placed.
+          <span className="text-teal-600">{project.bids.length} bids</span> have been placed.
         </h2>
       )}
 
       <ul className="space-y-4">
-        {project.bids
-        .filter((bid) => !project.assignedBid?._id || bid._id !== project.assignedBid._id) // Filter bids
-        .map((bid, index) => (
-          <React.Fragment key={index}>
-            <Bid bid={bid} handleAssignClick={handleAssignClick}/>
+        {project.bids.map((bid, index) => (
+          <Link href={`/bid/${bid._id}`} key={index}>
+            <li className="flex w-full justify-between py-3 px-1 md:px-6 bg-white transition-all duration-300 ease-in-out">
+              <div className="flex items-center gap-6 pb-3">
+                <div className="w-11 h-11 flex items-center justify-center bg-teal-600 text-white text-xl font-bold rounded-full shadow-md">
+                  {typeof bid.user === "string" ? "?" : bid.user.name.charAt(0)}
+                </div>
+                <div className="flex-1">
+                  <p className="text-[16px] font-semibold text-gray-700 truncate">
+                    {typeof bid.user === "string"
+                      ? "Unknown User"
+                      : bid.user.name}
+                  </p>
+                  <p className="text-sm text-gray-700 flex items-center gap-2 mt-2">
+                    <FaUserCircle className="text-teal-500" />
+                    Amount:
+                    <span className="font-medium text-teal-700">
+                      {bid.currency} {bid.amount}
+                    </span>
+                  </p>
+                  <p className="text-sm text-gray-700 flex items-center gap-2 mt-2">
+                    <FaCalendarAlt className="text-teal-500" />
+                    Deadline:
+                    <span className="font-medium text-teal-700">
+                      {bid.deliveredIn.days} days
+                    </span>
+                  </p>
+                </div>
+
+              </div>
+              <div className="flex">
+                {/* Conditionally render the Assign button if the user is a client */}
+                {user?.role === "client" && (
+                  <button className="ml-4 py-2 px-4 bg-teal-600 text-white text-sm rounded-md hover:bg-teal-700 transition-all duration-200 ease-in-out">
+                    Assign
+                  </button>
+                )}
+              </div>
+            </li>
             <hr className="border-gray-300 my-4" />
-          </React.Fragment>
+          </Link>
         ))}
       </ul>
-
-      {selectedBid && (
-        <ConfirmationModal
-          isOpen={isModalOpen}
-          onClose={handleModalClose}
-          onConfirm={handleConfirmAssign}
-          bid={selectedBid}
-        />
-      )}
     </>
   );
 };

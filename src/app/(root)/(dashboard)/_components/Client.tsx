@@ -10,10 +10,9 @@ import { uploadImageToS3 } from '@/actions/s3_actions';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import Description from '@/components/ui/description';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, KeyboardEvent } from 'react';
 import InputWithCurrency from '@/components/ui/amountinput';
 import { getAllOptions } from '@/actions/data_actions';
-import { IOptionset } from '@/helpers/types';
 
 interface Budget {
   min: number;
@@ -28,7 +27,13 @@ interface StepFiveProps {
   setBudget: React.Dispatch<React.SetStateAction<Budget>>;
 }
 
-
+interface option {
+  _id: string;
+  option: string
+  type: string
+  values: string
+  tag: string
+}
 
 const Client: React.FC = () => {
   const [stepIndex, setStepIndex] = useState(0);
@@ -43,9 +48,9 @@ const Client: React.FC = () => {
   const [inputSkillValue, setInputSkillValue] = useState<string>("");
   const [typeValueCategory, setTypeValueCategory] = useState("");
   const [typeValueSkill, setTypeValueSkill] = useState("");
-  const [options, setOptions] = useState<IOptionset[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<IOptionset[]>([]);
-  const [selectedSkills, setSelectedSkills] = useState<IOptionset[]>([]);
+  const [options, setOptions] = useState<option[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<option[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<option[]>([]);
   const [blurCategory, setBlurCategory] = useState(false);
   const [blurSkill, setBlurSkill] = useState(false);
 
@@ -160,7 +165,7 @@ const Client: React.FC = () => {
 
 
 
-  const handleRemoveSkill = (skillToRemove: IOptionset) => {
+  const handleRemoveSkill = (skillToRemove: option) => {
     setSelectedSkills(selectedSkills.filter((skill) => skill !== skillToRemove));
   };
 
@@ -168,7 +173,7 @@ const Client: React.FC = () => {
     setTypeValueSkill(e.target.value);
   };
 
-  const handleRemoveCategory = (categoryToRemove: IOptionset) => {
+  const handleRemoveCategory = (categoryToRemove: option) => {
     setSelectedCategories(selectedCategories.filter((category) => category !== categoryToRemove));
   };
 
@@ -186,7 +191,7 @@ const Client: React.FC = () => {
   //   }
   // };
 
-  const handleSkillSelect = (skill: IOptionset) => {
+  const handleSkillSelect = (skill: option) => {
     setSelectedSkills((prevSkills) => {
       if (prevSkills.includes(skill) && prevSkills.length > 1) {
         return prevSkills.filter((s) => s !== skill); // Remove skill if already selected
@@ -198,7 +203,7 @@ const Client: React.FC = () => {
   };
 
 
-  const handleCategorySelect = (category: IOptionset) => {
+  const handleCategorySelect = (category: option) => {
     setSelectedCategories((prevCategories) => {
       if (prevCategories.includes(category) && prevCategories.length > 1) {
         return prevCategories.filter((s) => s !== category); // Remove skill if already selected
@@ -365,7 +370,7 @@ const Client: React.FC = () => {
                           key={category._id}
                           className="flex items-center px-2.5 py-1 bg-teal-600 text-white rounded-full text-xs md:text-sm font-medium"
                         >
-                          {category.value}
+                          {category.values}
                           <button
                             onClick={() => handleRemoveCategory(category)}
                             className="ml-1 text-white hover:text-gray-200 focus:outline-none font-medium"
@@ -394,7 +399,7 @@ const Client: React.FC = () => {
                               className="px-4 py-2 hover:bg-blue-50 hover:text-teal-600 cursor-pointer text-sm md:text-base transition-all duration-200"
                               onMouseDown={() => handleCategorySelect(category)}
                             >
-                              {category.value}
+                              {category.values}
                             </div>
                           ))
                         ) : (
@@ -404,21 +409,21 @@ const Client: React.FC = () => {
                     )}
                   </div>
                 </div>
-                <p className="block text-lg md:text:xl text-gray-700 font-semibold mb-3 mt-3">Popular Categories:</p>
+                {/* <p className="block text-lg md:text:xl text-gray-700 font-semibold mb-3 mt-3">Popular Categories:</p>
                 <div className="flex flex-wrap gap-3 mb-6">
-                  {options.slice(0, 13)?.map((category) => (
+                  {Categories.map((category) => (
                     <button
-                      key={category._id}
+                      key={category}
                       onClick={() => handleCategorySelect(category)}
                       className={`px-4 py-2 rounded-full text-xs lg:text-sm font-medium transition ${selectedCategories.includes(category)
                         ? 'bg-teal-500 text-white'
                         : 'bg-gray-200 text-gray-800'
                         }`}
                     >
-                      {category.value}
+                      {category}
                     </button>
                   ))}
-                </div>
+                </div> */}
               </div>
             </section>
           )}
@@ -439,7 +444,7 @@ const Client: React.FC = () => {
                           key={skill._id}
                           className="flex items-center px-2.5 py-1 bg-teal-600 text-white rounded-full text-xs md:text-sm font-medium"
                         >
-                          {skill.value}
+                          {skill.values}
                           <button
                             onClick={() => handleRemoveSkill(skill)}
                             className="ml-1 text-white hover:text-gray-200 focus:outline-none font-medium"
@@ -468,7 +473,7 @@ const Client: React.FC = () => {
                               className="px-4 py-2 hover:bg-blue-50 hover:text-teal-600 cursor-pointer text-sm md:text-base transition-all duration-200"
                               onMouseDown={() => handleSkillSelect(skill)}
                             >
-                              {skill.value}
+                              {skill.values}
                             </div>
                           ))
                         ) : (
@@ -478,19 +483,19 @@ const Client: React.FC = () => {
                     )}
                   </div>
                 </div>
-                <p className="block text-lg md:text:xl text-gray-700 font-semibold mb-3 mt-5">Popular Skills:</p>
+                {/* <p className="block text-lg md:text:xl text-gray-700 font-semibold mb-3 mt-5">Popular Skills:</p>
                 <div className="flex flex-wrap gap-3 mb-6">
-                  {options.slice(0, 15).map((skill) => (
+                  {popularSkills.map((skill) => (
                     <button
-                      key={skill._id}
+                      key={skill}
                       onClick={() => handleSkillSelect(skill)}
                       className={`px-4 py-2 rounded-full text-xs lg:text-sm font-medium transition ${selectedSkills.includes(skill) ? 'bg-teal-600 text-white' : 'bg-gray-200 text-gray-800'
                         }`}
                     >
-                      {skill.value}
+                      {skill}
                     </button>
                   ))}
-                </div>
+                </div> */}
               </div>
             </section>
           )}
@@ -669,7 +674,7 @@ const Client: React.FC = () => {
                               : "bg-gray-200 text-gray-700"
                               }`}
                           >
-                            {category.value}
+                            {category.values}
                           </button>
                         ))}
                       </div>
@@ -691,7 +696,7 @@ const Client: React.FC = () => {
                               : "bg-gray-200 text-gray-700"
                               }`}
                           >
-                            {skill.value}
+                            {skill.values}
                           </button>
                         ))}
                       </div>

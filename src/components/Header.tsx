@@ -64,9 +64,6 @@ const Header: React.FC = () => {
           className="w-12 h-12 md:w-[50px] md:h-[50px] rounded-full transition-transform transform hover:scale-110  border-teal-200 border-2 hover:cursor-pointer"
           onClick={() => router.replace("/")}
         />
-        {/* <div onClick={() => router.replace("/")} className="hidden md:inline text-xl lg:text-[22px] hover:cursor-pointer font-sans font-bold text-teal-700 tracking-tight hover:text-teal-800 transition duration-300">
-          CampusBid
-        </div> */}
       </div>
 
       <div className="flex items-center space-x-3 lg:space-x-4 w-auto">

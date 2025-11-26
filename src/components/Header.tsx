@@ -61,9 +61,13 @@ const Header: React.FC = () => {
         <img
           src="/assets/icons/favicon.ico"
           alt="CampusBid Logo"
-          className="w-12 h-12 md:w-[50px] md:h-[50px] rounded-full transition-transform transform hover:scale-110  border-teal-200 border-2 hover:cursor-pointer"
-          onClick={() => router.replace("/")}
+      <Link href="/">
+        <img
+          src="/assets/icons/favicon.ico"
+          alt="CampusBid Logo"
+          className="w-12 h-12 md:w-[50px] md:h-[50px] rounded-full transition-transform transform hover:scale-110 border-teal-200 border-2 hover:cursor-pointer"
         />
+      </Link>
       </div>
 
       <div className="flex items-center space-x-3 lg:space-x-4 w-auto">

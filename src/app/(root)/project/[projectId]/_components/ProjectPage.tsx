@@ -54,19 +54,19 @@ const ProjectPage = () => {
           <div className="bg-white p-4 md:p-6 lg:p-8 border-r-[1px] border-gray-200 mb-5">
             <header className=" pb-4 mb-4">
               <h1 className="text-2xl md:text-[26px] font-bold text-gray-700">{project.title}</h1>
-              <span
+              {/* <span
                 className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-semibold ${project.status === "open" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
                   }`}
               >
                 {project.status === "open" ? "Open" : "Closed"}
-              </span>
+              </span> */}
             </header>
 
             {/* Project Description */}
             <section className="space-y-3 md:space-y-4 pb-4">
-              <div className="text-gray-700 leading-relaxed text-justify">
+              {/* <div className="text-gray-700 leading-relaxed text-justify">
                 <Description description={project.description} previewLength={300} />
-              </div>
+              </div> */}
             </section>
 
 

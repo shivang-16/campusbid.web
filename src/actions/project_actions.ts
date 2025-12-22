@@ -4,6 +4,7 @@ import { getCookie } from "./cookie_actions";
 
 export const createProject = async (data: any) => {
   const token = await getCookie("token");
+  console.log("token is here")
 
   try {
     const response = await fetch(

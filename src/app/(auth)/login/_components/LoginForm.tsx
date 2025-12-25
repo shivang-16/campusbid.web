@@ -40,10 +40,14 @@ const Login = () => {
         },
         body: JSON.stringify(data),
       });
+      console.log(reponse, "here is the reponse")
+      console.log(reposne.ok)
 
       if (response.ok) {
         const responseData = await response.json();
         dispatch(userData(responseData.user));
+        console.log("userdata dispatched")
+        consolo.log(userdata)
         toast.success(responseData.message);
         router.replace("/");
       } else {

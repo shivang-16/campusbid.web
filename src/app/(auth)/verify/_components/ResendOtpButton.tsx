@@ -44,10 +44,10 @@ console.log("here is the email")
       setTimeLeft(timeLeft - 1);
     }, 1000);
 
-    return () => {
-      clearInterval(intervalId);
-      setDisableResend(true);
-    };
+    // return () => {
+    //   clearInterval(intervalId);
+    //   setDisableResend(true);
+    // };
   }, [timeLeft]);
   return (
     <div className="flex items-center">

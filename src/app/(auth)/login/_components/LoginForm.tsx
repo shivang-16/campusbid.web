@@ -16,8 +16,8 @@ import Image from "next/image";
 import loginimage from "../../../../../public/assets/images/loginimage.jpg";
 
 const Login = () => {
-  const [togglePassword, setTogglePassword] = useState(false);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  // const [togglePassword, setTogglePassword] = useState(false);
+  // const [isLoggingIn, setIsLoggingIn] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -28,6 +28,8 @@ const Login = () => {
       password: "",
     },
   });
+
+  console.log(form)
 
   const onFormSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsLoggingIn(true);
@@ -40,10 +42,14 @@ const Login = () => {
         },
         body: JSON.stringify(data),
       });
+      console.log(reponse, "here is the reponse")
+      console.log(reposne.ok)
 
       if (response.ok) {
         const responseData = await response.json();
         dispatch(userData(responseData.user));
+        console.log("userdata dispatched")
+        consolo.log(userdata)
         toast.success(responseData.message);
         router.replace("/");
       } else {

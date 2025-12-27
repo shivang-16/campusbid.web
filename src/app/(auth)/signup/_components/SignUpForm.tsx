@@ -31,8 +31,8 @@ const SignUp = () => {
       const responseData = await signUpUser(data);
 
       if (responseData.success) {
-        toast.success(responseData.message);
-        localStorage.setItem("email", data.email);
+        // toast.success(responseData.message);
+        // localStorage.setItem("email", data.email);
         router.replace("/verify");
       } else {
         toast.error(responseData.message);
@@ -65,10 +65,10 @@ const SignUp = () => {
               </p>
             </div>
 
-            <form onSubmit={form.handleSubmit(onFormSubmit)} className="mt-6 space-y-6">
+            {/* <form onSubmit={form.handleSubmit(onFormSubmit)} className="mt-6 space-y-6">
               <div className="space-y-4">
                 <div className="relative">
-                  <User className="absolute left-3 top-3.5 w-5 h-5 opacity-70" />
+                  <User className="absolute left-3 top-3.5 w-5 h-5 opacity-70" /> */}
                   <input
                     type="text"
                     placeholder="Enter full name"

@@ -208,7 +208,7 @@ export default function InitialInfoForm() {
     setFormData({ ...formData, username: e.target.value })
   }
 
-  const { src, width, height } = stepImages[step] || { src: '', width: 400, height: 400 }
+  // const { src, width, height } = stepImages[step] || { src: '', width: 400, height: 400 }
 
   return (
     <>
@@ -231,7 +231,7 @@ export default function InitialInfoForm() {
                       className={`h-[4px] sm:h-[6px] md:h-[8px] ${index < step - 1 ? 'bg-teal-500' : index == step - 1 ? 'bg-blue-300' : 'bg-gray-200'} rounded-[3px] transition-colors duration-300`}
                       style={{ width: '100%' }}
                     ></div>
-                    {index < 5 - 1 && <div className="w-[2px] sm:w-[3px] md:w-[4px]"></div>}
+                    {/* {index < 5 - 1 && <div className="w-[2px] sm:w-[3px] md:w-[4px]"></div>} */}
                   </div>
                 ))}
               </div>

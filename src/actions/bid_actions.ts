@@ -22,7 +22,7 @@ export const createBid = async (data: any) => {
 
     const responseData = await response.json();
 
-    return responseData;
+    // return responseData;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Error creating bid: ${error.message}`);
@@ -48,7 +48,7 @@ export const fetchBidById = async (bidId: string) => {
       }
     );
 
-    const responseData = await response.json();
+    // const responseData = await response.json();
 
     return responseData;
   } catch (error) {

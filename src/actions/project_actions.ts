@@ -4,7 +4,7 @@ import { getCookie } from "./cookie_actions";
 
 export const createProject = async (data: any) => {
     const token = await getCookie("token");
-
+console.log(token)
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/project/create`,

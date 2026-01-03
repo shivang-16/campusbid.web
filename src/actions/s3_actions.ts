@@ -6,6 +6,7 @@ export const uploadImageToS3 = async (file: any, signedUrl: string) => {
       },
       body: file,
     });
+    
 
     if (!response.ok) {
       throw new Error("Failed to upload image to S3");

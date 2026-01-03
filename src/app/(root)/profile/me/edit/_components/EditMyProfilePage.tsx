@@ -89,17 +89,17 @@ const EditMyProfilePage = () => {
     };
 
 
-    const handleInstitutionSearch = (value: string) => {
-        setInstitutionName(value)
-        if (value) fetchColleges(value);
-        else setInstitutions([]);
-    };
+    // const handleInstitutionSearch = (value: string) => {
+    //     setInstitutionName(value)
+    //     if (value) fetchColleges(value);
+    //     else setInstitutions([]);
+    // };
 
-    const handleStateSearch = (value: string) => {
-        setStateName(value)
-        if (value) fetchStates(value);
-        else setStates([]);
-    };
+    // const handleStateSearch = (value: string) => {
+    //     setStateName(value)
+    //     if (value) fetchStates(value);
+    //     else setStates([]);
+    // };
 
     const handleCitySearch = (value: string) => {
         setCityName(value)

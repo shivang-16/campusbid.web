@@ -13,12 +13,7 @@ export const createProject = async (data: any) => {
         headers: {
           "Content-Type": "application/json",
           Cookie: `token=${token}`,
-        },
-        body: JSON.stringify(data),
-        credentials: "include",
-        cache: "no-store",
-      }
-    );
+  
 
     const responseData = await response.json();
 
